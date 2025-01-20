@@ -1,6 +1,16 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/T-FWekHF)
-# Tartan
 
+## Group Information
+
+**Group No:** H01-Group17  
+
+**Members:**  
+1. Harveer Singh Sarao  
+2. [Member 2 Name]  
+3. [Member 3 Name]  
+4. [Member 4 Name]  
+
+# Tartan
 ## Building
 
 The build instructions can be found [here](./docs/build_instructions.md).
