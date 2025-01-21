@@ -8,7 +8,7 @@
 1. Harveer Singh Sarao  
 2. [Member 2 Name]  
 3. [Member 3 Name]  
-4. [Member 4 Name]  
+4. Ziyuan Guo
 
 # Tartan
 ## Building
