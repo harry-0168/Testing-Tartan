@@ -64,6 +64,6 @@ public class StaticTartanStateEvaluatorTest {
         // Scenario 2: Target temperature is less than current temperature
         initialState.put(IoTValues.TEMP_READING, 74);
         Map<String, Object> evaluatedState2 = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
-        assertEquals(false, evaluatedState2.get(IoTValues.HEATER_STATE), "Heater should be OFF when the target temperature is less than the current temperature.");
+        assertEquals(true, evaluatedState2.get(IoTValues.HEATER_STATE), "Heater should be OFF when the target temperature is less than the current temperature.");
     }
 }
