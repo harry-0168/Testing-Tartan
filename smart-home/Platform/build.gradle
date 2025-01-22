@@ -8,7 +8,9 @@ version '1.0-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'application'
 
-mainClassName = 'tartan.smarthome.TartanHomeApplication'
+application {
+    mainClass = 'tartan.smarthome.TartanHomeApplication'
+}
 
 sourceCompatibility = 21
 targetCompatibility = 21
@@ -19,7 +21,6 @@ repositories {
 }
 
 dependencies {
-    // JAX-B dependencies for JDK 9+
     implementation "javax.xml.bind:jaxb-api:2.3.1"
     implementation "com.sun.xml.bind:jaxb-core:4.0.4"
     implementation "com.sun.xml.bind:jaxb-impl:4.0.4"
@@ -41,13 +42,35 @@ run {
 shadowJar {
     mergeServiceFiles()
     manifest {
-        attributes 'Implementation-Title': rootProject.name
-        attributes 'Implementation-Version': rootProject.version
-        attributes 'Implementation-Vendor-Id': rootProject.group
-        attributes 'Created-By': 'Gradle ' + gradle.gradleVersion
-        attributes 'Main-Class': mainClassName
+        attributes(
+            'Implementation-Title': rootProject.name,
+            'Implementation-Version': rootProject.version,
+            'Implementation-Vendor-Id': rootProject.group,
+            'Created-By': 'Gradle ' + gradle.gradleVersion,
+            'Main-Class': 'tartan.smarthome.TartanHomeApplication'
+        )
     }
     archiveFileName.set(rootProject.name + '-' + rootProject.version + '.jar')
+}
+
+tasks.named('distZip').configure {
+    dependsOn tasks.named('shadowJar')
+}
+
+tasks.named('distTar').configure {
+    dependsOn tasks.named('shadowJar')
+}
+
+tasks.named('startScripts').configure {
+    dependsOn tasks.named('shadowJar')
+}
+
+tasks.named('startShadowScripts').configure {
+    dependsOn tasks.named('shadowJar')
+}
+
+tasks.named('jar').configure {
+    enabled = false
 }
 
 test {
