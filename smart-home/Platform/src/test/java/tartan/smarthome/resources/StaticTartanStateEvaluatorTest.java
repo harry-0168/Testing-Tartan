@@ -68,6 +68,32 @@ public class StaticTartanStateEvaluatorTest {
     }
 
     @Test
+    public void test_rule3() {
+        // Initial state: House is vacant, door is open
+        Map<String, Object> initialState = new HashMap<>();
+        initialState.put(IoTValues.PROXIMITY_STATE, false);
+        initialState.put(IoTValues.DOOR_STATE, true);
+        initialState.put(IoTValues.LIGHT_STATE, false);
+        initialState.put(IoTValues.ALARM_ACTIVE, false);
+        initialState.put(IoTValues.TEMP_READING, 70);
+        initialState.put(IoTValues.TARGET_TEMP, 72);
+        initialState.put(IoTValues.HUMIDITY_READING, 50);
+        initialState.put(IoTValues.HVAC_MODE, "Heater");
+        initialState.put(IoTValues.AWAY_TIMER, false);
+        initialState.put(IoTValues.HEATER_STATE, false);
+        initialState.put(IoTValues.CHILLER_STATE, false);
+        initialState.put(IoTValues.HUMIDIFIER_STATE, false);
+        initialState.put(IoTValues.ALARM_PASSCODE, "1234");
+        initialState.put(IoTValues.GIVEN_PASSCODE, "");
+        initialState.put(IoTValues.ALARM_STATE, false);
+
+        StringBuffer logBuffer = new StringBuffer();
+
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+
+        assertEquals(false, evaluatedState.get(IoTValues.DOOR_STATE), "Door should be CLOSED when the house is vacant.");
+    }
+      
     public void test_rule9() {
         //Same passcode, should disable alarm
         Map<String, Object> inState1 = new HashMap<>();
