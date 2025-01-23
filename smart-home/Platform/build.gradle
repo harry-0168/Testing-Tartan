@@ -43,11 +43,11 @@ shadowJar {
     mergeServiceFiles()
     manifest {
         attributes(
-                'Implementation-Title': rootProject.name,
-                'Implementation-Version': rootProject.version,
-                'Implementation-Vendor-Id': rootProject.group,
-                'Created-By': 'Gradle ' + gradle.gradleVersion,
-                'Main-Class': 'tartan.smarthome.TartanHomeApplication'
+            'Implementation-Title': rootProject.name,
+            'Implementation-Version': rootProject.version,
+            'Implementation-Vendor-Id': rootProject.group,
+            'Created-By': 'Gradle ' + gradle.gradleVersion,
+            'Main-Class': 'tartan.smarthome.TartanHomeApplication'
         )
     }
     archiveFileName.set(rootProject.name + '-' + rootProject.version + '.jar')
