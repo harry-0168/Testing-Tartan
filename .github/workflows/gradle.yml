@@ -43,3 +43,11 @@ jobs:
     - name: Run Tests
       run: ./gradlew test
       working-directory: ./smart-home/Platform
+
+    # Step 7: Upload test report
+    - name: Upload Test Report
+      if: always() # Ensure this step runs even if tests fail
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-report
+        path: smart-home/Platform/build/reports/tests/test/
