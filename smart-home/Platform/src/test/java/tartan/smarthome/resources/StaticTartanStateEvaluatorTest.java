@@ -93,7 +93,8 @@ public class StaticTartanStateEvaluatorTest {
 
         assertEquals(false, evaluatedState.get(IoTValues.DOOR_STATE), "Door should be CLOSED when the house is vacant.");
     }
-      
+
+    @Test
     public void test_rule9() {
         //Same passcode, should disable alarm
         Map<String, Object> inState1 = new HashMap<>();
@@ -169,5 +170,55 @@ public class StaticTartanStateEvaluatorTest {
         StringBuffer sb3 = new StringBuffer();
         Map<String, Object> outState3 = new StaticTartanStateEvaluator().evaluateState(inState3, sb3);
         assertEquals(true, outState3.get(IoTValues.ALARM_ACTIVE));
+
+        //Testing the length 0 passcode
+        Map<String, Object> inState4 = new HashMap<>();
+        //Placeholder states
+        inState4.put(IoTValues.TEMP_READING, 30);
+        inState4.put(IoTValues.HUMIDITY_READING, 30);
+        inState4.put(IoTValues.TARGET_TEMP, 30);
+        inState4.put(IoTValues.HUMIDIFIER_STATE, false);
+        inState4.put(IoTValues.DOOR_STATE, false);
+        inState4.put(IoTValues.LIGHT_STATE, false);
+        inState4.put(IoTValues.HEATER_STATE, false);
+        inState4.put(IoTValues.CHILLER_STATE, false);
+        inState4.put(IoTValues.HVAC_MODE, "Chiller");
+        inState4.put(IoTValues.AWAY_TIMER, false);
+
+        //Meaningful States
+        inState4.put(IoTValues.PROXIMITY_STATE, true);
+        inState4.put(IoTValues.ALARM_PASSCODE, "quit");
+        inState4.put(IoTValues.GIVEN_PASSCODE, "");
+        inState4.put(IoTValues.ALARM_STATE, false);
+        inState4.put(IoTValues.ALARM_ACTIVE, true);
+
+        StringBuffer sb4 = new StringBuffer();
+        Map<String, Object> outState4 = new StaticTartanStateEvaluator().evaluateState(inState4, sb4);
+        assertEquals(true, outState4.get(IoTValues.ALARM_ACTIVE));
+
+//        //Testing the null pass code
+//        Map<String, Object> inState5 = new HashMap<>();
+//        //Placeholder states
+//        inState5.put(IoTValues.TEMP_READING, 30);
+//        inState5.put(IoTValues.HUMIDITY_READING, 30);
+//        inState5.put(IoTValues.TARGET_TEMP, 30);
+//        inState5.put(IoTValues.HUMIDIFIER_STATE, false);
+//        inState5.put(IoTValues.DOOR_STATE, false);
+//        inState5.put(IoTValues.LIGHT_STATE, false);
+//        inState5.put(IoTValues.HEATER_STATE, false);
+//        inState5.put(IoTValues.CHILLER_STATE, false);
+//        inState5.put(IoTValues.HVAC_MODE, "Chiller");
+//        inState5.put(IoTValues.AWAY_TIMER, false);
+//
+//        //Meaningful States
+//        inState5.put(IoTValues.PROXIMITY_STATE, true);
+//        inState5.put(IoTValues.ALARM_PASSCODE, "quit");
+//        inState5.put(IoTValues.GIVEN_PASSCODE, null);
+//        inState5.put(IoTValues.ALARM_STATE, false);
+//        inState5.put(IoTValues.ALARM_ACTIVE, true);
+//
+//        StringBuffer sb5 = new StringBuffer();
+//        Map<String, Object> outState5 = new StaticTartanStateEvaluator().evaluateState(inState5, sb5);
+//        assertEquals(true, outState5.get(IoTValues.ALARM_ACTIVE));
     }
 }
