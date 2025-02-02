@@ -177,6 +177,18 @@ public class StaticTartanStateEvaluatorTest {
         assertEquals(false, evaluatedState4.get(IoTValues.HEATER_STATE), "Heater should be OFF when the target temperature is less than the current temperature.");
     }
 
+    // Case 5: current temperature is equal to target temperature, heater should be be off
+    @Test
+    public void test_rule10_case5() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+        initialState.put(IoTValues.TEMP_READING, 72);
+        initialState.put(IoTValues.TARGET_TEMP, 72);
+        initialState.put(IoTValues.HEATER_STATE, true);
+        Map<String, Object> evaluatedState5 = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(false, evaluatedState5.get(IoTValues.HEATER_STATE), "Heater should be OFF when the target temperature is equal to the current temperature.");
+    }
+
     // R12: The heater and the dehumidifier cannot be run simultaneously.
     @Test
     public void test_rule12() {
