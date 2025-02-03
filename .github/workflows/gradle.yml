@@ -58,4 +58,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: jacoco-report
-        path: smart-home/Platform/build/reports/jacoco/test/html/
+        path: smart-home/Platform/build/jacocoHtml/
