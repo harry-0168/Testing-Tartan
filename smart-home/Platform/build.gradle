@@ -1,8 +1,11 @@
 plugins {
- id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'jacoco'
 }
+
 group 'Tartan'
 version '1.0-SNAPSHOT'
+
 apply plugin: 'java'
 apply plugin: 'application'
 
@@ -12,10 +15,12 @@ application {
 
 sourceCompatibility = 21
 targetCompatibility = 21
+
 repositories {
- mavenLocal()
- mavenCentral()
+    mavenLocal()
+    mavenCentral()
 }
+
 dependencies {
     implementation "javax.xml.bind:jaxb-api:2.3.1"
     implementation "com.sun.xml.bind:jaxb-core:4.0.4"
@@ -30,9 +35,11 @@ dependencies {
     implementation 'mysql:mysql-connector-java:8.0.33'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 }
+
 run {
- args = ['server', 'config.yml']
+    args = ['server', 'config.yml']
 }
+
 shadowJar {
     mergeServiceFiles()
     manifest {
@@ -69,4 +76,18 @@ tasks.named('jar').configure {
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
 }
