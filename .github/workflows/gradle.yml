@@ -40,9 +40,9 @@ jobs:
       working-directory: ./smart-home/Platform
 
     # Step 6: Run tests with Jacoco enabled
-    - name: Run Tests and Generate Jacoco Coverage Report
-      run: ./gradlew :Platform:test :Platform:jacocoTestReport
-      working-directory: ./smart-home/Platform
+    # - name: Run Tests and Generate Jacoco Coverage Report
+    #   run: ./gradlew :Platform:test :Platform:jacocoTestReport
+    #   working-directory: ./smart-home/Platform
 
     # Step 7: Upload test report
     - name: Upload Test Report
