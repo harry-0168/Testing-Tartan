@@ -30,22 +30,26 @@ public class StaticTartanStateEvaluatorTest {
     }
 
     // R1: If the house is vacant, then the light cannot be turned on
+    // Case 1: house is vacant, light is on, light should be turned off
     @Test
-    public void test_rule1() {
+    public void test_rule1_case1() {
         Map<String, Object> initialState = initializeState();
         StringBuffer logBuffer = new StringBuffer();
         initialState.put(IoTValues.PROXIMITY_STATE, false);
         initialState.put(IoTValues.LIGHT_STATE, true);
-
-        // case 1: house is vacant, light is on, light should be turned off
         Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(false, evaluatedState.get(IoTValues.LIGHT_STATE), "Light should be OFF when the house is vacant.");
+    }
 
-        // case 2: house is vacant, light is off, light should remain off
+    // Case 2: house is vacant, light is off, light should remain off
+    @Test
+    public void test_rule1_case2() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+        initialState.put(IoTValues.PROXIMITY_STATE, false);
         initialState.put(IoTValues.LIGHT_STATE, false);
-        logBuffer.setLength(0);
-        Map<String, Object> evaluatedState2 = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
-        assertEquals(false, evaluatedState2.get(IoTValues.LIGHT_STATE), "Light should remain OFF when the house is vacant.");
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(false, evaluatedState.get(IoTValues.LIGHT_STATE), "Light should remain OFF when the house is vacant.");
     }
 
     // R3: If the house is vacant, then close the door.
