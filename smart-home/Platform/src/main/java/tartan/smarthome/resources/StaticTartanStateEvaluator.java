@@ -160,9 +160,7 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 alarmState = true;
 
                 log.append(formatLogEntry("Cannot disable the alarm, house is empty"));
-            }
-
-            if (alarmActiveState) {
+            } else if (alarmActiveState) {
                 if (givenPassCode.compareTo(alarmPassCode) != 0) {
                     log.append(formatLogEntry("Cannot disable alarm, invalid passcode given"));
                     alarmState = true;
