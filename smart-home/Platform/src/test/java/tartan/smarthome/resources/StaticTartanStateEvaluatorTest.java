@@ -128,6 +128,17 @@ public class StaticTartanStateEvaluatorTest {
         inState5.put(IoTValues.ALARM_ACTIVE, true);
         Map<String, Object> outState5 = new StaticTartanStateEvaluator().evaluateState(inState5, sb5);
         assertEquals(true, outState5.get(IoTValues.ALARM_ACTIVE));
+
+        // case 6: passcode diff by length, shorter and the first couple index match. Should remain on
+        Map<String, Object> inState6 = initializeState();
+        StringBuffer sb6 = new StringBuffer();
+        inState6.put(IoTValues.PROXIMITY_STATE, true);
+        inState6.put(IoTValues.ALARM_PASSCODE, "1234");
+        inState6.put(IoTValues.GIVEN_PASSCODE, "123");
+        inState6.put(IoTValues.ALARM_STATE, false);
+        inState6.put(IoTValues.ALARM_ACTIVE, true);
+        Map<String, Object> outState6 = new StaticTartanStateEvaluator().evaluateState(inState6, sb6);
+        assertEquals(true, outState6.get(IoTValues.ALARM_ACTIVE));
     }
 
     // R10: If the target temperature is greater than the current temperature, then turn on the heater.
