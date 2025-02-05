@@ -11,7 +11,7 @@ public class TartanSmartDoorLockTest {
         StringBuffer log = new StringBuffer();
         lock.lock("9999", log);
 
-        assertFalse(lock.isLocked(), "Door should remain unlocked with an invalid passcode");
+        assertFalse(lock.isLocked(), "Door should remain unlocked with invalid passcode");
         assertTrue(log.toString().contains("Invalid passcode. Lock request denied."),
                    "Log should contain a message for invalid passcode attempt");
     }
@@ -36,7 +36,7 @@ public class TartanSmartDoorLockTest {
 
         lock.unlock("9999", log);
 
-        assertTrue(lock.isLocked(), "Door should remain locked with an invalid passcode");
+        assertTrue(lock.isLocked(), "Door should remain locked with invalid passcode");
         assertTrue(log.toString().contains("Invalid passcode. Unlock request denied."),
                    "Log should contain a message for invalid unlock attempt");
     }
