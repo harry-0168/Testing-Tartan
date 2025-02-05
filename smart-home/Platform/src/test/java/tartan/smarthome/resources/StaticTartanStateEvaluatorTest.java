@@ -260,19 +260,20 @@ public class StaticTartanStateEvaluatorTest {
         assertEquals(false, outState8.get(IoTValues.ALARM_ACTIVE));
     }
     // Discovered a bug for rule 8.
+    // We discovered this while testing for rule 9
     // Was testing if the no user in house the alarm can not be disabled even with the correct passcode
     @Test
-    public void test_rule9_case9() {
-        Map<String, Object> inState9 = initializeState();
-        StringBuffer sb9 = new StringBuffer();
-        inState9.put(IoTValues.PROXIMITY_STATE, false);
-        inState9.put(IoTValues.ALARM_PASSCODE, "1234");
-        inState9.put(IoTValues.GIVEN_PASSCODE, "1234");
-        inState9.put(IoTValues.ALARM_STATE, false);
-        inState9.put(IoTValues.ALARM_ACTIVE, true);
-        Map<String, Object> outState9 = new StaticTartanStateEvaluator().evaluateState(inState9, sb9);
-        assertEquals(true, outState9.get(IoTValues.ALARM_ACTIVE));
-        assertEquals(true, outState9.get(IoTValues.ALARM_STATE));
+    public void test_rule8_case1() {
+        Map<String, Object> inState1 = initializeState();
+        StringBuffer sb1 = new StringBuffer();
+        inState1.put(IoTValues.PROXIMITY_STATE, false);
+        inState1.put(IoTValues.ALARM_PASSCODE, "1234");
+        inState1.put(IoTValues.GIVEN_PASSCODE, "1234");
+        inState1.put(IoTValues.ALARM_STATE, false);
+        inState1.put(IoTValues.ALARM_ACTIVE, true);
+        Map<String, Object> outState1 = new StaticTartanStateEvaluator().evaluateState(inState1, sb1);
+        assertEquals(true, outState1.get(IoTValues.ALARM_ACTIVE));
+        assertEquals(true, outState1.get(IoTValues.ALARM_STATE));
     }
 
     // R10: If the target temperature is greater than the current temperature, then turn on the heater.
