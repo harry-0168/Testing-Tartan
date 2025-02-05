@@ -141,6 +141,140 @@ public class StaticTartanStateEvaluatorTest {
         assertEquals(true, outState6.get(IoTValues.ALARM_ACTIVE));
     }
 
+    // R9: The correct passcode is required to disable the alarm.
+    // case 1: correct passcode is entered, alarm should be turned off
+    @Test
+    public void test_rule9_case1() {
+        Map<String, Object> inState1 = initializeState();
+        StringBuffer sb = new StringBuffer();
+        inState1.put(IoTValues.PROXIMITY_STATE, true);
+        inState1.put(IoTValues.ALARM_PASSCODE, "1234");
+        inState1.put(IoTValues.GIVEN_PASSCODE, "1234");
+        inState1.put(IoTValues.ALARM_STATE, false);
+        inState1.put(IoTValues.ALARM_ACTIVE, true);
+        Map<String, Object> outState1 = new StaticTartanStateEvaluator().evaluateState(inState1, sb);
+        assertEquals(false, outState1.get(IoTValues.ALARM_ACTIVE));
+    }
+
+    // case 2: incorrect passcode is entered, alarm should remain active. The input passcode is the same
+    // length but different.
+    @Test
+    public void test_rule9_case2() {
+        Map<String, Object> inState2 = initializeState();
+        StringBuffer sb2 = new StringBuffer();
+        inState2.put(IoTValues.PROXIMITY_STATE, true);
+        inState2.put(IoTValues.ALARM_PASSCODE, "1234");
+        inState2.put(IoTValues.GIVEN_PASSCODE, "2345");
+        inState2.put(IoTValues.ALARM_STATE, false);
+        inState2.put(IoTValues.ALARM_ACTIVE, true);
+        Map<String, Object> outState2 = new StaticTartanStateEvaluator().evaluateState(inState2, sb2);
+        assertEquals(true, outState2.get(IoTValues.ALARM_ACTIVE));
+    }
+
+    // case 3: no passcode is entered, alarm should remain active.
+    // Input passcode is empty.
+    @Test
+    public void test_rule9_case3() {
+        Map<String, Object> inState3 = initializeState();
+        StringBuffer sb3 = new StringBuffer();
+        inState3.put(IoTValues.PROXIMITY_STATE, true);
+        inState3.put(IoTValues.ALARM_PASSCODE, "1234");
+        inState3.put(IoTValues.GIVEN_PASSCODE, "");
+        inState3.put(IoTValues.ALARM_STATE, false);
+        inState3.put(IoTValues.ALARM_ACTIVE, true);
+        Map<String, Object> outState3 = new StaticTartanStateEvaluator().evaluateState(inState3, sb3);
+        assertEquals(true, outState3.get(IoTValues.ALARM_ACTIVE));
+    }
+
+    // case 4: both passcode and alarm_passcode are empty, alarm should be disabled
+    @Test
+    public void test_rule9_case4() {
+        Map<String, Object> inState4 = initializeState();
+        StringBuffer sb4 = new StringBuffer();
+        inState4.put(IoTValues.PROXIMITY_STATE, true);
+        inState4.put(IoTValues.ALARM_PASSCODE, "");
+        inState4.put(IoTValues.GIVEN_PASSCODE, "");
+        inState4.put(IoTValues.ALARM_STATE, false);
+        inState4.put(IoTValues.ALARM_ACTIVE, true);
+        Map<String, Object> outState4 = new StaticTartanStateEvaluator().evaluateState(inState4, sb4);
+        assertEquals(false, outState4.get(IoTValues.ALARM_ACTIVE));
+    }
+
+    // case 5: passcode diff by length, alarm should remain on
+    @Test
+    public void test_rule9_case5() {
+        Map<String, Object> inState5 = initializeState();
+        StringBuffer sb5 = new StringBuffer();
+        inState5.put(IoTValues.PROXIMITY_STATE, true);
+        inState5.put(IoTValues.ALARM_PASSCODE, "1234");
+        inState5.put(IoTValues.GIVEN_PASSCODE, "12345");
+        inState5.put(IoTValues.ALARM_STATE, false);
+        inState5.put(IoTValues.ALARM_ACTIVE, true);
+        Map<String, Object> outState5 = new StaticTartanStateEvaluator().evaluateState(inState5, sb5);
+        assertEquals(true, outState5.get(IoTValues.ALARM_ACTIVE));
+    }
+
+    // case 6: passcode diff by length, shorter and the first couple index match. Should remain on
+    @Test
+    public void test_rule9_case6() {
+        Map<String, Object> inState6 = initializeState();
+        StringBuffer sb6 = new StringBuffer();
+        inState6.put(IoTValues.PROXIMITY_STATE, true);
+        inState6.put(IoTValues.ALARM_PASSCODE, "1234");
+        inState6.put(IoTValues.GIVEN_PASSCODE, "123");
+        inState6.put(IoTValues.ALARM_STATE, false);
+        inState6.put(IoTValues.ALARM_ACTIVE, true);
+        Map<String, Object> outState6 = new StaticTartanStateEvaluator().evaluateState(inState6, sb6);
+        assertEquals(true, outState6.get(IoTValues.ALARM_ACTIVE));
+    }
+
+    // Testing when the active state is false for full conditional coverage
+    // When active state is false it shouldn't be changed by passcode.
+    // Input correct passcode
+    @Test
+    public void test_rule9_case7() {
+        Map<String, Object> inState7 = initializeState();
+        StringBuffer sb7 = new StringBuffer();
+        inState7.put(IoTValues.PROXIMITY_STATE, true);
+        inState7.put(IoTValues.ALARM_PASSCODE, "1234");
+        inState7.put(IoTValues.GIVEN_PASSCODE, "1234");
+        inState7.put(IoTValues.ALARM_STATE, false);
+        inState7.put(IoTValues.ALARM_ACTIVE, false);
+        Map<String, Object> outState7 = new StaticTartanStateEvaluator().evaluateState(inState7, sb7);
+        assertEquals(false, outState7.get(IoTValues.ALARM_ACTIVE));
+    }
+
+    // Testing when the active state is false for full conditional coverage
+    // When active state is false it shouldn't be changed by passcode.
+    // Input incorrect passcode
+    @Test
+    public void test_rule9_case8() {
+        Map<String, Object> inState8 = initializeState();
+        StringBuffer sb8 = new StringBuffer();
+        inState8.put(IoTValues.PROXIMITY_STATE, true);
+        inState8.put(IoTValues.ALARM_PASSCODE, "1234");
+        inState8.put(IoTValues.GIVEN_PASSCODE, "1234");
+        inState8.put(IoTValues.ALARM_STATE, false);
+        inState8.put(IoTValues.ALARM_ACTIVE, false);
+        Map<String, Object> outState8 = new StaticTartanStateEvaluator().evaluateState(inState8, sb8);
+        assertEquals(false, outState8.get(IoTValues.ALARM_ACTIVE));
+    }
+    // Discovered a bug for rule 8.
+    // Was testing if the no user in house the alarm can not be disabled even with the correct passcode
+    @Test
+    public void test_rule9_case9() {
+        Map<String, Object> inState9 = initializeState();
+        StringBuffer sb9 = new StringBuffer();
+        inState9.put(IoTValues.PROXIMITY_STATE, false);
+        inState9.put(IoTValues.ALARM_PASSCODE, "1234");
+        inState9.put(IoTValues.GIVEN_PASSCODE, "1234");
+        inState9.put(IoTValues.ALARM_STATE, false);
+        inState9.put(IoTValues.ALARM_ACTIVE, true);
+        Map<String, Object> outState9 = new StaticTartanStateEvaluator().evaluateState(inState9, sb9);
+        assertEquals(true, outState9.get(IoTValues.ALARM_ACTIVE));
+        assertEquals(true, outState9.get(IoTValues.ALARM_STATE));
+    }
+
     // R10: If the target temperature is greater than the current temperature, then turn on the heater.
     // Otherwise, turn off the heater
     // the target temperature can be set to 50-80 degrees
