@@ -249,8 +249,7 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             heaterOnState = false; // can't run heater when the A/C is on
         }
         
-        if ( hvacSetting.equals("Chiller")) {
-            humidifierState = true;
+        if (humidifierState && hvacSetting.equals("Chiller")) {
             log.append(formatLogEntry("Enabled Dehumidifier"));
         } else {
             log.append(formatLogEntry("Automatically disabled dehumidifier when running heater"));
