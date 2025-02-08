@@ -337,7 +337,7 @@ public class StaticTartanStateEvaluatorTest {
     }
     @Test
     public void test_rule12_case7(){
-        /* case 6: Input: current temperature greater than target temperature, heater is OFF and dehumidifier is OFF
+        /* case 7: Input: current temperature greater than target temperature, heater is OFF and dehumidifier is OFF
          *         Output: heater turns OFF, dehumidifier turns ON
          */
         Map<String, Object> initialState = initializeState();
