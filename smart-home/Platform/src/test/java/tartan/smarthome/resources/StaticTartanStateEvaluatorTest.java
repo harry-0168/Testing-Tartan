@@ -272,7 +272,7 @@ public class StaticTartanStateEvaluatorTest {
     }
     @Test
     public void test_rule12_case3(){
-        /* case 2: Input: current temperature is equal to target temperature, heater is ON and dehumidifier is ON
+        /* case 3: Input: current temperature is equal to target temperature, heater is ON and dehumidifier is ON
          *         Output: heater turns OFF and dehumidifier turns OFF
          */
         Map<String, Object> initialState = initializeState();
@@ -286,4 +286,70 @@ public class StaticTartanStateEvaluatorTest {
         assertEquals(false, evaluatedState.get(IoTValues.HUMIDIFIER_STATE));
 
     }
+    @Test
+    public void test_rule12_case4(){
+        /* case 4: Input: current temperature is less than target temperature, heater is OFF and dehumidifier is ON
+         *         Output: heater turns ON and dehumidifier turns OFF
+         */
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+        initialState.put(IoTValues.HEATER_STATE, false);
+        initialState.put(IoTValues.HUMIDIFIER_STATE, true);
+        initialState.put(IoTValues.TEMP_READING, 70);
+        initialState.put(IoTValues.TARGET_TEMP, 72);
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(true, evaluatedState.get(IoTValues.HEATER_STATE));
+        assertEquals(false, evaluatedState.get(IoTValues.HUMIDIFIER_STATE));
+
+    }
+    @Test
+    public void test_rule12_case5(){
+        /* case 5: Input: current temperature greater than target temperature, heater is ON and dehumidifier is OFF, chiller is OFF
+         *         Output: heater turns OFF, dehumidifier turns ON and chiller turns ON
+         */
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+        initialState.put(IoTValues.HEATER_STATE, true);
+        initialState.put(IoTValues.HUMIDIFIER_STATE, false);
+        initialState.put(IoTValues.TEMP_READING, 70);
+        initialState.put(IoTValues.TARGET_TEMP, 60);
+        initialState.put(IoTValues.CHILLER_STATE, false);
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(false, evaluatedState.get(IoTValues.HEATER_STATE));
+        assertEquals(true, evaluatedState.get(IoTValues.CHILLER_STATE));
+        assertEquals(true, evaluatedState.get(IoTValues.HUMIDIFIER_STATE));
+    }
+    @Test
+    public void test_rule12_case6(){
+        /* case 6: Input: current temperature is less target temperature, heater is OFF and dehumidifier is OFF
+         *         Output: heater turns ON and dehumidifier stays OFF
+         */
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+        initialState.put(IoTValues.HEATER_STATE, false);
+        initialState.put(IoTValues.HUMIDIFIER_STATE, false);
+        initialState.put(IoTValues.TEMP_READING, 70);
+        initialState.put(IoTValues.TARGET_TEMP, 72);
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(true, evaluatedState.get(IoTValues.HEATER_STATE));
+        assertEquals(false, evaluatedState.get(IoTValues.HUMIDIFIER_STATE));
+
+    }
+    @Test
+    public void test_rule12_case7(){
+        /* case 6: Input: current temperature greater than target temperature, heater is OFF and dehumidifier is OFF
+         *         Output: heater turns OFF, dehumidifier turns ON
+         */
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+        initialState.put(IoTValues.HEATER_STATE, false);
+        initialState.put(IoTValues.HUMIDIFIER_STATE, false);
+        initialState.put(IoTValues.TEMP_READING, 70);
+        initialState.put(IoTValues.TARGET_TEMP, 60);
+        initialState.put(IoTValues.CHILLER_STATE, false);
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(false, evaluatedState.get(IoTValues.HEATER_STATE));
+        assertEquals(true, evaluatedState.get(IoTValues.HUMIDIFIER_STATE));
+    }
+
 }
