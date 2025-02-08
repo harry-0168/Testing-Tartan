@@ -53,20 +53,24 @@ public class StaticTartanStateEvaluatorTest {
     }
 
     // R3: If the house is vacant, then close the door.
+    // Case 1: If house is vacant, and the door is open. Then the door is closed.
     @Test
-    public void test_rule3() {
+    public void test_rule3_case1() {
         Map<String, Object> initialState = initializeState();
         StringBuffer logBuffer = new StringBuffer();
-
-        // case 1: house is vacant, door is open, door should be closed
         initialState.put(IoTValues.PROXIMITY_STATE, false);
         initialState.put(IoTValues.DOOR_STATE, true);
-        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
-        assertEquals(false, evaluatedState.get(IoTValues.DOOR_STATE), "Door should be CLOSED when the house is vacant.");
-    
-        // case 2: house is vacant, door is closed, door should remain closed
+        Map<String, Object> evaluatedState1 = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(false, evaluatedState1.get(IoTValues.DOOR_STATE), "Door should be CLOSED when the house is vacant.");
+    }
+
+    // Case 2: If house is vacant, and the door is already closed. Then door should remain closed.
+    @Test
+    public void test_rule3_case2() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+        initialState.put(IoTValues.PROXIMITY_STATE, false);
         initialState.put(IoTValues.DOOR_STATE, false);
-        logBuffer.setLength(0);
         Map<String, Object> evaluatedState2 = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(false, evaluatedState2.get(IoTValues.DOOR_STATE), "Door should remain CLOSED when the house is vacant.");
     }
