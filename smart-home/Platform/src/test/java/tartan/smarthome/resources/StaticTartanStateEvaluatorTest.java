@@ -75,6 +75,30 @@ public class StaticTartanStateEvaluatorTest {
         assertEquals(false, evaluatedState2.get(IoTValues.DOOR_STATE), "Door should remain CLOSED when the house is vacant.");
     }
 
+    // Case 3: If house is vacant, door is opened and the alarm is enabled. Then door should remain open.
+    @Test
+    public void test_rule3_case3() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+        initialState.put(IoTValues.PROXIMITY_STATE, false);
+        initialState.put(IoTValues.DOOR_STATE, true);
+        initialState.put(IoTValues.ALARM_STATE, true);
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(true, evaluatedState.get(IoTValues.DOOR_STATE), "Door should remain OPEN when the house is vacant, alarm is enabled and door is opened.");
+    }
+
+    // Case 4: If house is vacant, alarm is enabled and door is closed. Then door should remain closed.
+    @Test
+    public void test_rule3_case4() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+        initialState.put(IoTValues.PROXIMITY_STATE, false);
+        initialState.put(IoTValues.DOOR_STATE, false);
+        initialState.put(IoTValues.ALARM_STATE, true);
+        Map<String, Object> evaluatedState4 = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(false, evaluatedState4.get(IoTValues.DOOR_STATE), "Door should remain CLOSED when the house is vacant and alarm is enabled.");
+    }
+
     // R9: The correct passcode is required to disable the alarm.
     // case 1: correct passcode is entered, alarm should be turned off
     @Test
