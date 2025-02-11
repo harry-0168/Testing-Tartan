@@ -54,6 +54,7 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         String givenLockPassCode = ""; // the passcode given to lock or unlock the door
         Integer nightStartTime = null; // the night mode start time (24-hour format)
         Integer nightEndTime = null; // the night mode end time (24-hour format)
+        Integer currentTime = null;
 
         System.out.println("Evaluating new state statically");
 
