@@ -26,6 +26,11 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.AWAY_TIMER, false);
         initialState.put(IoTValues.ALARM_PASSCODE, "1234");
         initialState.put(IoTValues.GIVEN_PASSCODE, "");
+        initialState.put(IoTValues.LOCK_STATE, false);
+        initialState.put(IoTValues.LOCK_PASSCODE, "1234");
+        initialState.put(IoTValues.LOCK_GIVEN_PASSCODE, "");
+        initialState.put(IoTValues.LOCK_REQUEST, "");
+        initialState.put(IoTValues.LOCK_Electronic_Operation_Enable, false);
         return initialState;
     }
 
@@ -259,5 +264,79 @@ public class StaticTartanStateEvaluatorTest {
         Map<String, Object> evaluatedState2 = new StaticTartanStateEvaluator().evaluateState(initialState, logs);
         assertEquals(false, evaluatedState2.get(IoTValues.HEATER_STATE)); // heater must turn off
         assertEquals(true, evaluatedState2.get(IoTValues.HUMIDIFIER_STATE)); // dehumidifier should turn on
+    }
+
+    // Test for smart door lock and unlock with correct passcode
+    @Test
+    public void test_lock_unlock_succeeds_with_correct_passcode() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logs = new StringBuffer();
+        initialState.put(IoTValues.LOCK_PASSCODE, "1234");
+        initialState.put(IoTValues.LOCK_GIVEN_PASSCODE, "1234");
+        initialState.put(IoTValues.LOCK_STATE, false);
+        initialState.put(IoTValues.LOCK_REQUEST, "LOCK");
+        initialState.put(IoTValues.LOCK_Electronic_Operation_Enable, true);
+
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logs);
+        assertEquals(true, evaluatedState.get(IoTValues.LOCK_STATE), "Door should be locked with the correct passcode");
+        assertTrue(logs.toString().contains("Door locked"),
+                   "Log should contain a message for successful locking");
+
+        logs.setLength(0);
+        initialState.put(IoTValues.LOCK_STATE, true);
+        initialState.put(IoTValues.LOCK_REQUEST, "UNLOCK");
+        Map<String, Object> evaluatedState2 = new StaticTartanStateEvaluator().evaluateState(initialState, logs);
+        assertEquals(false, evaluatedState2.get(IoTValues.LOCK_STATE), "Door should be unlocked with the correct passcode");
+    }
+
+    // Test for smart door lock with incorrect passcode
+    @Test
+    public void test_lock_fails_with_incorrect_passcode() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logs = new StringBuffer();
+        initialState.put(IoTValues.LOCK_PASSCODE, "1234");
+        initialState.put(IoTValues.LOCK_GIVEN_PASSCODE, "4321");
+        initialState.put(IoTValues.LOCK_STATE, false);
+        initialState.put(IoTValues.LOCK_REQUEST, "LOCK");
+        initialState.put(IoTValues.LOCK_Electronic_Operation_Enable, true);
+
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logs);
+        assertEquals(false, evaluatedState.get(IoTValues.LOCK_STATE), "Door should not be locked with the incorrect passcode");
+        assertTrue(logs.toString().contains("Invalid passcode given to lock door"),
+                   "Log should contain a message for unsuccessful locking");
+    }
+
+    // Test for smart door unlock with incorrect passcode
+    @Test
+    public void test_unlock_fails_with_incorrect_passcode() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logs = new StringBuffer();
+        initialState.put(IoTValues.LOCK_PASSCODE, "1234");
+        initialState.put(IoTValues.LOCK_GIVEN_PASSCODE, "4321");
+        initialState.put(IoTValues.LOCK_STATE, true);
+        initialState.put(IoTValues.LOCK_REQUEST, "UNLOCK");
+        initialState.put(IoTValues.LOCK_Electronic_Operation_Enable, true);
+
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logs);
+        assertEquals(true, evaluatedState.get(IoTValues.LOCK_STATE), "Door should remain locked with the incorrect passcode");
+        assertTrue(logs.toString().contains("Invalid passcode given to unlock door"),
+                   "Log should contain a message for unsuccessful unlocking");
+    }
+
+    // Test for smart door lock with disabled electronic operation
+    @Test
+    public void test_lock_fails_with_disabled_electronic_operation() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logs = new StringBuffer();
+        initialState.put(IoTValues.LOCK_PASSCODE, "1234");
+        initialState.put(IoTValues.LOCK_GIVEN_PASSCODE, "1234");
+        initialState.put(IoTValues.LOCK_STATE, false);
+        initialState.put(IoTValues.LOCK_REQUEST, "LOCK");
+        initialState.put(IoTValues.LOCK_Electronic_Operation_Enable, false);
+
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logs);
+        assertEquals(false, evaluatedState.get(IoTValues.LOCK_STATE), "Door should not be locked with disabled electronic operation");
+        assertTrue(logs.toString().contains("Electronic operation of lock is disabled"),
+                   "Log should contain a message for unsuccessful locking");
     }
 }
