@@ -35,7 +35,7 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.ARRIVING_PROXIMITY_STATE, false);
         initialState.put(IoTValues.NIGHT_START_TIME, 2230);
         initialState.put(IoTValues.NIGHT_END_TIME, 615);
-        initialState.put(IoTValues.CURRENT_TIME, 1130);
+        initialState.put(IoTValues.CURRENT_TIME, 2330);
         return initialState;
     }
 
