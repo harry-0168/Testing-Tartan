@@ -52,6 +52,8 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         String doorRequest = null; // the door request (LOCK or UNLOCK)
         String lockPassCode = ""; // the passcode to lock or unlock the door
         String givenLockPassCode = ""; // the passcode given to lock or unlock the door
+        Integer nightStartTime = null; // the night mode start time (24-hour format)
+        Integer nightEndTime = null; // the night mode end time (24-hour format)
 
         System.out.println("Evaluating new state statically");
 
@@ -103,6 +105,10 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 arrivingProximityState = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE)) {
                 lockKeylessEntryEnabled = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.NIGHT_START_TIME)) {
+                nightStartTime = (Integer) inState.get(key);
+            } else if (key.equals(IoTValues.NIGHT_END_TIME)) {
+                nightEndTime = (Integer) inState.get(key);
             }
         }
 
@@ -337,6 +343,8 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         newState.put(IoTValues.LOCK_REQUEST, doorRequest);
         newState.put(IoTValues.LOCK_GIVEN_PASSCODE, givenLockPassCode);
         newState.put(IoTValues.LOCK_PASSCODE, lockPassCode);
+        newState.put(IoTValues.NIGHT_START_TIME, nightStartTime);
+        newState.put(IoTValues.NIGHT_END_TIME, nightEndTime);
         return newState; 
     }
 }
