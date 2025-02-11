@@ -494,6 +494,8 @@ public class StaticTartanStateEvaluatorTest {
         assertEquals(true, evaluatedState.get(IoTValues.LOCK_STATE), "Door should remain locked with disabled keyless entry");
         assertTrue(logs.toString().contains("Arriving home, keyless entry disabled"),
                    "Log should contain a message for unsuccessful locking");
+    }
+    
     // Test for smart door lock night lock configuration
     @Test
     public void test_nightLockConfiguration() {
