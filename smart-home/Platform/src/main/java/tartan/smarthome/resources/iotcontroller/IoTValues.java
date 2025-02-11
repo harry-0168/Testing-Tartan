@@ -72,4 +72,7 @@ public abstract class IoTValues {
     public static final String LOCK_Electronic_Operation_Enable = "LOCK_Electronic_Operation_Enable";
     public static final String LOCK_PASSCODE = "LOCK_PASSCODE";
     public static final String LOCK_GIVEN_PASSCODE = "LOCK_GIVEN_PASSCODE";
+
+    public static final String NIGHT_START_TIME = "NIGHT_START_TIME";
+    public static final String NIGHT_END_TIME = "NIGHT_END_TIME";
 }
