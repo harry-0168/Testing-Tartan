@@ -34,6 +34,7 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         Boolean doorState = null; // the state of the door (true if open, false if closed)
         Boolean lightState = null; // the state of the light (true if on, false if off)
         Boolean proximityState = null; // the state of the proximity sensor (true of house occupied, false if vacant)
+        Boolean arrivingProximityState = null; // the state of the proximity sensor when arriving home
         Boolean alarmState = null; // the alarm state (true if enabled, false if disabled)
         Boolean humidifierState = null; // the humidifier state (true if on, false if off)
         Boolean heaterOnState = null; // the heater state (true if on, false if off)
@@ -47,6 +48,7 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         
         Boolean smartDoorLockState = null; // the smart door lock state (true if locked, false if unlocked)
         Boolean lockElectronicOperationEnabled = null; // the electronic operation of the lock (true if enabled, false if disabled)
+        Boolean lockKeylessEntryEnabled = null; // the keyless entry of the lock (true if enabled, false if disabled)
         String doorRequest = null; // the door request (LOCK or UNLOCK)
         String lockPassCode = ""; // the passcode to lock or unlock the door
         String givenLockPassCode = ""; // the passcode given to lock or unlock the door
@@ -91,7 +93,7 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 alarmActiveState = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.LOCK_STATE)) {
                 smartDoorLockState = (Boolean) inState.get(key);
-            } else if (key.equals(IoTValues.LOCK_Electronic_Operation_Enable)) {
+            } else if (key.equals(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE)) {
                 lockElectronicOperationEnabled = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.LOCK_REQUEST)) {
                 doorRequest = (String) inState.get(key);
@@ -99,6 +101,10 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 givenLockPassCode = (String) inState.get(key);
             } else if (key.equals(IoTValues.LOCK_PASSCODE)) {
                 lockPassCode = (String) inState.get(key);
+            } else if (key.equals(IoTValues.ARRIVING_PROXIMITY_STATE)) {
+                arrivingProximityState = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE)) {
+                lockKeylessEntryEnabled = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.NIGHT_START_TIME)) {
                 nightStartTime = (Integer) inState.get(key);
             } else if (key.equals(IoTValues.NIGHT_END_TIME)) {
@@ -306,6 +312,17 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             log.append(formatLogEntry("Electronic operation of lock is disabled"));
         }
 
+        if (arrivingProximityState){
+            if (lockKeylessEntryEnabled) {
+                log.append(formatLogEntry("Arriving home, automatically unlocking door"));
+                smartDoorLockState = false;
+            } else {
+                log.append(formatLogEntry("Arriving home, keyless entry disabled"));
+            }
+            // Arriving home sensor resets
+            arrivingProximityState = false;
+        }
+
         Map<String, Object> newState = new Hashtable<>();
         newState.put(IoTValues.DOOR_STATE, doorState);
         newState.put(IoTValues.AWAY_TIMER, awayTimerState);
@@ -320,7 +337,9 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         newState.put(IoTValues.ALARM_PASSCODE, alarmPassCode);
         newState.put(IoTValues.GIVEN_PASSCODE, givenPassCode);
         newState.put(IoTValues.LOCK_STATE, smartDoorLockState);
-        newState.put(IoTValues.LOCK_Electronic_Operation_Enable, lockElectronicOperationEnabled);
+        newState.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, lockElectronicOperationEnabled);
+        newState.put(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE, lockKeylessEntryEnabled);
+        newState.put(IoTValues.ARRIVING_PROXIMITY_STATE, arrivingProximityState);
         newState.put(IoTValues.LOCK_REQUEST, doorRequest);
         newState.put(IoTValues.LOCK_GIVEN_PASSCODE, givenLockPassCode);
         newState.put(IoTValues.LOCK_PASSCODE, lockPassCode);
