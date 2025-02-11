@@ -44,6 +44,12 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         String alarmPassCode = null;
         String hvacSetting = null; // the HVAC mode setting, either Heater or Chiller
         String givenPassCode = "";
+        
+        Boolean smartDoorLockState = null; // the smart door lock state (true if locked, false if unlocked)
+        Boolean lockElectronicOperationEnabled = null; // the electronic operation of the lock (true if enabled, false if disabled)
+        String doorRequest = null; // the door request (LOCK or UNLOCK)
+        String lockPassCode = ""; // the passcode to lock or unlock the door
+        String givenLockPassCode = ""; // the passcode given to lock or unlock the door
 
         System.out.println("Evaluating new state statically");
 
@@ -81,6 +87,16 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 awayTimerState = (Boolean) inState.getOrDefault(key, false);
              } else if (key.equals(IoTValues.ALARM_ACTIVE)) {
                 alarmActiveState = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_STATE)) {
+                smartDoorLockState = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_Electronic_Operation_Enable)) {
+                lockElectronicOperationEnabled = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_REQUEST)) {
+                doorRequest = (String) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_GIVEN_PASSCODE)) {
+                givenLockPassCode = (String) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_PASSCODE)) {
+                lockPassCode = (String) inState.get(key);
             }
         }
 
@@ -256,6 +272,34 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             humidifierState = false;
         }
 
+        if (lockElectronicOperationEnabled) {
+            if (doorRequest.equals("LOCK")) {
+                if (smartDoorLockState) {
+                    log.append(formatLogEntry("Door already locked"));
+                } else {
+                    if (givenLockPassCode.compareTo(lockPassCode) == 0) {
+                        smartDoorLockState = true;
+                        log.append(formatLogEntry("Door locked"));
+                    } else {
+                        log.append(formatLogEntry("Invalid passcode given to lock door"));
+                    }
+                }
+            } else if (doorRequest.equals("UNLOCK")) {
+                if (!smartDoorLockState) {
+                    log.append(formatLogEntry("Door already unlocked"));
+                } else {
+                    if (givenLockPassCode.compareTo(lockPassCode) == 0) {
+                        smartDoorLockState = false;
+                        log.append(formatLogEntry("Door unlocked"));
+                    } else {
+                        log.append(formatLogEntry("Invalid passcode given to unlock door"));
+                    }
+                }
+            }
+        } else {
+            log.append(formatLogEntry("Electronic operation of lock is disabled"));
+        }
+
         Map<String, Object> newState = new Hashtable<>();
         newState.put(IoTValues.DOOR_STATE, doorState);
         newState.put(IoTValues.AWAY_TIMER, awayTimerState);
@@ -269,7 +313,11 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         newState.put(IoTValues.HVAC_MODE, hvacSetting);
         newState.put(IoTValues.ALARM_PASSCODE, alarmPassCode);
         newState.put(IoTValues.GIVEN_PASSCODE, givenPassCode);
-        
+        newState.put(IoTValues.LOCK_STATE, smartDoorLockState);
+        newState.put(IoTValues.LOCK_Electronic_Operation_Enable, lockElectronicOperationEnabled);
+        newState.put(IoTValues.LOCK_REQUEST, doorRequest);
+        newState.put(IoTValues.LOCK_GIVEN_PASSCODE, givenLockPassCode);
+        newState.put(IoTValues.LOCK_PASSCODE, lockPassCode);
         return newState; 
     }
 }
