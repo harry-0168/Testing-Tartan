@@ -520,6 +520,7 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.LOCK_PASSCODE, "1111");
         initialState.put(IoTValues.LOCK_GIVEN_PASSCODE, "1111");
         initialState.put(IoTValues.LOCK_STATE, false);
+        initialState.put(IoTValues.DOOR_STATE, false);
         Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(true, evaluatedState.get(IoTValues.LOCK_STATE), "Door should automatically be locked during nighttime");
     }
@@ -534,6 +535,7 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.NIGHT_END_TIME, 2359);
         initialState.put(IoTValues.CURRENT_TIME, 2330);
         initialState.put(IoTValues.LOCK_STATE, false);
+        initialState.put(IoTValues.DOOR_STATE, false);
         Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(true, evaluatedState.get(IoTValues.LOCK_STATE), "Door should automatically be locked during nighttime");
     }
@@ -549,6 +551,7 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.NIGHT_END_TIME, 2320);
         initialState.put(IoTValues.CURRENT_TIME, 2330);
         initialState.put(IoTValues.LOCK_STATE, false);
+        initialState.put(IoTValues.DOOR_STATE, false);
         Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(false, evaluatedState.get(IoTValues.LOCK_STATE), "Door should not automatically be locked outside of nighttime");
     }
@@ -564,6 +567,7 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.NIGHT_END_TIME, 30);
         initialState.put(IoTValues.CURRENT_TIME, 200);
         initialState.put(IoTValues.LOCK_STATE, false);
+        initialState.put(IoTValues.DOOR_STATE, false);
         Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(false, evaluatedState.get(IoTValues.LOCK_STATE), "Door should not automatically be locked outside of nighttime");
     }
@@ -581,6 +585,7 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.LOCK_GIVEN_PASSCODE, "1111");
         initialState.put(IoTValues.LOCK_STATE, true);
         initialState.put(IoTValues.LOCK_REQUEST, "UNLOCK");
+        initialState.put(IoTValues.DOOR_STATE, false);
         Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(true, evaluatedState.get(IoTValues.LOCK_STATE), "Door should automatically be locked during nighttime");
     }
@@ -598,6 +603,7 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.LOCK_GIVEN_PASSCODE, "1111");
         initialState.put(IoTValues.LOCK_STATE, true);
         initialState.put(IoTValues.LOCK_REQUEST, "UNLOCK");
+        initialState.put(IoTValues.DOOR_STATE, false);
         Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(false, evaluatedState.get(IoTValues.LOCK_STATE), "Door shouldn't be automatically be locked outside of nighttime");
     }

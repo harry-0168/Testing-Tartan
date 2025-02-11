@@ -290,41 +290,34 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
 
         // Night Lock
         // Also set the inNightState variable to indicate if it is during night
-        if (nightStartTime != null && nightEndTime != null && currentTime != null) {
-            if (nightStartTime > nightEndTime) { // Nighttime span over midnight
-                if (currentTime <= 2400) {
-                    if (currentTime >= nightStartTime) {
+        if(!doorState){ // If door is closed
+            if (nightStartTime != null && nightEndTime != null && currentTime != null) {
+                if (nightStartTime > nightEndTime) { // Nighttime span over midnight
+                    if (currentTime >= nightStartTime || currentTime <= nightEndTime) {
                         inNightState = true;
                         if(!smartDoorLockState) {
                             smartDoorLockState = true;
                             log.append(formatLogEntry("Door locked during night time"));
                         }
+
                     } else {
                         inNightState = false;
                     }
-                } else {
-                    if (currentTime <= nightEndTime) {
+                } else { // Nighttime doesn't span over midnight
+                    if(currentTime >= nightStartTime && currentTime <= nightEndTime) {
                         inNightState = true;
                         if(!smartDoorLockState) {
                             smartDoorLockState = true;
                             log.append(formatLogEntry("Door locked during night time"));
-                        } else {
-                            inNightState = false;
                         }
-                    }
-                }
-            } else { // Nighttime doesn't span over midnight
-                if(currentTime >= nightStartTime && currentTime <= nightEndTime) {
-                    if(!smartDoorLockState) {
-                        smartDoorLockState = true;
-                        log.append(formatLogEntry("Door locked during night time"));
-                        inNightState = true;
+
                     } else {
                         inNightState = false;
                     }
                 }
             }
         }
+
 
         if (lockElectronicOperationEnabled) {
             if (doorRequest.equals("LOCK")) {
