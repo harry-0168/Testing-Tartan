@@ -66,4 +66,10 @@ public abstract class IoTValues {
     public static final String SETTINGS_FILE = "settings.txt";
     public static final String USERS_DB = "users.txt";
 	public static final String AWAY_TIMER = "AW";
+
+    public static final String LOCK_STATE = "LOCK_STATE";
+    public static final String LOCK_REQUEST = "LOCK_REQUEST";
+    public static final String LOCK_Electronic_Operation_Enable = "LOCK_Electronic_Operation_Enable";
+    public static final String LOCK_PASSCODE = "LOCK_PASSCODE";
+    public static final String LOCK_GIVEN_PASSCODE = "LOCK_GIVEN_PASSCODE";
 }
