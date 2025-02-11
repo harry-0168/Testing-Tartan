@@ -31,6 +31,8 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.LOCK_GIVEN_PASSCODE, "");
         initialState.put(IoTValues.LOCK_REQUEST, "");
         initialState.put(IoTValues.LOCK_Electronic_Operation_Enable, false);
+        initialState.put(IoTValues.NIGHT_START_TIME, 22);
+        initialState.put(IoTValues.NIGHT_END_TIME, 6);
         return initialState;
     }
 
@@ -458,5 +460,17 @@ public class StaticTartanStateEvaluatorTest {
         assertEquals(false, evaluatedState.get(IoTValues.LOCK_STATE), "Door should not be locked with disabled electronic operation");
         assertTrue(logs.toString().contains("Electronic operation of lock is disabled"),
                    "Log should contain a message for unsuccessful locking");
+    }
+
+    // Test for smart door lock night lock configuration
+    @Test
+    public void test_nightLockConfiguration() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+        initialState.put(IoTValues.NIGHT_START_TIME, 22);
+        initialState.put(IoTValues.NIGHT_END_TIME, 6);
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(22, evaluatedState.get(IoTValues.NIGHT_START_TIME), "Night start time should be 22");
+        assertEquals(6, evaluatedState.get(IoTValues.NIGHT_END_TIME), "Night end time should be 6");
     }
 }
