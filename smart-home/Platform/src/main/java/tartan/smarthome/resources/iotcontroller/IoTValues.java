@@ -17,6 +17,7 @@ public abstract class IoTValues {
     public static final String DOOR_STATE = "DS";
     public static final String LIGHT_STATE = "LS";
     public static final String PROXIMITY_STATE = "PS";
+    public static final String ARRIVING_PROXIMITY_STATE = "APS";
     public static final String ALARM_STATE = "AS";
     public static final String HVAC_MODE = "HM";
     public static final String ALARM_ACTIVE = "AA";
@@ -69,7 +70,8 @@ public abstract class IoTValues {
 
     public static final String LOCK_STATE = "LOCK_STATE";
     public static final String LOCK_REQUEST = "LOCK_REQUEST";
-    public static final String LOCK_Electronic_Operation_Enable = "LOCK_Electronic_Operation_Enable";
+    public static final String LOCK_ELECTRONIC_OPERATION_ENABLE = "LOCK_ELECTRONIC_OPERATION_ENABLE";
+    public static final String LOCK_KEYLESS_ENTRY_ENABLE = "LOCK_KEYLESS_ENTRY_ENABLE";
     public static final String LOCK_PASSCODE = "LOCK_PASSCODE";
     public static final String LOCK_GIVEN_PASSCODE = "LOCK_GIVEN_PASSCODE";
 }
