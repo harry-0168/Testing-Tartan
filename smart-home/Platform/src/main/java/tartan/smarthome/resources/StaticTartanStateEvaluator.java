@@ -54,6 +54,7 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         String givenLockPassCode = ""; // the passcode given to lock or unlock the door
         Integer nightStartTime = null; // the night mode start time (24-hour format)
         Integer nightEndTime = null; // the night mode end time (24-hour format)
+        Integer currentTime = null;
 
         System.out.println("Evaluating new state statically");
 
@@ -109,6 +110,8 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 nightStartTime = (Integer) inState.get(key);
             } else if (key.equals(IoTValues.NIGHT_END_TIME)) {
                 nightEndTime = (Integer) inState.get(key);
+            } else if (key.equals(IoTValues.CURRENT_TIME)) {
+                currentTime = (Integer) inState.get(key);
             }
         }
 
@@ -283,6 +286,31 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             log.append(formatLogEntry("Automatically disabled dehumidifier when running heater"));
             humidifierState = false;
         }
+
+        // Night Lock
+        // Also set the inNightState variable to indicate if it is during night
+        if (nightStartTime > nightEndTime) { // Nighttime span over midnight
+            if (currentTime >= nightStartTime || currentTime <= nightEndTime) {
+                if(!smartDoorLockState && !doorState) {
+                    smartDoorLockState = true;
+                    log.append(formatLogEntry("Door locked during night time"));
+                }
+
+            } else {
+            }
+        } else { // Nighttime doesn't span over midnight
+            if(currentTime >= nightStartTime && currentTime <= nightEndTime) {
+                if(!smartDoorLockState && !doorState) {
+                    smartDoorLockState = true;
+                    log.append(formatLogEntry("Door locked during night time"));
+                }
+
+            } else {
+            }
+        }
+
+
+
 
         if (lockElectronicOperationEnabled) {
             if (doorRequest.equals("LOCK")) {

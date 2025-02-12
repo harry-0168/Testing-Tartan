@@ -35,6 +35,7 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.ARRIVING_PROXIMITY_STATE, false);
         initialState.put(IoTValues.NIGHT_START_TIME, 2230);
         initialState.put(IoTValues.NIGHT_END_TIME, 615);
+        initialState.put(IoTValues.CURRENT_TIME, 1200);
         return initialState;
     }
 
@@ -506,5 +507,68 @@ public class StaticTartanStateEvaluatorTest {
         Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(2230, evaluatedState.get(IoTValues.NIGHT_START_TIME), "Night start time should be 2230");
         assertEquals(615, evaluatedState.get(IoTValues.NIGHT_END_TIME), "Night end time should be 615");
+    }
+
+    // Test automatic door locking during nighttime
+    @Test
+    public void test_nighttime_auto_lock() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+        initialState.put(IoTValues.NIGHT_START_TIME, 2230);
+        initialState.put(IoTValues.NIGHT_END_TIME, 615);
+        initialState.put(IoTValues.CURRENT_TIME, 2330);
+        initialState.put(IoTValues.LOCK_PASSCODE, "1111");
+        initialState.put(IoTValues.LOCK_GIVEN_PASSCODE, "1111");
+        initialState.put(IoTValues.LOCK_STATE, false);
+        initialState.put(IoTValues.DOOR_STATE, false);
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(true, evaluatedState.get(IoTValues.LOCK_STATE), "Door should automatically be locked during nighttime");
+    }
+
+    // Test automatic door locking during nighttime when the end time is before midnight
+    @Test
+    public void test_nighttime_auto_lock_end_before_midnight() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+        initialState.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, true);
+        initialState.put(IoTValues.NIGHT_START_TIME, 2230);
+        initialState.put(IoTValues.NIGHT_END_TIME, 2359);
+        initialState.put(IoTValues.CURRENT_TIME, 2330);
+        initialState.put(IoTValues.LOCK_STATE, false);
+        initialState.put(IoTValues.DOOR_STATE, false);
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(true, evaluatedState.get(IoTValues.LOCK_STATE), "Door should automatically be locked during nighttime");
+    }
+
+    // Test nighttime detection the end time end before midnight and it is currently not in nighttime
+    // Expect no change in the door lock state and no automatic lock
+    @Test
+    public void test_nighttime_auto_lock_end_before_midnight_not_in_nighttime() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+        initialState.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, true);
+        initialState.put(IoTValues.NIGHT_START_TIME, 2230);
+        initialState.put(IoTValues.NIGHT_END_TIME, 2320);
+        initialState.put(IoTValues.CURRENT_TIME, 2330);
+        initialState.put(IoTValues.LOCK_STATE, false);
+        initialState.put(IoTValues.DOOR_STATE, false);
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(false, evaluatedState.get(IoTValues.LOCK_STATE), "Door should not automatically be locked outside of nighttime");
+    }
+
+    // Test nighttime detection the end time end after midnight and it is currently not in nighttime
+    // Expect no change in the door lock state and no automatic lock
+    @Test
+    public void test_nighttime_auto_lock_end_after_midnight_not_in_nighttime() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+        initialState.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, true);
+        initialState.put(IoTValues.NIGHT_START_TIME, 2230);
+        initialState.put(IoTValues.NIGHT_END_TIME, 30);
+        initialState.put(IoTValues.CURRENT_TIME, 200);
+        initialState.put(IoTValues.LOCK_STATE, false);
+        initialState.put(IoTValues.DOOR_STATE, false);
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(false, evaluatedState.get(IoTValues.LOCK_STATE), "Door should not automatically be locked outside of nighttime");
     }
 }
