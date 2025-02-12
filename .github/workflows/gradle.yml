@@ -59,11 +59,3 @@ jobs:
       with:
         name: jacoco-report
         path: smart-home/Platform/build/jacocoHtml/
-
-    # Step 9: Upload Pitest HTML Mutation Report
-    - name: Upload Pitest Report
-      if: always() # Ensure this step runs even if tests fail
-      uses: actions/upload-artifact@v4
-      with:
-        name: pitest-report
-        path: smart-home/Platform/build/reports/pitest/tartan.smarthome.resources/
