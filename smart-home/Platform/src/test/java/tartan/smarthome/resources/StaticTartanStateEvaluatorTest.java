@@ -694,7 +694,7 @@ public class StaticTartanStateEvaluatorTest {
     }
     @Test
     public void intruder_Defense_testCase6(){
-        /* case 5: Input: LockIntruderSensorMode is ON, IntruderDetectionSensor is false, LOCK_STATE is false(unlocked),
+        /* case 6: Input: LockIntruderSensorMode is ON, IntruderDetectionSensor is false, LOCK_STATE is false(unlocked),
          *                  DOOR_STATE is false(closed), panelMessage is "all clear"
          *         Output: LockIntruderSensorMode is ON, IntruderDetectionSensor is false, LOCK_STATE is false(unlocked),
          *                  DOOR_STATE is false(closed), panelMessage is "all clear"
