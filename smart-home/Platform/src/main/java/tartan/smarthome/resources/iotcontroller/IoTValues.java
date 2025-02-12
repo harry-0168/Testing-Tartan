@@ -78,4 +78,8 @@ public abstract class IoTValues {
     public static final String NIGHT_START_TIME = "NIGHT_START_TIME";
     public static final String NIGHT_END_TIME = "NIGHT_END_TIME";
     public static final String CURRENT_TIME = "CURRENT_TIME";
+
+    public static final String LOCK_INTRUDER_SENSOR_MODE = "LOCK_INTRUDER_SENSOR_MODE";
+    public static final String INTRUDER_DETECTION_SENSOR = "INTRUDER_DETECTION_SENSOR";
+    public static final String PANEL_MESSAGE = "PANEL_MESSAGE";
 }
