@@ -51,6 +51,16 @@ public class TartanHome {
     @JsonProperty
     private String doorLock;
 
+    // the state of the arrival proximity sensor (true if someone is arriving, false if no one is arriving)
+    @JsonProperty
+    private String arrivingProximity;
+
+    @JsonProperty
+    private String keyLessEntry;
+
+    @JsonProperty
+    private String electronicOperation;
+
     // the heater state (true if on, false if off)
     @JsonProperty
     private String hvacMode;
@@ -237,6 +247,28 @@ public class TartanHome {
         this.doorLock = doorLock;
     }
 
+    public String getArrivingProximity() {
+        return arrivingProximity;
+    }
+
+    public void setArrivingProximity(String arrivingProximity) {
+        this.arrivingProximity = arrivingProximity;
+    }
+
+    public String getKeyLessEntry() {
+        return keyLessEntry;
+    }
+    public void setKeyLessEntry(String keyLessEntry) {
+        this.keyLessEntry = keyLessEntry;
+    }
+
+    public String getElectronicOperation() {
+        return electronicOperation;
+    }
+    public void setElectronicOperation(String electronicOperation) {
+        this.electronicOperation = electronicOperation;
+    }
+    
     /**
      * Get the alarm armed state
      * @return the status of the alarm

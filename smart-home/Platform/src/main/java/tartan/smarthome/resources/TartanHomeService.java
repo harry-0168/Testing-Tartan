@@ -246,6 +246,39 @@ public class TartanHomeService {
     }
 
     /**
+     * Convert arriving proximity state
+     * @param tartanHome
+     * @return true if arriving; false if not arriving; otherwise null
+     */
+    private Boolean toIoTArrivingProximityState(TartanHome tartanHome) {
+        if (tartanHome.getArrivingProximity().equals(TartanHomeValues.ARRIVING)) return true;
+        else if (tartanHome.getArrivingProximity().equals(TartanHomeValues.NOT_ARRIVING)) return false;
+        return null;
+    }
+
+    /**
+     * Convert Keyless entry state
+     * @param tartanHome
+     * @return true if keyless entry is enabled; false if disabled; otherwise null
+     */
+    private Boolean toIoTKeylessEntryState(TartanHome tartanHome) {
+        if (tartanHome.getKeyLessEntry().equals(TartanHomeValues.ON)) return true;
+        else if (tartanHome.getKeyLessEntry().equals(TartanHomeValues.OFF)) return false;
+        return null;
+    }
+
+    /**
+     * Convert Electronic operation state
+     * @param tartanHome
+     * @return
+     */
+    private Boolean toIoTElectronicOperationState(TartanHome tartanHome) {
+        if (tartanHome.getElectronicOperation().equals(TartanHomeValues.ON)) return true;
+        else if (tartanHome.getElectronicOperation().equals(TartanHomeValues.OFF)) return false;
+        return null;
+    }
+
+    /**
      * Convert alarm active state
      * @param tartanHome the home
      * @return true if active; false if inactive; otherwise null
@@ -372,6 +405,9 @@ public class TartanHomeService {
             tartanHome.setHvacMode(TartanHomeValues.UNKNOWN);
             tartanHome.setHvacState(TartanHomeValues.UNKNOWN);
             tartanHome.setDoorLock(TartanHomeValues.UNKNOWN);
+            tartanHome.setArrivingProximity(TartanHomeValues.UNKNOWN);
+            tartanHome.setKeyLessEntry(TartanHomeValues.UNKNOWN);
+            tartanHome.setElectronicOperation(TartanHomeValues.UNKNOWN);
             return tartanHome;
         }
 
@@ -422,6 +458,27 @@ public class TartanHomeService {
                     tartanHome.setDoorLock(TartanHomeValues.LOCK);
                 } else {
                     tartanHome.setDoorLock(TartanHomeValues.UNLOCK);
+                }
+            } else if (key.equals(IoTValues.ARRIVING_PROXIMITY_STATE)) {
+                Boolean arrivingProxState = (Boolean)state.get(key);
+                if (arrivingProxState) {
+                    tartanHome.setArrivingProximity(TartanHomeValues.ARRIVING);
+                } else {
+                    tartanHome.setArrivingProximity(TartanHomeValues.NOT_ARRIVING);
+                }
+            } else if (key.equals(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE)) {
+                Boolean keylessEntryState = (Boolean)state.get(key);
+                if (keylessEntryState) {
+                    tartanHome.setKeyLessEntry(TartanHomeValues.ON);
+                } else {
+                    tartanHome.setKeyLessEntry(TartanHomeValues.OFF);
+                }
+            } else if (key.equals(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE)) {
+                Boolean electronicOperationState = (Boolean)state.get(key);
+                if (electronicOperationState) {
+                    tartanHome.setElectronicOperation(TartanHomeValues.ON);
+                } else {
+                    tartanHome.setElectronicOperation(TartanHomeValues.OFF);
                 }
             } else if (key.equals(IoTValues.ALARM_STATE)) {
                 Boolean alarmState = (Boolean)state.get(key);
@@ -476,6 +533,18 @@ public class TartanHomeService {
 
         if (tartanHome.getDoorLock()!=null) {
             state.put(IoTValues.LOCK_STATE, toIoTLockState(tartanHome));
+        }
+
+        if (tartanHome.getArrivingProximity()!=null) {
+            state.put(IoTValues.ARRIVING_PROXIMITY_STATE, toIoTArrivingProximityState(tartanHome));
+        }
+
+        if (tartanHome.getKeyLessEntry()!=null) {
+            state.put(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE, toIoTKeylessEntryState(tartanHome));
+        }
+
+        if (tartanHome.getElectronicOperation()!=null) {
+            state.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, toIoTElectronicOperationState(tartanHome));
         }
 
         if (tartanHome.getDoor()!=null) {

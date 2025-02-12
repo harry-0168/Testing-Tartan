@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+
 import tartan.smarthome.resources.iotcontroller.IoTValues;
 
 public class StaticTartanStateEvaluator implements TartanStateEvaluator {
@@ -49,11 +50,11 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         Boolean smartDoorLockState = null; // the smart door lock state (true if locked, false if unlocked)
         Boolean lockElectronicOperationEnabled = null; // the electronic operation of the lock (true if enabled, false if disabled)
         Boolean lockKeylessEntryEnabled = null; // the keyless entry of the lock (true if enabled, false if disabled)
-        String doorRequest = null; // the door request (LOCK or UNLOCK)
-        String lockPassCode = ""; // the passcode to lock or unlock the door
-        String givenLockPassCode = ""; // the passcode given to lock or unlock the door
-        Integer nightStartTime = null; // the night mode start time (24-hour format)
-        Integer nightEndTime = null; // the night mode end time (24-hour format)
+        // String doorRequest = null; // the door request (LOCK or UNLOCK)
+        // String lockPassCode = ""; // the passcode to lock or unlock the door
+        // String givenLockPassCode = ""; // the passcode given to lock or unlock the door
+        // Integer nightStartTime = null; // the night mode start time (24-hour format)
+        // Integer nightEndTime = null; // the night mode end time (24-hour format)
 
         System.out.println("Evaluating new state statically");
 
@@ -93,23 +94,24 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 alarmActiveState = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.LOCK_STATE)) {
                 smartDoorLockState = (Boolean) inState.get(key);
-            } else if (key.equals(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE)) {
-                lockElectronicOperationEnabled = (Boolean) inState.get(key);
-            } else if (key.equals(IoTValues.LOCK_REQUEST)) {
-                doorRequest = (String) inState.get(key);
-            } else if (key.equals(IoTValues.LOCK_GIVEN_PASSCODE)) {
-                givenLockPassCode = (String) inState.get(key);
-            } else if (key.equals(IoTValues.LOCK_PASSCODE)) {
-                lockPassCode = (String) inState.get(key);
             } else if (key.equals(IoTValues.ARRIVING_PROXIMITY_STATE)) {
                 arrivingProximityState = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE)) {
                 lockKeylessEntryEnabled = (Boolean) inState.get(key);
-            } else if (key.equals(IoTValues.NIGHT_START_TIME)) {
-                nightStartTime = (Integer) inState.get(key);
-            } else if (key.equals(IoTValues.NIGHT_END_TIME)) {
-                nightEndTime = (Integer) inState.get(key);
-            }
+            } else if (key.equals(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE)) {
+                 lockElectronicOperationEnabled = (Boolean) inState.get(key);
+            } 
+            // else if (key.equals(IoTValues.LOCK_REQUEST)) {
+            //     doorRequest = (String) inState.get(key);
+            // } else if (key.equals(IoTValues.LOCK_GIVEN_PASSCODE)) {
+            //     givenLockPassCode = (String) inState.get(key);
+            // } else if (key.equals(IoTValues.LOCK_PASSCODE)) {
+            //     lockPassCode = (String) inState.get(key);
+            // } else if (key.equals(IoTValues.NIGHT_START_TIME)) {
+            //     nightStartTime = (Integer) inState.get(key);
+            // } else if (key.equals(IoTValues.NIGHT_END_TIME)) {
+            //     nightEndTime = (Integer) inState.get(key);
+            // }
         }
 
         if (lightState == true) {
@@ -284,33 +286,33 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             humidifierState = false;
         }
 
-        if (lockElectronicOperationEnabled) {
-            if (doorRequest.equals("LOCK")) {
-                if (smartDoorLockState) {
-                    log.append(formatLogEntry("Door already locked"));
-                } else {
-                    if (givenLockPassCode.compareTo(lockPassCode) == 0) {
-                        smartDoorLockState = true;
-                        log.append(formatLogEntry("Door locked"));
-                    } else {
-                        log.append(formatLogEntry("Invalid passcode given to lock door"));
-                    }
-                }
-            } else if (doorRequest.equals("UNLOCK")) {
-                if (!smartDoorLockState) {
-                    log.append(formatLogEntry("Door already unlocked"));
-                } else {
-                    if (givenLockPassCode.compareTo(lockPassCode) == 0) {
-                        smartDoorLockState = false;
-                        log.append(formatLogEntry("Door unlocked"));
-                    } else {
-                        log.append(formatLogEntry("Invalid passcode given to unlock door"));
-                    }
-                }
-            }
-        } else {
-            log.append(formatLogEntry("Electronic operation of lock is disabled"));
-        }
+        // if (lockElectronicOperationEnabled) {
+        //     if (doorRequest.equals("LOCK")) {
+        //         if (smartDoorLockState) {
+        //             log.append(formatLogEntry("Door already locked"));
+        //         } else {
+        //             if (givenLockPassCode.compareTo(lockPassCode) == 0) {
+        //                 smartDoorLockState = true;
+        //                 log.append(formatLogEntry("Door locked"));
+        //             } else {
+        //                 log.append(formatLogEntry("Invalid passcode given to lock door"));
+        //             }
+        //         }
+        //     } else if (doorRequest.equals("UNLOCK")) {
+        //         if (!smartDoorLockState) {
+        //             log.append(formatLogEntry("Door already unlocked"));
+        //         } else {
+        //             if (givenLockPassCode.compareTo(lockPassCode) == 0) {
+        //                 smartDoorLockState = false;
+        //                 log.append(formatLogEntry("Door unlocked"));
+        //             } else {
+        //                 log.append(formatLogEntry("Invalid passcode given to unlock door"));
+        //             }
+        //         }
+        //     }
+        // } else {
+        //     log.append(formatLogEntry("Electronic operation of lock is disabled"));
+        // }
 
         if (arrivingProximityState){
             if (lockKeylessEntryEnabled) {
@@ -340,11 +342,11 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         newState.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, lockElectronicOperationEnabled);
         newState.put(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE, lockKeylessEntryEnabled);
         newState.put(IoTValues.ARRIVING_PROXIMITY_STATE, arrivingProximityState);
-        newState.put(IoTValues.LOCK_REQUEST, doorRequest);
-        newState.put(IoTValues.LOCK_GIVEN_PASSCODE, givenLockPassCode);
-        newState.put(IoTValues.LOCK_PASSCODE, lockPassCode);
-        newState.put(IoTValues.NIGHT_START_TIME, nightStartTime);
-        newState.put(IoTValues.NIGHT_END_TIME, nightEndTime);
+        // newState.put(IoTValues.LOCK_REQUEST, doorRequest);
+        // newState.put(IoTValues.LOCK_GIVEN_PASSCODE, givenLockPassCode);
+        // newState.put(IoTValues.LOCK_PASSCODE, lockPassCode);
+        // newState.put(IoTValues.NIGHT_START_TIME, nightStartTime);
+        // newState.put(IoTValues.NIGHT_END_TIME, nightEndTime);
         return newState; 
     }
 }

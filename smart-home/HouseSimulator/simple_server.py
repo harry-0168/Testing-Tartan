@@ -17,7 +17,10 @@ class HouseState(object):
       self.__door = True
       self.__light = True
       self.__proximity = True
-      self.__lock_state = False
+      self.__lock_state = True
+      self.__arriving_proximity = False
+      self.__key_less_entry = False
+      self.__electronic_operation = False
       self.__alarm_active = False
       self.__alarm_state = False
       self.__heater_state = True
@@ -77,6 +80,15 @@ class HouseState(object):
          elif k == "LKS":
             if v == "1": self.__lock_state = True
             else: self.__lock_state = False
+         elif k == "APS":
+            if v == "1": self.__arriving_proximity = True
+            else: self.__arriving_proximity = False
+         elif k == "KLE":
+            if v == "1": self.__key_less_entry = True
+            else: self.__key_less_entry = False
+         elif k == "EOE":
+            if v == "1": self.__electronic_operation = True
+            else: self.__electronic_operation = False
          elif k == "HES":
             if v == "1": self.__heater_state = True
             else: self.__heater_state = False
@@ -110,6 +122,21 @@ class HouseState(object):
    def set_lock_state(self, l): self.__lock_state = l
    def get_lock_state(self):
       if self.__lock_state: return "1"
+      return "0"
+
+   def set_arriving_proximity(self, a): self.__arriving_proximity = a
+   def get_arriving_proximity(self):
+      if self.__arriving_proximity: return "1"
+      return "0"
+   
+   def set_key_less_entry(self, k): self.__key_less_entry = k
+   def get_key_less_entry(self):
+      if self.__key_less_entry: return "1"
+      return "0"
+   
+   def set_electronic_operation(self, e): self.__electronic_operation = e
+   def get_electronic_operation(self):
+      if self.__electronic_operation: return "1"
       return "0"
 
    def set_alarm_state(self, a): self.__alarm_state = a
@@ -146,7 +173,7 @@ class HouseState(object):
       '''
       Handle get state requests
       '''
-      return "TR={0};HR={1};DS={2};LS={3};PS={4};AS={5};AA={6};HES={7};CHS={8};HM={9};HUS={10};LKS={11}".format(self.get_temperature(),
+      return "TR={0};HR={1};DS={2};LS={3};PS={4};AS={5};AA={6};HES={7};CHS={8};HM={9};HUS={10};LKS={11};APS={12};KLE={13};EOE={14}".format(self.get_temperature(),
                                                                                                self.get_humidity(),
                                                                                                self.get_door(),
                                                                                                self.get_light(),
@@ -157,7 +184,10 @@ class HouseState(object):
                                                                                                self.get_chiller_state(),
                                                                                                self.get_hvac_mode(),
                                                                                                self.get_dehumidifier(),
-                                                                                               self.get_lock_state())
+                                                                                               self.get_lock_state(),
+                                                                                               self.get_arriving_proximity(),
+                                                                                               self.get_key_less_entry(),
+                                                                                               self.get_electronic_operation())
 house = HouseState()
 
 class UserThread(threading.Thread):

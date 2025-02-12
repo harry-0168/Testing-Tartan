@@ -73,8 +73,8 @@ public abstract class IoTValues {
 
     public static final String LOCK_STATE = "LKS";
     public static final String LOCK_REQUEST = "LOCK_REQUEST";
-    public static final String LOCK_ELECTRONIC_OPERATION_ENABLE = "LOCK_ELECTRONIC_OPERATION_ENABLE";
-    public static final String LOCK_KEYLESS_ENTRY_ENABLE = "LOCK_KEYLESS_ENTRY_ENABLE";
+    public static final String LOCK_ELECTRONIC_OPERATION_ENABLE = "EOE";
+    public static final String LOCK_KEYLESS_ENTRY_ENABLE = "KLE";
     public static final String LOCK_PASSCODE = "LOCK_PASSCODE";
     public static final String LOCK_GIVEN_PASSCODE = "LOCK_GIVEN_PASSCODE";
 

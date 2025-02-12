@@ -24,6 +24,9 @@ public class TartanHouseSimulator implements Runnable {
     private Boolean dightState; // the state of the light (true if on, false if off)
     private Boolean proximityState; // the state of the proximity sensor (true of house occupied, false if vacant)
     private Boolean lockState; // the state of the smart door lock (true if locked, false if unlocked)
+    private Boolean arrivingProximityState; // the state of the arriving proximity sensor (true of house occupied, false if vacant)
+    private Boolean keyLessEntry; // the state of the keyless entry system (true if enabled, false if disabled)
+    private Boolean electronicOperation; // the state of the electronic operation system (true if enabled, false if disabled)
     private Boolean alarmState; // the alarm state (true if enabled, false if disabled)
     private Boolean humidifierState; // the humidifier state (true if on, false if off)
     private Boolean heaterOnState; // the heater state (true if on, false if off)
@@ -50,9 +53,12 @@ public class TartanHouseSimulator implements Runnable {
     private final String LIGHT_STATE = "LS";
     private final String PROXIMITY_STATE = "PS";
     private final String LOCK_STATE = "LKS";
+    private final String ARRIVING_PROXIMITY_STATE = "APS";
     private final String ALARM_STATE = "AS";
     private final String HVAC_MODE = "HM";
     private final String ALARM_ACTIVE = "AA";
+    public final String LOCK_KEYLESS_ENTRY_ENABLE = "KLE";
+    public static final String LOCK_ELECTRONIC_OPERATION_ENABLE = "EOE";
     private final String HEATER_STATE = "HES";
     private final String CHILLER_STATE = "CHS";
     private final String PASSCODE = "PC";
@@ -212,6 +218,45 @@ public class TartanHouseSimulator implements Runnable {
                     count++;
                     if (count < keys.size()) {
                         newState.append(PARAM_DELIM);
+                } else if (key.equals(ARRIVING_PROXIMITY_STATE)) {
+                    Boolean newProximityState = (Boolean) state.get(key);
+                    newState.append(ARRIVING_PROXIMITY_STATE);
+                    newState.append(PARAM_EQ);
+                    if (newProximityState) {
+                        newState.append("1");
+                    } else {
+                        newState.append("0");
+                    }
+                    count++;
+                    if (count < keys.size()) {
+                        newState.append(PARAM_DELIM);
+                    }
+                } else if (key.equals(LOCK_KEYLESS_ENTRY_ENABLE)) {
+                    Boolean newKeyLessEntry = (Boolean) state.get(key);
+                    newState.append(LOCK_KEYLESS_ENTRY_ENABLE);
+                    newState.append(PARAM_EQ);
+                    if (newKeyLessEntry) {
+                        newState.append("1");
+                    } else {
+                        newState.append("0");
+                    }
+                    count++;
+                    if (count < keys.size()) {
+                        newState.append(PARAM_DELIM);
+                    }
+                } else if (key.equals(LOCK_ELECTRONIC_OPERATION_ENABLE)) {
+                    Boolean newElectronicOperation = (Boolean) state.get(key);
+                    newState.append(LOCK_ELECTRONIC_OPERATION_ENABLE);
+                    newState.append(PARAM_EQ);
+                    if (newElectronicOperation) {
+                        newState.append("1");
+                    } else {
+                        newState.append("0");
+                    }
+                    count++;
+                    if (count < keys.size()) {
+                        newState.append(PARAM_DELIM);
+                    }
                 } else if (key.equals(LIGHT_STATE)) {
                     Boolean newLightState = (Boolean) state.get(key);
                     newState.append(LIGHT_STATE);
@@ -389,6 +434,24 @@ public class TartanHouseSimulator implements Runnable {
                         state.put(LOCK_STATE, true);
                     } else {
                         state.put(LOCK_STATE, false);
+                    }
+                } else if (data[0].equals(ARRIVING_PROXIMITY_STATE)) {
+                    if (val == 1) {
+                        state.put(ARRIVING_PROXIMITY_STATE, true);
+                    } else {
+                        state.put(ARRIVING_PROXIMITY_STATE, false);
+                    }
+                } else if (data[0].equals(LOCK_KEYLESS_ENTRY_ENABLE)) {
+                    if (val == 1) {
+                        state.put(LOCK_KEYLESS_ENTRY_ENABLE, true);
+                    } else {
+                        state.put(LOCK_KEYLESS_ENTRY_ENABLE, false);
+                    }
+                } else if (data[0].equals(LOCK_ELECTRONIC_OPERATION_ENABLE)) {
+                    if (val == 1) {
+                        state.put(LOCK_ELECTRONIC_OPERATION_ENABLE, true);
+                    } else {
+                        state.put(LOCK_ELECTRONIC_OPERATION_ENABLE, false);
                     }
                 } else if (data[0].equals(HEATER_STATE)) {
                     if (val == 1) {
