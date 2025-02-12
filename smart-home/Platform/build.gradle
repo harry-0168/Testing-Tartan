@@ -1,6 +1,8 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'jacoco'
+    id 'info.solidsoft.pitest' version '1.15.0'
+    id 'java'
 }
 
 group 'Tartan'
@@ -90,4 +92,13 @@ jacocoTestReport {
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
+}
+
+pitest {
+    targetClasses=['tartan.smarthome.*']
+    junit5PluginVersion = '1.2.1'
+    pitestVersion = '1.15.2'
+    threads = 4
+    outputFormats = ['XML', 'HTML']
+    timestampedReports = false
 }
