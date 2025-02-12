@@ -23,6 +23,7 @@ public class TartanHouseSimulator implements Runnable {
     private Boolean doorState; // the state of the door (true if open, false if closed)
     private Boolean dightState; // the state of the light (true if on, false if off)
     private Boolean proximityState; // the state of the proximity sensor (true of house occupied, false if vacant)
+    private Boolean lockState; // the state of the smart door lock (true if locked, false if unlocked)
     private Boolean alarmState; // the alarm state (true if enabled, false if disabled)
     private Boolean humidifierState; // the humidifier state (true if on, false if off)
     private Boolean heaterOnState; // the heater state (true if on, false if off)
@@ -48,6 +49,7 @@ public class TartanHouseSimulator implements Runnable {
     private final String DOOR_STATE = "DS";
     private final String LIGHT_STATE = "LS";
     private final String PROXIMITY_STATE = "PS";
+    private final String LOCK_STATE = "LKS";
     private final String ALARM_STATE = "AS";
     private final String HVAC_MODE = "HM";
     private final String ALARM_ACTIVE = "AA";
@@ -66,6 +68,9 @@ public class TartanHouseSimulator implements Runnable {
 
     private final String DOOR_CLOSE = "0";
     private final String DOOR_OPEN = "1";
+
+    private final String UNLOCK = "0";
+    private final String LOCK = "1";
 
     private final String LIGHT_ON = "1";
     private final String LIGHT_OFF = "0";
@@ -195,6 +200,18 @@ public class TartanHouseSimulator implements Runnable {
                     if (count < keys.size()) {
                         newState.append(PARAM_DELIM);
                     }
+                } else if (key.equals(LOCK_STATE)){
+                    Boolean newLockState = (Boolean) state.get(key);
+                    newState.append(LOCK_STATE);
+                    newState.append(PARAM_EQ);
+                    if (newLockState) {
+                        newState.append(LOCK);
+                    } else {
+                        newState.append(UNLOCK);
+                    }
+                    count++;
+                    if (count < keys.size()) {
+                        newState.append(PARAM_DELIM);
                 } else if (key.equals(LIGHT_STATE)) {
                     Boolean newLightState = (Boolean) state.get(key);
                     newState.append(LIGHT_STATE);
@@ -366,6 +383,12 @@ public class TartanHouseSimulator implements Runnable {
                         state.put(PROXIMITY_STATE, true);
                     } else {
                         state.put(PROXIMITY_STATE, false);
+                    }
+                } else if (data[0].equals(LOCK_STATE)) {
+                    if (val == 1) {
+                        state.put(LOCK_STATE, true);
+                    } else {
+                        state.put(LOCK_STATE, false);
                     }
                 } else if (data[0].equals(HEATER_STATE)) {
                     if (val == 1) {

@@ -1,8 +1,9 @@
 package tartan.smarthome.core;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The mode for a Tartan Home to be serialized as JSON. This is managed by Jackson via Dropwizard.
@@ -45,6 +46,10 @@ public class TartanHome {
     // the state of the proximity sensor (true of address occupied, false if vacant)
     @JsonProperty
     private String proximity;
+
+    // the state of the smart door lock (true if locked, false if unlocked)
+    @JsonProperty
+    private String doorLock;
 
     // the heater state (true if on, false if off)
     @JsonProperty
@@ -222,6 +227,14 @@ public class TartanHome {
      */
     public void setProximity(String proximity) {
         this.proximity = proximity;
+    }
+
+    public String getDoorLock() {
+        return doorLock;
+    }
+
+    public void setDoorLock(String doorLock) {
+        this.doorLock = doorLock;
     }
 
     /**

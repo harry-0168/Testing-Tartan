@@ -183,6 +183,19 @@ div {
         </strong>
     </p>
     <hr>
+
+    <h3>Smart Door Lock</h3>
+    <#if tartanHome.doorLock??>
+        <p>
+            Lock State: 
+            <span style="color:<#if tartanHome.doorLock == 'LOCK'>red<#else>green</#if>;">
+                ${tartanHome.doorLock}
+            </span>
+        </p>
+    </#if>
+
+    <hr>
+
     <h3> Event log</h3>
     <textarea id="log" rows="15" cols="150">
     <#list tartanHome.eventLog as i>

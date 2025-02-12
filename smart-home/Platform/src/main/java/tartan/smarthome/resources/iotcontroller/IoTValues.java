@@ -36,6 +36,9 @@ public abstract class IoTValues {
     public static final String DOOR_CLOSE = "0";
     public static final String DOOR_OPEN = "1";
 
+    public static final String UNLOCK = "0";
+    public static final String LOCK = "1";
+
     public static final String LIGHT_ON = "1";
     public static final String LIGHT_OFF = "0";
 
@@ -68,7 +71,7 @@ public abstract class IoTValues {
     public static final String USERS_DB = "users.txt";
 	public static final String AWAY_TIMER = "AW";
 
-    public static final String LOCK_STATE = "LOCK_STATE";
+    public static final String LOCK_STATE = "LKS";
     public static final String LOCK_REQUEST = "LOCK_REQUEST";
     public static final String LOCK_ELECTRONIC_OPERATION_ENABLE = "LOCK_ELECTRONIC_OPERATION_ENABLE";
     public static final String LOCK_KEYLESS_ENTRY_ENABLE = "LOCK_KEYLESS_ENTRY_ENABLE";

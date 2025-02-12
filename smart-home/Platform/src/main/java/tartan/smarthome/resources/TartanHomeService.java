@@ -235,6 +235,17 @@ public class TartanHomeService {
     }
 
     /**
+     * Convert smart door lock state
+     * @param tartanHome the home
+     * @return true if locked; false if unlocked; otherwise null
+     */
+    private Boolean toIoTLockState(TartanHome tartanHome) {
+        if (tartanHome.getDoorLock().equals(TartanHomeValues.LOCK)) return true;
+        else if (tartanHome.getDoorLock().equals(TartanHomeValues.UNLOCK)) return false;
+        return null;
+    }
+
+    /**
      * Convert alarm active state
      * @param tartanHome the home
      * @return true if active; false if inactive; otherwise null
@@ -360,7 +371,7 @@ public class TartanHomeService {
             tartanHome.setAlarmActive(TartanHomeValues.UNKNOWN);
             tartanHome.setHvacMode(TartanHomeValues.UNKNOWN);
             tartanHome.setHvacState(TartanHomeValues.UNKNOWN);
-
+            tartanHome.setDoorLock(TartanHomeValues.UNKNOWN);
             return tartanHome;
         }
 
@@ -404,6 +415,13 @@ public class TartanHomeService {
                     tartanHome.setProximity(TartanHomeValues.OCCUPIED);
                 } else {
                     tartanHome.setProximity(TartanHomeValues.EMPTY);
+                }
+            } else if (key.equals(IoTValues.LOCK_STATE)) {
+                Boolean lockState = (Boolean)state.get(key);
+                if (lockState) {
+                    tartanHome.setDoorLock(TartanHomeValues.LOCK);
+                } else {
+                    tartanHome.setDoorLock(TartanHomeValues.UNLOCK);
                 }
             } else if (key.equals(IoTValues.ALARM_STATE)) {
                 Boolean alarmState = (Boolean)state.get(key);
@@ -454,6 +472,10 @@ public class TartanHomeService {
         
         if (tartanHome.getProximity()!=null) {
             state.put(IoTValues.PROXIMITY_STATE, toIoTProximityState(tartanHome));
+        }
+
+        if (tartanHome.getDoorLock()!=null) {
+            state.put(IoTValues.LOCK_STATE, toIoTLockState(tartanHome));
         }
 
         if (tartanHome.getDoor()!=null) {

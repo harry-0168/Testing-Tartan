@@ -54,6 +54,11 @@ public class TartanHomeData {
     // the state of the proximity sensor (true of address occupied, false if vacant)
     @Column(name = "proximity_state")
     private String proximity;
+
+    // the state of the smart door lock (true if locked, false if unlocked)
+    @Column(name = "door_lock_state")
+    private String doorLock;
+
     // the heater state (true if on, false if off)
     @Column(name = "hvac_mode")
     
@@ -93,7 +98,7 @@ public class TartanHomeData {
         this.alarmActive = h.getAlarmActive();
         this.alarmDelay = h.getAlarmDelay();
         this.alarmArmed = h.getAlarmArmed();
-
+        this.doorLock = h.getDoorLock();
         // Remember when this record is created
         this.createTimeStamp = new Date();
     }
@@ -238,6 +243,22 @@ public class TartanHomeData {
      */
     public void setProximity(String proximity) {
         this.proximity = proximity;
+    }
+
+    /**
+     * Get the door lock state
+     * @return the door lock state
+     */
+    public String getDoorLock() {
+        return doorLock;
+    }
+
+    /**
+     * Set the door lock state
+     * @param doorLock the new state
+     */
+    public void setDoorLock(String doorLock) {
+        this.doorLock = doorLock;
     }
 
     /**

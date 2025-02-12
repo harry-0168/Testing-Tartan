@@ -13,6 +13,9 @@ public abstract class TartanHomeValues {
     public static final String OCCUPIED = "occupied";
     public static final String EMPTY = "empty";
 
+    public static final String LOCK = "lock";
+    public static final String UNLOCK = "unlock";
+
     public static final String ARMED = "armed";
     public static final String DISARMED = "disarmed";
 
