@@ -55,7 +55,6 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         Integer nightStartTime = null; // the night mode start time (24-hour format)
         Integer nightEndTime = null; // the night mode end time (24-hour format)
         Integer currentTime = null;
-        Boolean inNightState = false;
 
         System.out.println("Evaluating new state statically");
 
@@ -290,31 +289,26 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
 
         // Night Lock
         // Also set the inNightState variable to indicate if it is during night
-        if (nightStartTime != null && nightEndTime != null && currentTime != null) {
-            if (nightStartTime > nightEndTime) { // Nighttime span over midnight
-                if (currentTime >= nightStartTime || currentTime <= nightEndTime) {
-                    inNightState = true;
-                    if(!smartDoorLockState && !doorState) {
-                        smartDoorLockState = true;
-                        log.append(formatLogEntry("Door locked during night time"));
-                    }
-
-                } else {
-                    inNightState = false;
+        if (nightStartTime > nightEndTime) { // Nighttime span over midnight
+            if (currentTime >= nightStartTime || currentTime <= nightEndTime) {
+                if(!smartDoorLockState && !doorState) {
+                    smartDoorLockState = true;
+                    log.append(formatLogEntry("Door locked during night time"));
                 }
-            } else { // Nighttime doesn't span over midnight
-                if(currentTime >= nightStartTime && currentTime <= nightEndTime) {
-                    inNightState = true;
-                    if(!smartDoorLockState && !doorState) {
-                        smartDoorLockState = true;
-                        log.append(formatLogEntry("Door locked during night time"));
-                    }
 
-                } else {
-                    inNightState = false;
+            } else {
+            }
+        } else { // Nighttime doesn't span over midnight
+            if(currentTime >= nightStartTime && currentTime <= nightEndTime) {
+                if(!smartDoorLockState && !doorState) {
+                    smartDoorLockState = true;
+                    log.append(formatLogEntry("Door locked during night time"));
                 }
+
+            } else {
             }
         }
+
 
 
 
@@ -337,10 +331,6 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                     if (givenLockPassCode.compareTo(lockPassCode) == 0) {
                         smartDoorLockState = false;
                         log.append(formatLogEntry("Door unlocked"));
-                        if (inNightState) {
-                            smartDoorLockState = true;
-                            log.append(formatLogEntry("Door locked automatically during night time"));
-                        }
                     } else {
                         log.append(formatLogEntry("Invalid passcode given to unlock door"));
                     }
