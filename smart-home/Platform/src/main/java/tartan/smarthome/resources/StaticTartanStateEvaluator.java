@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
-
 import tartan.smarthome.resources.iotcontroller.IoTValues;
 
 public class StaticTartanStateEvaluator implements TartanStateEvaluator {
@@ -50,11 +49,15 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         Boolean smartDoorLockState = null; // the smart door lock state (true if locked, false if unlocked)
         Boolean lockElectronicOperationEnabled = null; // the electronic operation of the lock (true if enabled, false if disabled)
         Boolean lockKeylessEntryEnabled = null; // the keyless entry of the lock (true if enabled, false if disabled)
-        String doorRequest = "noaction"; // the door request (LOCK or UNLOCK)
-        String lockPassCode = "initialPasscode"; // the passcode to lock or unlock the door
-        String givenLockPassCode = "intial"; // the passcode given to lock or unlock the door
-        // Integer nightStartTime = null; // the night mode start time (24-hour format)
-        // Integer nightEndTime = null; // the night mode end time (24-hour format)
+        String doorRequest = null; // the door request (LOCK or UNLOCK)
+        String lockPassCode = ""; // the passcode to lock or unlock the door
+        String givenLockPassCode = ""; // the passcode given to lock or unlock the door
+        Integer nightStartTime = null; // the night mode start time (24-hour format)
+        Integer nightEndTime = null; // the night mode end time (24-hour format)
+        Integer currentTime = null;
+        Boolean lockIntruderDefenseMode = false; // the intruder sensor mode (true if enabled, false if disabled)
+        Boolean intruderDetectedSensor = false; // the intruder detected sensor (true if detected, false if not detected)
+        String panelMessage = ""; // the message displayed on the panel
 
         System.out.println("Evaluating new state statically");
 
@@ -94,24 +97,31 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 alarmActiveState = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.LOCK_STATE)) {
                 smartDoorLockState = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE)) {
+                lockElectronicOperationEnabled = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_REQUEST)) {
+                doorRequest = (String) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_GIVEN_PASSCODE)) {
+                givenLockPassCode = (String) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_PASSCODE)) {
+                lockPassCode = (String) inState.get(key);
             } else if (key.equals(IoTValues.ARRIVING_PROXIMITY_STATE)) {
                 arrivingProximityState = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE)) {
                 lockKeylessEntryEnabled = (Boolean) inState.get(key);
-            } else if (key.equals(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE)) {
-                lockElectronicOperationEnabled = (Boolean) inState.get(key);
-            } else if (key.equals(IoTValues.LOCK_PASSCODE)) {
-                lockPassCode = (String) inState.get(key);
-            } else if (key.equals(IoTValues.LOCK_GIVEN_PASSCODE)) {
-                givenLockPassCode = (String) inState.get(key);
-            } else if (key.equals(IoTValues.LOCK_REQUEST)) {
-                doorRequest = (String) inState.get(key);
-            } 
-            // else if (key.equals(IoTValues.NIGHT_START_TIME)) {
-            //     nightStartTime = (Integer) inState.get(key);
-            // } else if (key.equals(IoTValues.NIGHT_END_TIME)) {
-            //     nightEndTime = (Integer) inState.get(key);
-            // }
+            } else if (key.equals(IoTValues.NIGHT_START_TIME)) {
+                nightStartTime = (Integer) inState.get(key);
+            } else if (key.equals(IoTValues.NIGHT_END_TIME)) {
+                nightEndTime = (Integer) inState.get(key);
+            } else if (key.equals(IoTValues.CURRENT_TIME)) {
+                currentTime = (Integer) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_INTRUDER_SENSOR_MODE)) {
+                lockIntruderDefenseMode = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.INTRUDER_DETECTION_SENSOR)) {
+                intruderDetectedSensor = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.PANEL_MESSAGE)) {
+                panelMessage = (String) inState.get(key);
+            }
         }
 
         if (lightState == true) {
@@ -286,12 +296,31 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             humidifierState = false;
         }
 
-        // log the lockPasscode
-        log.append(formatLogEntry("Lock passcode: " + lockPassCode));
-        // log the lockGivenPasscode
-        log.append(formatLogEntry("Lock given passcode: " + givenLockPassCode));
-        // log the lockRequest
-        log.append(formatLogEntry("Lock request: " + doorRequest));
+        // Night Lock
+        // Also set the inNightState variable to indicate if it is during night
+        if (nightStartTime > nightEndTime) { // Nighttime span over midnight
+            if (currentTime >= nightStartTime || currentTime <= nightEndTime) {
+                if(!smartDoorLockState && !doorState) {
+                    smartDoorLockState = true;
+                    log.append(formatLogEntry("Door locked during night time"));
+                }
+
+            } else {
+            }
+        } else { // Nighttime doesn't span over midnight
+            if(currentTime >= nightStartTime && currentTime <= nightEndTime) {
+                if(!smartDoorLockState && !doorState) {
+                    smartDoorLockState = true;
+                    log.append(formatLogEntry("Door locked during night time"));
+                }
+
+            } else {
+            }
+        }
+
+
+
+
         if (lockElectronicOperationEnabled) {
             if (doorRequest.equals("LOCK")) {
                 if (smartDoorLockState) {
@@ -331,6 +360,26 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             arrivingProximityState = false;
         }
 
+        if (lockIntruderDefenseMode) {
+            if (intruderDetectedSensor) {
+                log.append(formatLogEntry("Intruder detected, attempting to lock door"));
+                panelMessage = "possible intruder detected";
+                doorState = false;
+                log.append(formatLogEntry("Door closed"));
+                smartDoorLockState = true;
+                log.append(formatLogEntry("Door locked"));
+            }
+            else{
+                // Intruder defense mode is on but no intruder detected
+                panelMessage = "all clear";
+            }
+        }
+        else {
+            // Intruder defense mode is off
+            intruderDetectedSensor = false;
+            panelMessage = "";
+        }
+
         Map<String, Object> newState = new Hashtable<>();
         newState.put(IoTValues.DOOR_STATE, doorState);
         newState.put(IoTValues.AWAY_TIMER, awayTimerState);
@@ -351,8 +400,11 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         newState.put(IoTValues.LOCK_REQUEST, doorRequest);
         newState.put(IoTValues.LOCK_GIVEN_PASSCODE, givenLockPassCode);
         newState.put(IoTValues.LOCK_PASSCODE, lockPassCode);
-        // newState.put(IoTValues.NIGHT_START_TIME, nightStartTime);
-        // newState.put(IoTValues.NIGHT_END_TIME, nightEndTime);
+        newState.put(IoTValues.NIGHT_START_TIME, nightStartTime);
+        newState.put(IoTValues.NIGHT_END_TIME, nightEndTime);
+        newState.put(IoTValues.LOCK_INTRUDER_SENSOR_MODE, lockIntruderDefenseMode);
+        newState.put(IoTValues.INTRUDER_DETECTION_SENSOR, intruderDetectedSensor);
+        newState.put(IoTValues.PANEL_MESSAGE, panelMessage);
         return newState; 
     }
 }
