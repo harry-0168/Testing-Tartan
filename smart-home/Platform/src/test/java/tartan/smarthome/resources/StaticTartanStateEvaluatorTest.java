@@ -27,8 +27,6 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.ALARM_PASSCODE, "1234");
         initialState.put(IoTValues.GIVEN_PASSCODE, "");
         initialState.put(IoTValues.LOCK_STATE, false);
-        initialState.put(IoTValues.LOCK_PASSCODE, "1234");
-        initialState.put(IoTValues.LOCK_GIVEN_PASSCODE, "");
         initialState.put(IoTValues.LOCK_REQUEST, "");
         initialState.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, false);
         initialState.put(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE, false);
