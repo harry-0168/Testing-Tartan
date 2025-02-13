@@ -107,11 +107,13 @@ public class IoTControlManager {
         }
 
         String alarmPassCode = props.getProperty(IoTValues.ALARM_PASSCODE, "passcode");
+        String lockPasscode = props.getProperty(IoTValues.LOCK_PASSCODE, "passcode");
         Integer alarmDelay = Integer.parseInt(props.getProperty(IoTValues.ALARM_DELAY, "5"));
 
         Map<String, Object> initialSettings = new Hashtable<String, Object>();
         initialSettings.put(IoTValues.ALARM_DELAY, alarmDelay);
         initialSettings.put(IoTValues.ALARM_PASSCODE, alarmPassCode);
+        initialSettings.put(IoTValues.LOCK_PASSCODE, lockPasscode);
         
         // The away timer is not set to start
         lastState.put(IoTValues.AWAY_TIMER, false);

@@ -33,6 +33,8 @@ public class TartanHomeService {
     private Integer port;
     private String alarmDelay;
     private String alarmPasscode;
+    private String lockPasscode;
+    private String lockRequest;
     private String targetTemp;
     private String user;
     private String password;
@@ -71,6 +73,7 @@ public class TartanHomeService {
         this.targetTemp = settings.getTargetTemp();
         this.alarmDelay = settings.getAlarmDelay();
         this.alarmPasscode = settings.getAlarmPasscode();
+        this.lockPasscode = settings.getLockPasscode();
 
         this.historyTimer = historyTimer*1000;
         this.logHistory = true;
@@ -85,6 +88,7 @@ public class TartanHomeService {
         userSettings.put(IoTValues.ALARM_DELAY, Integer.parseInt(this.alarmDelay));
         userSettings.put(IoTValues.TARGET_TEMP, Integer.parseInt(this.targetTemp));
         userSettings.put(IoTValues.ALARM_PASSCODE, this.alarmPasscode);
+        userSettings.put(IoTValues.LOCK_PASSCODE, this.lockPasscode);
         controller.updateSettings(userSettings);
 
         LOGGER.info("House " + this.name + " configured");
@@ -210,6 +214,24 @@ public class TartanHomeService {
      */
     private String toIoTPasscode(TartanHome tartanHome) {
         return tartanHome.getAlarmPasscode();
+    }
+
+    /**
+     * Convert lock passcode
+     * @param tartanHome the home
+     * @return the passcode
+     */
+    private String toIoTLockPasscode(TartanHome tartanHome) {
+        return tartanHome.getLockGivenPasscode();
+    }
+
+    /**
+     * Convert lock request
+     * @param tartanHome
+     * @return the request (LOCK/UNLOCK/noaction)
+     */
+    private String toIoTLockRequest(TartanHome tartanHome) {
+        return tartanHome.getLockRequest();
     }
 
     /**
@@ -569,6 +591,12 @@ public class TartanHomeService {
             if (tartanHome.getAlarmArmed() != null) {
                 state.put(IoTValues.ALARM_STATE, toIoTAlarmArmedState(tartanHome));
             }
+        }
+        if (tartanHome.getLockGivenPasscode()!=null) {
+            state.put(IoTValues.LOCK_GIVEN_PASSCODE, toIoTLockPasscode(tartanHome));
+        }
+        if (tartanHome.getLockRequest()!=null) {
+            state.put(IoTValues.LOCK_REQUEST, toIoTLockRequest(tartanHome));
         }
         if (tartanHome.getAlarmDelay()!=null) {
             this.alarmDelay = tartanHome.getAlarmDelay();

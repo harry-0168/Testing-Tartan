@@ -20,6 +20,7 @@ houses:
 
     # and the super secret passcode to disable the alarm
     alarmPasscode: stop
+    lockPasscode: passcode
 
     # Next house
   - name: cmu
@@ -31,6 +32,7 @@ houses:
     targetTemp: 70
     alarmDelay: 30
     alarmPasscode: quit
+    lockPasscode: passcode
 
 # how many seconds between database snapshots
 historyTimer: 5

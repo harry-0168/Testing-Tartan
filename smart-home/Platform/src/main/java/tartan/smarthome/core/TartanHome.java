@@ -91,6 +91,11 @@ public class TartanHome {
     @JsonProperty
     private String alarmPasscode;
 
+    @JsonProperty
+    private String lockGivenPasscode;
+
+    @JsonProperty
+    private String lockRequest;
     /**
      * Empty constructor needed by Jackson deserialization
      */
@@ -387,6 +392,29 @@ public class TartanHome {
      */
     public void setAlarmPasscode(String alarmPasscode) { this.alarmPasscode = alarmPasscode; }
 
+    /**
+     * Get the lock passcode
+     * @return the passcode
+     */
+    public String getLockGivenPasscode() { return lockGivenPasscode; }
+
+    /**
+     * Set the lock passcode
+     * @param lockGivenPasscode the new passcode
+     */
+    public void setLockGivenPasscode(String lockGivenPasscode) { this.lockGivenPasscode = lockGivenPasscode; }
+
+    /**
+     * Get the lock request
+     * @return the request
+     */
+    public String getLockRequest() { return lockRequest; }
+
+    /**
+     * Set the lock request
+     * @param lockRequest the new request
+     */
+    public void setLockRequest(String lockRequest) { this.lockRequest = lockRequest; }
     @Override
     public boolean equals(Object o) {
         if (this == o) {

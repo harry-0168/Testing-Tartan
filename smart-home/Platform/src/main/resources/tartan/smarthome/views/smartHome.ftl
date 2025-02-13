@@ -24,6 +24,8 @@ See -->
                 var arrivingHome = $('#arrivingHome').val();
                 var keylessEntry = $('#keylessEntry').val();
                 var electronicOperation = $('#electronicOperation').val();
+                var lockPasscode = $('#lockPasscode').val();
+                var lockAction = $('#lockAction').val();
 
                 return JSON.stringify({
                     "door": door,
@@ -35,7 +37,9 @@ See -->
                     "alarmPasscode": passcode,
                     "arrivingProximity": arrivingHome,
                     "keyLessEntry": keylessEntry,
-                    "electronicOperation": electronicOperation
+                    "electronicOperation": electronicOperation,
+                    "lockGivenPasscode": lockPasscode,
+                    "lockRequest": lockAction
                 });
             }
 
@@ -244,6 +248,21 @@ div {
             <option value="on"
                 <#if tartanHome.electronicOperation == 'on'>selected</#if>
             >ON</option>
+        </select>
+    </p>
+
+    <p>
+        <label for="lockPasscode">Lock Passcode: </label>
+        <input id="lockPasscode" type="text" value="" />
+    </p>
+
+    <p>
+        <label for="lockAction">Lock Action: </label>
+        <select id="lockAction">
+            <!-- Defaults to "No Action" -->
+            <option value="noaction" selected>No Action</option>
+            <option value="LOCK">LOCK</option>
+            <option value="UNLOCK">UNLOCK</option>
         </select>
     </p>
 
