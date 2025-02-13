@@ -36,6 +36,9 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.NIGHT_START_TIME, 2230);
         initialState.put(IoTValues.NIGHT_END_TIME, 615);
         initialState.put(IoTValues.CURRENT_TIME, 1200);
+        initialState.put(IoTValues.LOCK_INTRUDER_SENSOR_MODE, false);
+        initialState.put(IoTValues.INTRUDER_DETECTION_SENSOR, false);
+        initialState.put(IoTValues.PANEL_MESSAGE, "");
         return initialState;
     }
 
