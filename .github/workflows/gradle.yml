@@ -77,15 +77,6 @@ jobs:
         working-directory: ./smart-home/Platform
         run: docker-compose up -d --build
 
-      - name: Wait for container to be ready
-      run: |
-        echo "Waiting for the application to become ready..."
-        for i in {1..10}; do
-          curl -s http://localhost:8080 && break
-          echo "Service not available yet... retrying ($i)"
-          sleep 5
-        done
-
       - name : set up python
         uses: actions/setup-python@v4
         with:
@@ -93,6 +84,15 @@ jobs:
 
       - name: Install Python Dependencies
         run: pip install pytest requests
+        
+      - name: Wait for container to be ready
+        run: |
+          echo "Waiting for the application to become ready..."
+          for i in {1..10}; do
+            curl -s http://localhost:8080 && break
+            echo "Service not available yet... retrying ($i)"
+            sleep 5
+          done
 
       - name: Run system tests
         working-directory: ./smart-home/Platform/src/test/python
