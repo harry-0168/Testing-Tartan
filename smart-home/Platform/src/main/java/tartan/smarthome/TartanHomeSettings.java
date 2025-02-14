@@ -47,6 +47,14 @@ public class TartanHomeSettings {
     @JsonProperty
     private String lockPasscode;
 
+    @NotEmpty
+    @JsonProperty
+    private String nightStartTime;
+
+    @NotEmpty
+    @JsonProperty
+    private String nightEndTime;
+
     public String getTargetTemp() {
         return targetTemp;
     }
@@ -100,6 +108,14 @@ public class TartanHomeSettings {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getNightStartTime() { return nightStartTime;  }
+    
+    public void setNightStartTime(String nightStartTime) { this.nightStartTime = nightStartTime;  }
+
+    public String getNightEndTime() { return nightEndTime;  }
+
+    public void setNightEndTime(String nightEndTime) { this.nightEndTime = nightEndTime;  }
 
     public String getAlarmPasscode() { return alarmPasscode;  }
 

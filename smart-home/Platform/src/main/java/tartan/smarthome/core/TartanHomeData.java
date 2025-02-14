@@ -39,6 +39,14 @@ public class TartanHomeData {
     @Column(name = "target_temp")
     private String targetTemp;
 
+    // the night start time
+    @Column(name = "night_start_time")
+    private String nightStartTime;
+
+    // the night end time
+    @Column(name = "night_end_time")
+    private String nightEndTime;
+
     // the current temperature
     @Column(name = "temperature")
     private String temperature;
@@ -78,6 +86,10 @@ public class TartanHomeData {
     // the state of the electronic operation (true if enabled, false if disabled)
     @Column(name = "electronic_operation")
     private String electronicOperation;
+
+    // the state of the night lock enabled (true if enabled, false if disabled)
+    @Column(name = "night_lock")
+    private String nightLock;
 
     // the state of the lock intruder sensor mode (true if enabled, false if disabled)
     @Column(name = "lock_intruder_sensor")
@@ -119,6 +131,8 @@ public class TartanHomeData {
         this.homeName = h.getName();
         this.address = h.getAddress();
         this.targetTemp = h.getTargetTemp();
+        this.nightStartTime = h.getNightStartTime();
+        this.nightEndTime = h.getNightEndTime();
         this.temperature = h.getTemperature();
         this.humidity = h.getHumidity();
         this.door = h.getDoor();
@@ -134,6 +148,7 @@ public class TartanHomeData {
         this.arrivingProximity = h.getArrivingProximity();
         this.keyLessEntry = h.getKeyLessEntry();
         this.electronicOperation = h.getElectronicOperation();
+        this.nightLock = h.getLockNightLockEnabled();
         this.lockIntruderSensor = h.getLockIntruderSensorMode();
         this.intruderDefenseSensor = h.getIntruderDetectionSensor();
         this.panelMessage = h.getPanelMessage();
@@ -186,6 +201,54 @@ public class TartanHomeData {
      * @param targetTemp the new target temperature
      */
     public void setTargetTemp(String targetTemp) { this.targetTemp = targetTemp; }
+
+    /**
+     * Get the night start time
+     * @return the night start time
+     */
+    public String getNightStartTime() {
+        return nightStartTime;
+    }
+
+    /**
+     * Set the night start time
+     * @param nightStartTime the new night start time
+     */
+    public void setNightStartTime(String nightStartTime) {
+        this.nightStartTime = nightStartTime;
+    }
+
+    /**
+     * Get the night end time
+     * @return the night end time
+     */
+    public String getNightEndTime() {
+        return nightEndTime;
+    }
+
+    /**
+     * Set the night end time
+     * @param nightEndTime the new night end time
+     */
+    public void setNightEndTime(String nightEndTime) {
+        this.nightEndTime = nightEndTime;
+    }
+
+    /**
+     * Get the night lock state
+     * @return the night lock state
+     */
+    public String getNightLock() {
+        return nightLock;
+    }
+
+    /**
+     * Set the night lock state
+     * @param nightLock the new state
+     */
+    public void setNightLock(String nightLock) {
+        this.nightLock = nightLock;
+    }
 
     /**
      * Get the current temperature

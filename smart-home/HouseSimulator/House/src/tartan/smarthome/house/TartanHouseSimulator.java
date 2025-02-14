@@ -36,6 +36,7 @@ public class TartanHouseSimulator implements Runnable {
     private Boolean lockIntruderSensorMode; // the lock intruder sensor mode (true if enabled, false if disabled)
     private Boolean intruderDetectSensor; // the intruder detect sensor (true if enabled, false if disabled)
     private Boolean panelMessage; // the panel message
+    private Boolean lockNightLockEnabled; // the lock night lock enabled (true if enabled, false if disabled)
 
     /** connection settings */
     private String address = null;
@@ -64,6 +65,7 @@ public class TartanHouseSimulator implements Runnable {
     public final String LOCK_ELECTRONIC_OPERATION_ENABLE = "EOE";
     public final String LOCK_INTRUDER_SENSOR_MODE = "LIS";
     public final String INTRUDER_DETECTION_SENSOR = "IDS";
+    public final String LOCK_NIGHT_LOCK_ENABLED = "NLE";
     public final String PANEL_MESSAGE = "PM";
     private final String HEATER_STATE = "HES";
     private final String CHILLER_STATE = "CHS";
@@ -268,6 +270,19 @@ public class TartanHouseSimulator implements Runnable {
                     newState.append(LOCK_INTRUDER_SENSOR_MODE);
                     newState.append(PARAM_EQ);
                     if (newLockIntruderSensorMode) {
+                        newState.append("1");
+                    } else {
+                        newState.append("0");
+                    }
+                    count++;
+                    if (count < keys.size()) {
+                        newState.append(PARAM_DELIM);
+                    }
+                } else if (key.equals(LOCK_NIGHT_LOCK_ENABLED)) {
+                    Boolean newLockNightLockEnabled = (Boolean) state.get(key);
+                    newState.append(LOCK_NIGHT_LOCK_ENABLED);
+                    newState.append(PARAM_EQ);
+                    if (newLockNightLockEnabled) {
                         newState.append("1");
                     } else {
                         newState.append("0");
@@ -511,6 +526,12 @@ public class TartanHouseSimulator implements Runnable {
                         state.put(LOCK_INTRUDER_SENSOR_MODE, true);
                     } else {
                         state.put(LOCK_INTRUDER_SENSOR_MODE, false);
+                    }
+                } else if (data[0].equals(LOCK_NIGHT_LOCK_ENABLED)) {
+                    if (val == 1) {
+                        state.put(LOCK_NIGHT_LOCK_ENABLED, true);
+                    } else {
+                        state.put(LOCK_NIGHT_LOCK_ENABLED, false);
                     }
                 } else if (data[0].equals(INTRUDER_DETECTION_SENSOR)) {
                     if (val == 1) {
