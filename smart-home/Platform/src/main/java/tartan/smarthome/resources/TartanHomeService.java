@@ -235,6 +235,15 @@ public class TartanHomeService {
         return tartanHome.getLockGivenPasscode();
     }
 
+    /*
+     * Convert current time
+     * @param tartanHome the home
+     * @return the time
+     */
+    private Integer toIoTCurrentTime(TartanHome tartanHome) {
+        return Integer.parseInt(tartanHome.getCurrentTime());
+    }
+
     /**
      * Convert lock request
      * @param tartanHome
@@ -728,6 +737,9 @@ public class TartanHomeService {
         }
         if (tartanHome.getLockGivenPasscode()!=null) {
             state.put(IoTValues.LOCK_GIVEN_PASSCODE, toIoTLockPasscode(tartanHome));
+        }
+        if (tartanHome.getCurrentTime()!=null) {
+            state.put(IoTValues.CURRENT_TIME, toIoTCurrentTime(tartanHome));
         }
         if (tartanHome.getLockRequest()!=null) {
             state.put(IoTValues.LOCK_REQUEST, toIoTLockRequest(tartanHome));

@@ -72,6 +72,9 @@ public class TartanHome {
     @JsonProperty
     private String lockNightLockEnabled;
 
+    @JsonProperty
+    private String currentTime;
+
     // the heater state (true if on, false if off)
     @JsonProperty
     private String hvacMode;
@@ -492,6 +495,18 @@ public class TartanHome {
      * @param lockGivenPasscode the new passcode
      */
     public void setLockGivenPasscode(String lockGivenPasscode) { this.lockGivenPasscode = lockGivenPasscode; }
+
+    /**
+     * Get the current time
+     * @return the time
+     */
+    public String getCurrentTime() { return currentTime; }
+
+    /**
+     * Set the current time
+     * @param currentTime the new time
+     */
+    public void setCurrentTime(String currentTime) { this.currentTime = currentTime; }
 
     /**
      * Get the lock request
