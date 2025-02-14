@@ -37,7 +37,7 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.CURRENT_TIME, 1200);
         initialState.put(IoTValues.LOCK_INTRUDER_SENSOR_MODE, false);
         initialState.put(IoTValues.INTRUDER_DETECTION_SENSOR, false);
-        initialState.put(IoTValues.PANEL_MESSAGE, "");
+        initialState.put(IoTValues.PANEL_MESSAGE, false);
         return initialState;
     }
 
@@ -675,13 +675,13 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.INTRUDER_DETECTION_SENSOR, true);
         initialState.put(IoTValues.LOCK_STATE, false);
         initialState.put(IoTValues.DOOR_STATE, false);
-        initialState.put(IoTValues.PANEL_MESSAGE, "possible intruder detected");
+        initialState.put(IoTValues.PANEL_MESSAGE, true);
         Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(false, evaluatedState.get(IoTValues.LOCK_INTRUDER_SENSOR_MODE));
-        assertEquals(false, evaluatedState.get(IoTValues.INTRUDER_DETECTION_SENSOR));
+        assertEquals(true, evaluatedState.get(IoTValues.INTRUDER_DETECTION_SENSOR));
         assertEquals(false, evaluatedState.get(IoTValues.LOCK_STATE));
         assertEquals(false, evaluatedState.get(IoTValues.DOOR_STATE));
-        assertEquals("", evaluatedState.get(IoTValues.PANEL_MESSAGE));
+        assertEquals(true, evaluatedState.get(IoTValues.PANEL_MESSAGE));
 
     }
     @Test
@@ -698,13 +698,13 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.INTRUDER_DETECTION_SENSOR, true);
         initialState.put(IoTValues.LOCK_STATE, false);
         initialState.put(IoTValues.DOOR_STATE, false);
-        initialState.put(IoTValues.PANEL_MESSAGE, "all clear");
+        initialState.put(IoTValues.PANEL_MESSAGE, false);
         Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(true, evaluatedState.get(IoTValues.LOCK_INTRUDER_SENSOR_MODE));
         assertEquals(true, evaluatedState.get(IoTValues.INTRUDER_DETECTION_SENSOR));
         assertEquals(true, evaluatedState.get(IoTValues.LOCK_STATE));
         assertEquals(false, evaluatedState.get(IoTValues.DOOR_STATE));
-        assertEquals("possible intruder detected", evaluatedState.get(IoTValues.PANEL_MESSAGE));
+        assertEquals(true, evaluatedState.get(IoTValues.PANEL_MESSAGE));
 
     }
     @Test
@@ -721,13 +721,13 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.INTRUDER_DETECTION_SENSOR, true);
         initialState.put(IoTValues.LOCK_STATE, true);
         initialState.put(IoTValues.DOOR_STATE, false);
-        initialState.put(IoTValues.PANEL_MESSAGE, "possible intruder detected");
+        initialState.put(IoTValues.PANEL_MESSAGE, true);
         Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(true, evaluatedState.get(IoTValues.LOCK_INTRUDER_SENSOR_MODE));
         assertEquals(true, evaluatedState.get(IoTValues.INTRUDER_DETECTION_SENSOR));
         assertEquals(true, evaluatedState.get(IoTValues.LOCK_STATE));
         assertEquals(false, evaluatedState.get(IoTValues.DOOR_STATE));
-        assertEquals("possible intruder detected", evaluatedState.get(IoTValues.PANEL_MESSAGE));
+        assertEquals(true, evaluatedState.get(IoTValues.PANEL_MESSAGE));
 
     }
     @Test
@@ -745,13 +745,13 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.INTRUDER_DETECTION_SENSOR, true);
         initialState.put(IoTValues.LOCK_STATE, false);
         initialState.put(IoTValues.DOOR_STATE, true);
-        initialState.put(IoTValues.PANEL_MESSAGE, "all clear");
+        initialState.put(IoTValues.PANEL_MESSAGE, false);
         Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(true, evaluatedState.get(IoTValues.LOCK_INTRUDER_SENSOR_MODE));
         assertEquals(true, evaluatedState.get(IoTValues.INTRUDER_DETECTION_SENSOR));
         assertEquals(true, evaluatedState.get(IoTValues.LOCK_STATE));
         assertEquals(false, evaluatedState.get(IoTValues.DOOR_STATE));
-        assertEquals("possible intruder detected", evaluatedState.get(IoTValues.PANEL_MESSAGE));
+        assertEquals(true, evaluatedState.get(IoTValues.PANEL_MESSAGE));
 
     }
 
@@ -769,13 +769,13 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.INTRUDER_DETECTION_SENSOR, false);
         initialState.put(IoTValues.LOCK_STATE, true);
         initialState.put(IoTValues.DOOR_STATE, false);
-        initialState.put(IoTValues.PANEL_MESSAGE, "possible intruder detected");
+        initialState.put(IoTValues.PANEL_MESSAGE, true);
         Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(true, evaluatedState.get(IoTValues.LOCK_INTRUDER_SENSOR_MODE));
         assertEquals(false, evaluatedState.get(IoTValues.INTRUDER_DETECTION_SENSOR));
         assertEquals(true, evaluatedState.get(IoTValues.LOCK_STATE));
         assertEquals(false, evaluatedState.get(IoTValues.DOOR_STATE));
-        assertEquals("all clear", evaluatedState.get(IoTValues.PANEL_MESSAGE));
+        assertEquals(false, evaluatedState.get(IoTValues.PANEL_MESSAGE));
 
     }
     @Test
@@ -792,13 +792,13 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.INTRUDER_DETECTION_SENSOR, false);
         initialState.put(IoTValues.LOCK_STATE, false);
         initialState.put(IoTValues.DOOR_STATE, false);
-        initialState.put(IoTValues.PANEL_MESSAGE, "all clear");
+        initialState.put(IoTValues.PANEL_MESSAGE, false);
         Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
         assertEquals(true, evaluatedState.get(IoTValues.LOCK_INTRUDER_SENSOR_MODE));
         assertEquals(false, evaluatedState.get(IoTValues.INTRUDER_DETECTION_SENSOR));
         assertEquals(false, evaluatedState.get(IoTValues.LOCK_STATE));
         assertEquals(false, evaluatedState.get(IoTValues.DOOR_STATE));
-        assertEquals("all clear", evaluatedState.get(IoTValues.PANEL_MESSAGE));
+        assertEquals(false, evaluatedState.get(IoTValues.PANEL_MESSAGE));
 
     }
 
