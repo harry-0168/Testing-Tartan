@@ -69,7 +69,7 @@ public abstract class IoTValues {
 
     public static final String SETTINGS_FILE = "settings.txt";
     public static final String USERS_DB = "users.txt";
-	public static final String AWAY_TIMER = "AW";
+	  public static final String AWAY_TIMER = "AW";
 
     public static final String LOCK_STATE = "LKS";
     public static final String LOCK_REQUEST = "LOCK_REQUEST";
