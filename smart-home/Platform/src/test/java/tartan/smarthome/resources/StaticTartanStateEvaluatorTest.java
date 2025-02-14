@@ -801,4 +801,30 @@ public class StaticTartanStateEvaluatorTest {
         assertEquals("all clear", evaluatedState.get(IoTValues.PANEL_MESSAGE));
 
     }
+
+    // Test the lock's performance when it's already locked with
+    // instruction lock and already unlocked with instruction unlock
+    @Test
+    public void test_electronic_operation_instructions_same_as_current_state(){
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logs = new StringBuffer();
+        initialState.put(IoTValues.LOCK_PASSCODE, "1234");
+        initialState.put(IoTValues.LOCK_GIVEN_PASSCODE, "1234");
+        initialState.put(IoTValues.LOCK_STATE, true);
+        initialState.put(IoTValues.LOCK_REQUEST, "LOCK");
+        initialState.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, true);
+
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logs);
+        assertEquals(true, evaluatedState.get(IoTValues.LOCK_STATE), "Door should remain locked");
+        assertTrue(logs.toString().contains("Door already locked"),
+                "Log should contain a message for confirming door already locked");
+
+        logs.setLength(0);
+        initialState.put(IoTValues.LOCK_STATE, false);
+        initialState.put(IoTValues.LOCK_REQUEST, "UNLOCK");
+        Map<String, Object> evaluatedState2 = new StaticTartanStateEvaluator().evaluateState(initialState, logs);
+        assertEquals(false, evaluatedState2.get(IoTValues.LOCK_STATE), "Door should remain unlocked");
+        assertTrue(logs.toString().contains("Door already unlocked"),
+                "Log should contain a message for confirming door already unlocked");
+    }
 }
