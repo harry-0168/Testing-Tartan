@@ -123,8 +123,6 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 nightStartTime = (Integer) inState.get(key);
             } else if (key.equals(IoTValues.NIGHT_END_TIME)) {
                 nightEndTime = (Integer) inState.get(key);
-            } else if (key.equals(IoTValues.LOCK_NIGHT_LOCK_ENABLED)) {
-                lockNightLockEnabled = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.CURRENT_TIME)) {
                 currentTime = (Integer) inState.get(key);
             } 
@@ -325,16 +323,20 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         if (lockNightLockEnabled) {
             if (nightStartTime > nightEndTime) { // Nighttime spans over midnight
                 if (currentTime >= nightStartTime || currentTime <= nightEndTime) {
-                    if (!smartDoorLockState && !doorState) {
+                    if (!smartDoorLockState) {
                         smartDoorLockState = true;
+                        doorState = false;
                         log.append(formatLogEntry("Door locked during night time"));
+                        log.append(formatLogEntry("Door closed with night lock"));
                     }
                 }
             } else { // Nighttime doesn't span over midnight
                 if (currentTime >= nightStartTime && currentTime <= nightEndTime) {
-                    if (!smartDoorLockState && !doorState) {
+                    if (!smartDoorLockState) {
                         smartDoorLockState = true;
+                        doorState = false;
                         log.append(formatLogEntry("Door locked during night time"));
+                        log.append(formatLogEntry("Door closed with night lock"));
                     }
                 }
             }
@@ -349,7 +351,9 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 } else {
                     if (givenLockPassCode.compareTo(lockPassCode) == 0) {
                         smartDoorLockState = true;
-                        log.append(formatLogEntry("Door locked"));
+                        doorState = false;
+                        log.append(formatLogEntry("Door locked with electronic operation"));
+                        log.append(formatLogEntry("Door closed with electronic operation"));
                     } else {
                         log.append(formatLogEntry("Invalid passcode given to lock door"));
                     }
@@ -360,7 +364,9 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 } else {
                     if (givenLockPassCode.compareTo(lockPassCode) == 0) {
                         smartDoorLockState = false;
-                        log.append(formatLogEntry("Door unlocked"));
+                        doorState = true;
+                        log.append(formatLogEntry("Door unlocked with electronic operation"));
+                        log.append(formatLogEntry("Door opened with electronic operation"));
                     } else {
                         log.append(formatLogEntry("Invalid passcode given to unlock door"));
                     }
@@ -373,7 +379,9 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         if (arrivingProximityState){
             if (lockKeylessEntryEnabled) {
                 log.append(formatLogEntry("Arriving home, automatically unlocking door"));
+                log.append(formatLogEntry("Door unlocked with keyless entry"));
                 smartDoorLockState = false;
+                doorState = true;
             } else {
                 log.append(formatLogEntry("Arriving home, keyless entry disabled"));
             }
@@ -381,19 +389,33 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             arrivingProximityState = false;
         }
 
+        panelMessage = false; // reset panel message
         if (lockIntruderDefenseMode) {
             if (intruderDetectedSensor) {
-                log.append(formatLogEntry("Intruder detected, attempting to lock door"));
                 panelMessage = true;
-                doorState = false;
-                log.append(formatLogEntry("Door closed"));
-                smartDoorLockState = true;
-                log.append(formatLogEntry("Door locked"));
+                if (!proximityState){
+                    log.append(formatLogEntry("Intruder detected, house is empty, lock and close door"));
+                    doorState = false;
+                    log.append(formatLogEntry("Door closed"));
+                    smartDoorLockState = true;
+                    log.append(formatLogEntry("Door locked"));
+                }
+                else {
+                    log.append(formatLogEntry("Intruder detected, but house is occupied, unlock and open door"));
+                    smartDoorLockState = false;
+                    doorState = true;
+                }
             }
-            else{
-                // Intruder defense mode is on but no intruder detected
-                panelMessage = false;
-            }
+        }
+
+        if (smartDoorLockState) {
+            doorState = false;
+            log.append(formatLogEntry("Door closed as door is locked"));
+        }
+
+        if (doorState) {
+            smartDoorLockState = false;
+            log.append(formatLogEntry("Door opened so door is unlocked"));
         }
 
         // log panel message
@@ -421,8 +443,8 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         newState.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, lockElectronicOperationEnabled);
         newState.put(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE, lockKeylessEntryEnabled);
         newState.put(IoTValues.ARRIVING_PROXIMITY_STATE, arrivingProximityState);
-        newState.put(IoTValues.LOCK_REQUEST, doorRequest);
-        newState.put(IoTValues.LOCK_GIVEN_PASSCODE, givenLockPassCode);
+        newState.put(IoTValues.LOCK_REQUEST, "");
+        newState.put(IoTValues.LOCK_GIVEN_PASSCODE, "");
         newState.put(IoTValues.LOCK_PASSCODE, lockPassCode);
         newState.put(IoTValues.LOCK_NIGHT_LOCK_ENABLED, lockNightLockEnabled);
         newState.put(IoTValues.NIGHT_START_TIME, nightStartTime);
@@ -430,6 +452,8 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         newState.put(IoTValues.LOCK_INTRUDER_SENSOR_MODE, lockIntruderDefenseMode);
         newState.put(IoTValues.INTRUDER_DETECTION_SENSOR, intruderDetectedSensor);
         newState.put(IoTValues.PANEL_MESSAGE, panelMessage);
+        newState.put(IoTValues.TEMP_READING, tempReading);
+        newState.put(IoTValues.TARGET_TEMP, targetTempSetting);
         return newState; 
     }
 }
