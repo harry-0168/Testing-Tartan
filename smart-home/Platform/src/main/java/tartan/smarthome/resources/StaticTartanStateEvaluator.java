@@ -389,18 +389,22 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             arrivingProximityState = false;
         }
 
+        panelMessage = false;
         if (lockIntruderDefenseMode) {
             if (intruderDetectedSensor) {
-                log.append(formatLogEntry("Intruder detected, attempting to lock door"));
                 panelMessage = true;
-                doorState = false;
-                log.append(formatLogEntry("Door closed"));
-                smartDoorLockState = true;
-                log.append(formatLogEntry("Door locked"));
-            }
-            else{
-                // Intruder defense mode is on but no intruder detected
-                panelMessage = false;
+                if (!proximityState){
+                    log.append(formatLogEntry("Intruder detected, attempting to lock door"));
+                    doorState = false;
+                    log.append(formatLogEntry("Door closed"));
+                    smartDoorLockState = true;
+                    log.append(formatLogEntry("Door locked"));
+                }
+                else {
+                    log.append(formatLogEntry("Intruder detected, but house is occupied, unlock and open door"));
+                    smartDoorLockState = false;
+                    doorState = true;
+                }
             }
         }
 
