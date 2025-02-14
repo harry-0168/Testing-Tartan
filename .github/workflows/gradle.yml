@@ -39,6 +39,23 @@ jobs:
       run: ./gradlew build
       working-directory: ./smart-home/Platform
 
+    - name: Run docker Compose
+      working-directory: ./smart-home/Platform
+      run: docker-compose up -d --build
+    - name : set up python
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.7'
+    - run: pip install pytest requests
+    - name: Run system tests
+      working-directory: ./smart-home/Platform/src/test/python
+      run: pytest
+    
+    - name: Bring server down
+      working-directory:
+      run: docker-compose down
+     
+
     # Step 6: Run tests with Jacoco enabled
     # - name: Run Tests and Generate Jacoco Coverage Report
     #   run: ./gradlew :Platform:test :Platform:jacocoTestReport
