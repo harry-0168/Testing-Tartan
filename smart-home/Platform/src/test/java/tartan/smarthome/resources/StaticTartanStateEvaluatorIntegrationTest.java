@@ -121,7 +121,6 @@ public class StaticTartanStateEvaluatorIntegrationTest {
         assertEquals(false, evaluatedState.get(IoTValues.LOCK_STATE), "Door should be unlocked automatically");
         assertEquals(true, evaluatedState.get(IoTValues.DOOR_STATE), "Door should be opened automatically");
 
-        evaluatedState.put(IoTValues.DOOR_STATE, true);
         evaluatedState.put(IoTValues.CURRENT_TIME, 2331);
         evaluatedState.put(IoTValues.PROXIMITY_STATE, true);
 
