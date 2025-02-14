@@ -39,6 +39,9 @@ jobs:
       run: ./gradlew build
       working-directory: ./smart-home/Platform
 
+
+    - name: Install Docker Compose
+      run: sudo apt-get update && sudo apt-get install -y docker-compose
     - name: Run docker Compose
       working-directory: ./smart-home/Platform
       run: docker-compose up -d --build
@@ -54,7 +57,7 @@ jobs:
     - name: Bring server down
       working-directory:
       run: docker-compose down
-     
+    
 
     # Step 6: Run tests with Jacoco enabled
     # - name: Run Tests and Generate Jacoco Coverage Report
