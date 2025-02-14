@@ -123,8 +123,6 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 nightStartTime = (Integer) inState.get(key);
             } else if (key.equals(IoTValues.NIGHT_END_TIME)) {
                 nightEndTime = (Integer) inState.get(key);
-            } else if (key.equals(IoTValues.LOCK_NIGHT_LOCK_ENABLED)) {
-                lockNightLockEnabled = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.CURRENT_TIME)) {
                 currentTime = (Integer) inState.get(key);
             } 
@@ -421,8 +419,8 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         newState.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, lockElectronicOperationEnabled);
         newState.put(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE, lockKeylessEntryEnabled);
         newState.put(IoTValues.ARRIVING_PROXIMITY_STATE, arrivingProximityState);
-        newState.put(IoTValues.LOCK_REQUEST, doorRequest);
-        newState.put(IoTValues.LOCK_GIVEN_PASSCODE, givenLockPassCode);
+        newState.put(IoTValues.LOCK_REQUEST, "");
+        newState.put(IoTValues.LOCK_GIVEN_PASSCODE, "");
         newState.put(IoTValues.LOCK_PASSCODE, lockPassCode);
         newState.put(IoTValues.LOCK_NIGHT_LOCK_ENABLED, lockNightLockEnabled);
         newState.put(IoTValues.NIGHT_START_TIME, nightStartTime);
@@ -430,6 +428,8 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         newState.put(IoTValues.LOCK_INTRUDER_SENSOR_MODE, lockIntruderDefenseMode);
         newState.put(IoTValues.INTRUDER_DETECTION_SENSOR, intruderDetectedSensor);
         newState.put(IoTValues.PANEL_MESSAGE, panelMessage);
+        newState.put(IoTValues.TEMP_READING, tempReading);
+        newState.put(IoTValues.TARGET_TEMP, targetTempSetting);
         return newState; 
     }
 }
