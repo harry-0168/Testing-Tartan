@@ -26,6 +26,8 @@ See -->
                 var electronicOperation = $('#electronicOperation').val();
                 var lockPasscode = $('#lockPasscode').val();
                 var lockAction = $('#lockAction').val();
+                var intruderDetectionSensor = $('#intruderDetectionSensor').val();
+                var lockIntruderSensorMode = $('#lockIntruderSensorMode').val();
 
                 return JSON.stringify({
                     "door": door,
@@ -39,7 +41,9 @@ See -->
                     "keyLessEntry": keylessEntry,
                     "electronicOperation": electronicOperation,
                     "lockGivenPasscode": lockPasscode,
-                    "lockRequest": lockAction
+                    "lockRequest": lockAction,
+                    "intruderDetectionSensor": intruderDetectionSensor,
+                    "lockIntruderSensorMode": lockIntruderSensorMode
                 });
             }
 
@@ -264,6 +268,42 @@ div {
             <option value="LOCK">LOCK</option>
             <option value="UNLOCK">UNLOCK</option>
         </select>
+    </p>
+
+    <!-- Intruder Detection Sensor -->
+    <p>
+        Intruder Detection Sensor:
+        <select id="intruderDetectionSensor">
+            <option value="off"
+                <#if tartanHome.intruderDetectionSensor == "off">selected</#if>
+            >OFF</option>
+            <option value="on"
+                <#if tartanHome.intruderDetectionSensor == "on">selected</#if>
+            >ON</option>
+        </select>
+    </p>
+
+    <!-- Lock Intruder Sensor Mode -->
+    <p>
+        Lock Intruder Sensor Mode:
+        <select id="lockIntruderSensorMode">
+            <option value="off"
+                <#if tartanHome.lockIntruderSensorMode == "off">selected</#if>
+            >OFF</option>
+            <option value="on"
+                <#if tartanHome.lockIntruderSensorMode == "on">selected</#if>
+            >ON</option>
+        </select>
+    </p>
+
+    <!-- Panel Message -->
+    <p>
+        <strong>Panel Message:</strong>
+        <#if tartanHome.panelMessage == "on">
+            <span style="color: red;">Possbiel Intruder detected! Please check the house!</span>
+        <#else>
+            <span style="color: green;">All Clear</span>
+        </#if>
     </p>
 
     <hr>

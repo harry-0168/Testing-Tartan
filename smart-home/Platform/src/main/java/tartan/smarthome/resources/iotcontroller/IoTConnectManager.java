@@ -130,6 +130,45 @@ public class IoTConnectManager {
                 if (count<keys.size()) {
                     newState.append(IoTValues.PARAM_DELIM);
                 }
+            } else if (key.equals(IoTValues.LOCK_INTRUDER_SENSOR_MODE)) {
+                Boolean newIntruderSensorMode = (Boolean) state.get(key);
+                newState.append(IoTValues.LOCK_INTRUDER_SENSOR_MODE);
+                newState.append(IoTValues.PARAM_EQ);
+                if (newIntruderSensorMode) {
+                    newState.append("1");
+                } else {
+                    newState.append("0");
+                }
+                count++;
+                if (count<keys.size()) {
+                    newState.append(IoTValues.PARAM_DELIM);
+                }
+            } else if (key.equals(IoTValues.INTRUDER_DETECTION_SENSOR)) {
+                Boolean newIntruderDetectionSensor = (Boolean) state.get(key);
+                newState.append(IoTValues.INTRUDER_DETECTION_SENSOR);
+                newState.append(IoTValues.PARAM_EQ);
+                if (newIntruderDetectionSensor) {
+                    newState.append("1");
+                } else {
+                    newState.append("0");
+                }
+                count++;
+                if (count<keys.size()) {
+                    newState.append(IoTValues.PARAM_DELIM);
+                }
+            } else if (key.equals(IoTValues.PANEL_MESSAGE)) {
+                Boolean newPanelMessage = (Boolean) state.get(key);
+                newState.append(IoTValues.PANEL_MESSAGE);
+                newState.append(IoTValues.PARAM_EQ);
+                if (newPanelMessage) {
+                    newState.append("1");
+                } else {
+                    newState.append("0");
+                }
+                count++;
+                if (count<keys.size()) {
+                    newState.append(IoTValues.PARAM_DELIM);
+                }
             }
             else if (key.equals(IoTValues.LIGHT_STATE)) {
                 Boolean newLightState = (Boolean) state.get(key);
@@ -329,6 +368,24 @@ public class IoTConnectManager {
                     state.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, true);
                 } else {
                     state.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, false);
+                }
+            } else if (data[0].equals(IoTValues.LOCK_INTRUDER_SENSOR_MODE)) {
+                if (val == 1) {
+                    state.put(IoTValues.LOCK_INTRUDER_SENSOR_MODE, true);
+                } else {
+                    state.put(IoTValues.LOCK_INTRUDER_SENSOR_MODE, false);
+                }
+            } else if (data[0].equals(IoTValues.INTRUDER_DETECTION_SENSOR)) {
+                if (val == 1) {
+                    state.put(IoTValues.INTRUDER_DETECTION_SENSOR, true);
+                } else {
+                    state.put(IoTValues.INTRUDER_DETECTION_SENSOR, false);
+                }
+            } else if (data[0].equals(IoTValues.PANEL_MESSAGE)) {
+                if (val == 1) {
+                    state.put(IoTValues.PANEL_MESSAGE, true);
+                } else {
+                    state.put(IoTValues.PANEL_MESSAGE, false);
                 }
             } else if (data[0].equals(IoTValues.HUMIDIFIER_STATE)) {
                 if (val == 1) {

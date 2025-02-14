@@ -96,6 +96,15 @@ public class TartanHome {
 
     @JsonProperty
     private String lockRequest;
+
+    @JsonProperty
+    private String lockIntruderSensorMode;
+
+    @JsonProperty
+    private String intruderDetectionSensor;
+
+    @JsonProperty
+    private String panelMessage;
     /**
      * Empty constructor needed by Jackson deserialization
      */
@@ -272,6 +281,27 @@ public class TartanHome {
     }
     public void setElectronicOperation(String electronicOperation) {
         this.electronicOperation = electronicOperation;
+    }
+
+    public String getLockIntruderSensorMode() {
+        return lockIntruderSensorMode;
+    }
+    public void setLockIntruderSensorMode(String lockIntruderSensorMode) {
+        this.lockIntruderSensorMode = lockIntruderSensorMode;
+    }
+
+    public String getIntruderDetectionSensor() {
+        return intruderDetectionSensor;
+    }
+    public void setIntruderDetectionSensor(String intruder_detection_sensor) {
+        this.intruderDetectionSensor = intruder_detection_sensor;
+    }
+
+    public String getPanelMessage() {
+        return panelMessage;
+    }
+    public void setPanelMessage(String panelMessage) {
+        this.panelMessage = panelMessage;
     }
     
     /**

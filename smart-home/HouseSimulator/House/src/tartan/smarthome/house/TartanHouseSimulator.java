@@ -33,6 +33,9 @@ public class TartanHouseSimulator implements Runnable {
     private Boolean chillerOnState; // the chiller state (true if on, false if off)
     private Boolean alarmActiveState; // the alarm active state (true if alarm sounding, false if alarm not sounding)
     private String  hvacMode; // the HVAC mode setting, either Heater or Chiller
+    private Boolean lockIntruderSensorMode; // the lock intruder sensor mode (true if enabled, false if disabled)
+    private Boolean intruderDetectSensor; // the intruder detect sensor (true if enabled, false if disabled)
+    private Boolean panelMessage; // the panel message
 
     /** connection settings */
     private String address = null;
@@ -58,7 +61,10 @@ public class TartanHouseSimulator implements Runnable {
     private final String HVAC_MODE = "HM";
     private final String ALARM_ACTIVE = "AA";
     public final String LOCK_KEYLESS_ENTRY_ENABLE = "KLE";
-    public static final String LOCK_ELECTRONIC_OPERATION_ENABLE = "EOE";
+    public final String LOCK_ELECTRONIC_OPERATION_ENABLE = "EOE";
+    public final String LOCK_INTRUDER_SENSOR_MODE = "LIS";
+    public final String INTRUDER_DETECTION_SENSOR = "IDS";
+    public final String PANEL_MESSAGE = "PM";
     private final String HEATER_STATE = "HES";
     private final String CHILLER_STATE = "CHS";
     private final String PASSCODE = "PC";
@@ -256,6 +262,41 @@ public class TartanHouseSimulator implements Runnable {
                     count++;
                     if (count < keys.size()) {
                         newState.append(PARAM_DELIM);
+                    }
+                } else if (key.equals(LOCK_INTRUDER_SENSOR_MODE)) {
+                    Boolean newLockIntruderSensorMode = (Boolean) state.get(key);
+                    newState.append(LOCK_INTRUDER_SENSOR_MODE);
+                    newState.append(PARAM_EQ);
+                    if (newLockIntruderSensorMode) {
+                        newState.append("1");
+                    } else {
+                        newState.append("0");
+                    }
+                    count++;
+                    if (count < keys.size()) {
+                        newState.append(PARAM_DELIM);
+                    }
+                } else if (key.equals(INTRUDER_DETECTION_SENSOR)) {
+                    Boolean newIntruderDetectSensor = (Boolean) state.get(key);
+                    newState.append(INTRUDER_DETECTION_SENSOR);
+                    newState.append(PARAM_EQ);
+                    if (newIntruderDetectSensor) {
+                        newState.append("1");
+                    } else {
+                        newState.append("0");
+                    }
+                    count++;
+                    if (count < keys.size()) {
+                        newState.append(PARAM_DELIM);
+                    }
+                } else if (key.equals(PANEL_MESSAGE)) {
+                    Boolean newPanelMessage = (Boolean) state.get(key);
+                    newState.append(PANEL_MESSAGE);
+                    newState.append(PARAM_EQ);
+                    if (newPanelMessage) {
+                        newState.append("1");
+                    } else {
+                        newState.append("0");
                     }
                 } else if (key.equals(LIGHT_STATE)) {
                     Boolean newLightState = (Boolean) state.get(key);
@@ -464,6 +505,24 @@ public class TartanHouseSimulator implements Runnable {
                         state.put(CHILLER_ON, true);
                     } else {
                         state.put(CHILLER_OFF, false);
+                    }
+                } else if (data[0].equals(LOCK_INTRUDER_SENSOR_MODE)) {
+                    if (val == 1) {
+                        state.put(LOCK_INTRUDER_SENSOR_MODE, true);
+                    } else {
+                        state.put(LOCK_INTRUDER_SENSOR_MODE, false);
+                    }
+                } else if (data[0].equals(INTRUDER_DETECTION_SENSOR)) {
+                    if (val == 1) {
+                        state.put(INTRUDER_DETECTION_SENSOR, true);
+                    } else {
+                        state.put(INTRUDER_DETECTION_SENSOR, false);
+                    }
+                } else if (data[0].equals(PANEL_MESSAGE)) {
+                    if (val == 1) {
+                        state.put(PANEL_MESSAGE, true);
+                    } else {
+                        state.put(PANEL_MESSAGE, false);
                     }
                 } else if (data[0].equals(TEMP_READING)) {
                     state.put(TEMP_READING, val);

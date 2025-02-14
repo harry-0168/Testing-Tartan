@@ -35,6 +35,9 @@ public class TartanHomeService {
     private String alarmPasscode;
     private String lockPasscode;
     private String lockRequest;
+    private String lockIntruderSensorMode;
+    private String intruderDetectionSensor;
+    private String panelMessage;
     private String targetTemp;
     private String user;
     private String password;
@@ -234,6 +237,37 @@ public class TartanHomeService {
         return tartanHome.getLockRequest();
     }
 
+    /*
+     * Convert Lock Intruder Sensor Mode
+     * @param tartanHome
+     * @return the mode (ON/OFF)
+     */
+    private Boolean toIoTLockIntruderSensorMode(TartanHome tartanHome) {
+        if (tartanHome.getLockIntruderSensorMode().equals(TartanHomeValues.ON)) return true;
+        else if (tartanHome.getLockIntruderSensorMode().equals(TartanHomeValues.OFF)) return false;
+        return null;
+    }
+
+    /**
+     * Convert Intruder Detection Sensor
+     * @param tartanHome
+     * @return the sensor state (ON/OFF)
+     */
+    private Boolean toIoTIntruderDetectionSensor(TartanHome tartanHome) {
+        if (tartanHome.getIntruderDetectionSensor().equals(TartanHomeValues.ON)) return true;
+        else if (tartanHome.getIntruderDetectionSensor().equals(TartanHomeValues.OFF)) return false;
+        return null;
+    }
+
+    /**
+     * Convert Panel Message
+     * @param tartanHome
+     * @return the message
+     */
+    private String toIoTPanelMessage(TartanHome tartanHome) {
+        return tartanHome.getPanelMessage();
+    }
+
     /**
      * Convert door state
      * @param tartanHome the home
@@ -430,6 +464,9 @@ public class TartanHomeService {
             tartanHome.setArrivingProximity(TartanHomeValues.UNKNOWN);
             tartanHome.setKeyLessEntry(TartanHomeValues.UNKNOWN);
             tartanHome.setElectronicOperation(TartanHomeValues.UNKNOWN);
+            tartanHome.setLockIntruderSensorMode(TartanHomeValues.UNKNOWN);
+            tartanHome.setIntruderDetectionSensor(TartanHomeValues.UNKNOWN);
+            tartanHome.setPanelMessage(TartanHomeValues.UNKNOWN);
             return tartanHome;
         }
 
@@ -502,7 +539,29 @@ public class TartanHomeService {
                 } else {
                     tartanHome.setElectronicOperation(TartanHomeValues.OFF);
                 }
-            } else if (key.equals(IoTValues.ALARM_STATE)) {
+            } else if (key.equals(IoTValues.LOCK_INTRUDER_SENSOR_MODE)) {
+                Boolean lockIntruderSensorMode = (Boolean)state.get(key);
+                if (lockIntruderSensorMode) {
+                    tartanHome.setLockIntruderSensorMode(TartanHomeValues.ON);
+                } else {
+                    tartanHome.setLockIntruderSensorMode(TartanHomeValues.OFF);
+                }
+            } else if (key.equals(IoTValues.INTRUDER_DETECTION_SENSOR)) {
+                Boolean intruderDetectionSensor = (Boolean)state.get(key);
+                if (intruderDetectionSensor) {
+                    tartanHome.setIntruderDetectionSensor(TartanHomeValues.ON);
+                } else {
+                    tartanHome.setIntruderDetectionSensor(TartanHomeValues.OFF);
+                }
+            } else if (key.equals(IoTValues.PANEL_MESSAGE)) {
+                Boolean panelMessage = (Boolean)state.get(key);
+                if (panelMessage) {
+                    tartanHome.setPanelMessage(TartanHomeValues.ON);
+                } else {
+                    tartanHome.setPanelMessage(TartanHomeValues.OFF);
+                }
+            }
+            else if (key.equals(IoTValues.ALARM_STATE)) {
                 Boolean alarmState = (Boolean)state.get(key);
                 if (alarmState) {
                     tartanHome.setAlarmArmed(TartanHomeValues.ARMED);
@@ -567,6 +626,18 @@ public class TartanHomeService {
 
         if (tartanHome.getElectronicOperation()!=null) {
             state.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, toIoTElectronicOperationState(tartanHome));
+        }
+
+        if (tartanHome.getLockIntruderSensorMode()!=null) {
+            state.put(IoTValues.LOCK_INTRUDER_SENSOR_MODE, toIoTLockIntruderSensorMode(tartanHome));
+        }
+
+        if (tartanHome.getIntruderDetectionSensor()!=null) {
+            state.put(IoTValues.INTRUDER_DETECTION_SENSOR, toIoTIntruderDetectionSensor(tartanHome));
+        }
+
+        if (tartanHome.getPanelMessage()!=null) {
+            state.put(IoTValues.PANEL_MESSAGE, toIoTPanelMessage(tartanHome));
         }
 
         if (tartanHome.getDoor()!=null) {

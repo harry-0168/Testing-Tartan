@@ -79,6 +79,18 @@ public class TartanHomeData {
     @Column(name = "electronic_operation")
     private String electronicOperation;
 
+    // the state of the lock intruder sensor mode (true if enabled, false if disabled)
+    @Column(name = "lock_intruder_sensor")
+    private String lockIntruderSensor;
+
+    // the state of the intruder defense sensor mode (true if detected, false if not detected)
+    @Column(name = "intruder_defense_sensor")
+    private String intruderDefenseSensor;
+
+    // the state of the panel message (true if all clear, false if not all clear)
+    @Column(name = "panel_message")
+    private String panelMessage;
+
     // the heater state (true if on, false if off)
     @Column(name = "hvac_mode")
     
@@ -122,6 +134,9 @@ public class TartanHomeData {
         this.arrivingProximity = h.getArrivingProximity();
         this.keyLessEntry = h.getKeyLessEntry();
         this.electronicOperation = h.getElectronicOperation();
+        this.lockIntruderSensor = h.getLockIntruderSensorMode();
+        this.intruderDefenseSensor = h.getIntruderDetectionSensor();
+        this.panelMessage = h.getPanelMessage();
         // Remember when this record is created
         this.createTimeStamp = new Date();
     }
@@ -330,6 +345,54 @@ public class TartanHomeData {
      */
     public void setElectronicOperation(String electronicOperation) {
         this.electronicOperation = electronicOperation;
+    }
+
+    /**
+     * Get the lock intruder sensor state
+     * @return the lock intruder sensor state
+     */
+    public String getLockIntruderSensor() {
+        return lockIntruderSensor;
+    }
+
+    /**
+     * Set the lock intruder sensor state
+     * @param lockIntruderSensor the new state
+     */
+    public void setLockIntruderSensor(String lockIntruderSensor) {
+        this.lockIntruderSensor = lockIntruderSensor;
+    }
+
+    /**
+     * Get the intruder defense sensor state
+     * @return the intruder defense sensor state
+     */
+    public String getIntruderDefenseSensor() {
+        return intruderDefenseSensor;
+    }
+
+    /**
+     * Set the intruder defense sensor state
+     * @param intruderDefenseSensor the new state
+     */
+    public void setIntruderDefenseSensor(String intruderDefenseSensor) {
+        this.intruderDefenseSensor = intruderDefenseSensor;
+    }
+
+    /**
+     * Get the panel message state
+     * @return the panel message state
+     */
+    public String getPanelMessage() {
+        return panelMessage;
+    }
+
+    /**
+     * Set the panel message state
+     * @param panelMessage the new state
+     */
+    public void setPanelMessage(String panelMessage) {
+        this.panelMessage = panelMessage;
     }
 
     /**

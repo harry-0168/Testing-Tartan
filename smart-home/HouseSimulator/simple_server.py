@@ -21,6 +21,9 @@ class HouseState(object):
       self.__arriving_proximity = False
       self.__key_less_entry = False
       self.__electronic_operation = False
+      self.__lock_intruder_defense_mode = False
+      self.__intruder_detect_sensor = False
+      self.__panel_message = False
       self.__alarm_active = False
       self.__alarm_state = False
       self.__heater_state = True
@@ -89,6 +92,15 @@ class HouseState(object):
          elif k == "EOE":
             if v == "1": self.__electronic_operation = True
             else: self.__electronic_operation = False
+         elif k == "LIS":
+            if v == "1": self.__lock_intruder_defense_mode = True
+            else: self.__lock_intruder_defense_mode = False
+         elif k == "IDS":
+            if v == "1": self.__intruder_detect_sensor = True
+            else: self.__intruder_detect_sensor = False
+         elif k == "PM":
+            if v == "1": self.__panel_message = True
+            else: self.__panel_message = False
          elif k == "HES":
             if v == "1": self.__heater_state = True
             else: self.__heater_state = False
@@ -138,6 +150,21 @@ class HouseState(object):
    def get_electronic_operation(self):
       if self.__electronic_operation: return "1"
       return "0"
+   
+   def set_lock_intruder_defense_mode(self, l): self.__lock_intruder_defense_mode = l
+   def get_lock_intruder_defense_mode(self):
+      if self.__lock_intruder_defense_mode: return "1"
+      return "0"
+   
+   def set_intruder_detect_sensor(self, i): self.__intruder_detect_sensor = i
+   def get_intruder_detect_sensor(self):
+      if self.__intruder_detect_sensor: return "1"
+      return "0"
+   
+   def set_panel_message(self, p): self.__panel_message = p
+   def get_panel_message(self):
+      if self.__panel_message: return "1"
+      return "0"
 
    def set_alarm_state(self, a): self.__alarm_state = a
    def get_alarm_state(self):
@@ -173,7 +200,7 @@ class HouseState(object):
       '''
       Handle get state requests
       '''
-      return "TR={0};HR={1};DS={2};LS={3};PS={4};AS={5};AA={6};HES={7};CHS={8};HM={9};HUS={10};LKS={11};APS={12};KLE={13};EOE={14}".format(self.get_temperature(),
+      return "TR={0};HR={1};DS={2};LS={3};PS={4};AS={5};AA={6};HES={7};CHS={8};HM={9};HUS={10};LKS={11};APS={12};KLE={13};EOE={14};LIS={15};IDS={16};PM={17}".format(self.get_temperature(),
                                                                                                self.get_humidity(),
                                                                                                self.get_door(),
                                                                                                self.get_light(),
@@ -187,7 +214,10 @@ class HouseState(object):
                                                                                                self.get_lock_state(),
                                                                                                self.get_arriving_proximity(),
                                                                                                self.get_key_less_entry(),
-                                                                                               self.get_electronic_operation())
+                                                                                               self.get_electronic_operation(),
+                                                                                               self.get_lock_intruder_defense_mode(),
+                                                                                               self.get_intruder_detect_sensor(),
+                                                                                               self.get_panel_message())
 house = HouseState()
 
 class UserThread(threading.Thread):

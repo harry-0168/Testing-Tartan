@@ -55,8 +55,9 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         // Integer nightStartTime = null; // the night mode start time (24-hour format)
         // Integer nightEndTime = null; // the night mode end time (24-hour format)
         // Integer currentTime = null;
-        // Boolean lockIntruderDefenseMode = false; // the intruder sensor mode (true if enabled, false if disabled)
-        // Boolean intruderDetectedSensor = false; // the intruder detected sensor (true if detected, false if not detected)
+        Boolean lockIntruderDefenseMode = false; // the intruder sensor mode (true if enabled, false if disabled)
+        Boolean intruderDetectedSensor = false; // the intruder detected sensor (true if detected, false if not detected)
+        Boolean panelMessage = false; // the message displayed on the panel
         // String panelMessage = ""; // the message displayed on the panel
 
         System.out.println("Evaluating new state statically");
@@ -109,6 +110,12 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 arrivingProximityState = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE)) {
                 lockKeylessEntryEnabled = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_INTRUDER_SENSOR_MODE)) {
+                lockIntruderDefenseMode = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.INTRUDER_DETECTION_SENSOR)) {
+                intruderDetectedSensor = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.PANEL_MESSAGE)) {
+                panelMessage = (Boolean) inState.get(key);
             }
             // } else if (key.equals(IoTValues.NIGHT_START_TIME)) {
             //     nightStartTime = (Integer) inState.get(key);
@@ -116,13 +123,7 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             //     nightEndTime = (Integer) inState.get(key);
             // } else if (key.equals(IoTValues.CURRENT_TIME)) {
             //     currentTime = (Integer) inState.get(key);
-            // } else if (key.equals(IoTValues.LOCK_INTRUDER_SENSOR_MODE)) {
-            //     lockIntruderDefenseMode = (Boolean) inState.get(key);
-            // } else if (key.equals(IoTValues.INTRUDER_DETECTION_SENSOR)) {
-            //     intruderDetectedSensor = (Boolean) inState.get(key);
-            // } else if (key.equals(IoTValues.PANEL_MESSAGE)) {
-            //     panelMessage = (String) inState.get(key);
-            // }
+            // } 
         }
 
         if (lightState == true) {
@@ -361,25 +362,28 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             arrivingProximityState = false;
         }
 
-        // if (lockIntruderDefenseMode) {
-        //     if (intruderDetectedSensor) {
-        //         log.append(formatLogEntry("Intruder detected, attempting to lock door"));
-        //         panelMessage = "possible intruder detected";
-        //         doorState = false;
-        //         log.append(formatLogEntry("Door closed"));
-        //         smartDoorLockState = true;
-        //         log.append(formatLogEntry("Door locked"));
-        //     }
-        //     else{
-        //         // Intruder defense mode is on but no intruder detected
-        //         panelMessage = "all clear";
-        //     }
-        // }
-        // else {
-        //     // Intruder defense mode is off
-        //     intruderDetectedSensor = false;
-        //     panelMessage = "";
-        // }
+        if (lockIntruderDefenseMode) {
+            if (intruderDetectedSensor) {
+                log.append(formatLogEntry("Intruder detected, attempting to lock door"));
+                panelMessage = true;
+                doorState = false;
+                log.append(formatLogEntry("Door closed"));
+                smartDoorLockState = true;
+                log.append(formatLogEntry("Door locked"));
+            }
+            else{
+                // Intruder defense mode is on but no intruder detected
+                panelMessage = false;
+            }
+        }
+
+        // log panel message
+        if (panelMessage) {
+            log.append(formatLogEntry("Panel Message: Possbiel Intruder detected! Please check the house!"));
+        }
+        else {
+            log.append(formatLogEntry("Panel Message: All clear"));
+        }
 
         Map<String, Object> newState = new Hashtable<>();
         newState.put(IoTValues.DOOR_STATE, doorState);
@@ -403,9 +407,9 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         newState.put(IoTValues.LOCK_PASSCODE, lockPassCode);
         // newState.put(IoTValues.NIGHT_START_TIME, nightStartTime);
         // newState.put(IoTValues.NIGHT_END_TIME, nightEndTime);
-        // newState.put(IoTValues.LOCK_INTRUDER_SENSOR_MODE, lockIntruderDefenseMode);
-        // newState.put(IoTValues.INTRUDER_DETECTION_SENSOR, intruderDetectedSensor);
-        // newState.put(IoTValues.PANEL_MESSAGE, panelMessage);
+        newState.put(IoTValues.LOCK_INTRUDER_SENSOR_MODE, lockIntruderDefenseMode);
+        newState.put(IoTValues.INTRUDER_DETECTION_SENSOR, intruderDetectedSensor);
+        newState.put(IoTValues.PANEL_MESSAGE, panelMessage);
         return newState; 
     }
 }
