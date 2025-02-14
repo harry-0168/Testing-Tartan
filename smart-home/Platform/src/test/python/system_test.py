@@ -111,7 +111,7 @@ def test_get():
     assert "tartanHome" in json_response
 
 
-def test_NightLockMode():
+def test_system_case1():
     ''' Input: nightLockMode=on, time=night, lockGivenPasscode=passcode, lockRequest=UNLOCK, door=open, door=closed
         Expected Output: doorLock=lock
     '''
@@ -133,8 +133,232 @@ def test_NightLockMode():
     json_response = response.json()
     assert json_response["tartanHome"]["doorLock"] == "unlock"
 
+def test_integration_case2():
+    """
+    Scenario:
+      1) Night lock mode is on and time = 2330 (night).
+      2) The user unlocks using a correct passcode and 'UNLOCK' request -> door becomes unlocked/open.
+      3) The user leaves (house vacant) at time = 2331 -> the system auto-closes and auto-locks the door.
+    """
 
-def test_electronicOperation_case1():
+    initializeState()
+    test_electronicOperation_lock() # lock and close the door first
+    data_step1 = {
+        "lockNightLockEnabled": "on",
+        "currentTime": "2330",
+        "electronicOperation": "on",
+        "lockGivenPasscode": "passcode",
+        "lockRequest": "UNLOCK"
+    }
+
+    response = requests.post(post_url + houseName, json=data_step1, auth=auth, headers=headers)
+    assert response.status_code == 200
+
+    response = requests.get(get_url + houseName, auth=auth, headers=headers)
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert json_response["tartanHome"]["doorLock"] == "unlock", \
+        "Door lock should be unlocked with the correct passcode"
+    assert json_response["tartanHome"]["door"] == "open", \
+        "Door should be opened once unlocked"
+
+    data_step2 = {
+        "currentTime": "2331",
+        "lockGivenPasscode": "",
+        "lockRequest": "noaction"
+    }
+
+    response = requests.post(post_url + houseName, json=data_step2, auth=auth, headers=headers)
+    assert response.status_code == 200
+
+    response = requests.get(get_url + houseName, auth=auth, headers=headers)
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert json_response["tartanHome"]["door"] == "closed", \
+        "Door should be closed since house is vacant"
+    assert json_response["tartanHome"]["doorLock"] == "lock", \
+        "Door should be locked automatically"
+
+def test_integration_case3():
+    """
+    Scenario:
+      1) The system starts with the door locked (door=closed, doorLock=lock), nightLockEnabled=on,
+         currentTime=2340, keylessEntry=on, occupant is arriving.
+         => The system auto-unlocks and opens the door.
+      2) At time=2341, occupant is still present, so system auto-closes and locks the door again.
+    """
+    initializeState()
+    test_electronicOperation_lock()  # lock and close the door first
+
+    data_step1 = {
+        "lockNightLockEnabled": "on",
+        "currentTime": "2340",
+        "keyLessEntry": "on",
+        "arrivingProximity": "arriving",
+        "lockGivenPasscode": "",
+        "lockRequest": "noaction",
+        "electronicOperation": "off"
+    }
+    response = requests.post(post_url + houseName, json=data_step1, auth=auth, headers=headers)
+    assert response.status_code == 200
+
+    response = requests.get(get_url + houseName, auth=auth, headers=headers)
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert json_response["tartanHome"]["doorLock"] == "unlock"
+    assert json_response["tartanHome"]["door"] == "open"
+
+    data_step2 = {
+        "currentTime": "2341",
+        "arrivingProximity": "not_arriving",
+        "door": "open",
+        "doorLock": "unlock",
+        "lockGivenPasscode": "",
+        "lockRequest": "noaction"
+    }
+    response = requests.post(post_url + houseName, json=data_step2, auth=auth, headers=headers)
+    assert response.status_code == 200
+
+    response = requests.get(get_url + houseName, auth=auth, headers=headers)
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert json_response["tartanHome"]["door"] == "closed"
+    assert json_response["tartanHome"]["doorLock"] == "lock"
+
+# The user unlocks the door with keyless entry and entered, leaved the door open. Then he uses electronic operation to lock and close the door
+def test_integration_case4():
+    initializeState()
+    data_step1 = {
+        "currentTime": "1200",
+        "arrivingProximity": "arriving",
+        "keyLessEntry": "on",
+        "door": "closed",
+        "lockGivenPasscode": "",
+        "lockRequest": "noaction"
+    }
+    response = requests.post(post_url + houseName, json=data_step1, auth=auth, headers=headers)
+    assert response.status_code == 200
+    response = requests.get(get_url + houseName, auth=auth, headers=headers)
+    assert response.status_code == 200
+    json_response = response.json()
+    assert json_response["tartanHome"]["doorLock"] == "unlock"
+    assert json_response["tartanHome"]["door"] == "open"
+
+    data_step2 = {
+        "lockRequest": "LOCK",
+        "lockGivenPasscode": "passcode",
+        "electronicOperation": "on"
+    }
+    response = requests.post(post_url + houseName, json=data_step2, auth=auth, headers=headers)
+    assert response.status_code == 200
+    response = requests.get(get_url + houseName, auth=auth, headers=headers)
+    assert response.status_code == 200
+    json_response = response.json()
+    assert json_response["tartanHome"]["door"] == "closed"
+    assert json_response["tartanHome"]["doorLock"] == "lock"
+
+# When the night lock mode is off and the door was originally locked and closed. The user uses a correct passcode to unlock and enter and leave the door wide open.
+# Later when it gets to the night, the door closed and locked itself.
+def test_integration_case6():
+
+    initializeState()
+    data_step1 = {
+        "door": "closed",
+        "doorLock": "lock",
+        "lockNightLockEnabled": "on",
+        "currentTime": "2215",
+        "electronicOperation": "on",
+        "lockGivenPasscode": "passcode",
+        "lockRequest": "UNLOCK"
+    }
+
+    response = requests.post(post_url + houseName, json=data_step1, auth=auth, headers=headers)
+    assert response.status_code == 200
+
+    response = requests.get(get_url + houseName, auth=auth, headers=headers)
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert json_response["tartanHome"]["doorLock"] == "unlock", \
+        "Door lock should be unlocked with the correct passcode"
+    assert json_response["tartanHome"]["door"] == "open", \
+        "Door should be opened once unlocked"
+
+    data_step2 = {
+        "currentTime": "2230",
+        "lockGivenPasscode": "",
+        "lockRequest": "noaction"
+    }
+
+    response = requests.post(post_url + houseName, json=data_step2, auth=auth, headers=headers)
+    assert response.status_code == 200
+
+    response = requests.get(get_url + houseName, auth=auth, headers=headers)
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert json_response["tartanHome"]["door"] == "closed", \
+        "Door should be closed since house is vacant"
+    assert json_response["tartanHome"]["doorLock"] == "lock", \
+        "Door should be locked automatically"
+
+def test_system_case8():
+    """
+    Input:
+        LOCK_STATE=True, DOOR_STATE=False, PROXIMITY_STATE=True,
+        LOCK_INTRUDER_SENSOR_MODE=True, INTRUDER_DETECTION_SENSOR=True
+    Expected Output:
+        Initially: LOCK_STATE=False, DOOR_STATE=True (People inside, intruder detected)
+        After Proximity=False: LOCK_STATE=True, DOOR_STATE=False (Intruder detection locks door)
+        After Unlock Request: LOCK_STATE=True, DOOR_STATE=False (Intruder detection prevents unlock)
+        After Keyless Entry: LOCK_STATE=True, DOOR_STATE=False (Still locked)
+    """
+    initializeState()
+    # Step 1: Initialize State
+    data = {
+        "electronicOperation": "on",
+        "lockGivenPasscode": "passcode",
+        "lockRequest": "LOCK",
+        "lockIntruderSensorMode": "on",
+        "intruderDetectionSensor": "on"
+    }
+    response = requests.post(post_url+houseName, json=data, auth=auth, headers=headers)
+    assert response.status_code == 200
+
+    # Step 2: Check Initial State
+    response = requests.get(get_url + houseName, auth=auth, headers=headers)
+    assert response.status_code == 200  # Check HTTP status code
+    json_response = response.json()
+    assert json_response["tartanHome"]["doorLock"] == "unlock", "Door should remain unlocked with people inside during intruder detection"
+    assert json_response["tartanHome"]["door"] == "open", "Door should remain open with people inside during intruder detection"
+
+def test_system_case7():
+    initializeState()
+    # Step 1: Initialize State
+    data = {
+        "electronicOperation": "on",
+        "lockGivenPasscode": "passcode",
+        "lockRequest": "UNLOCK",
+        "lockIntruderSensorMode": "on",
+        "intruderDetectionSensor": "on"
+    }
+    response = requests.post(post_url+houseName, json=data, auth=auth, headers=headers)
+    assert response.status_code == 200
+
+    # Step 2: Check Initial State
+    response = requests.get(get_url + houseName, auth=auth, headers=headers)
+    assert response.status_code == 200  # Check HTTP status code
+    json_response = response.json()
+    assert json_response["tartanHome"]["doorLock"] == "unlock", "Door should remain unlocked with people inside during intruder detection"
+    assert json_response["tartanHome"]["door"] == "open", "Door should remain open with people inside during intruder detection"
+
+
+
+def test_electronicOperation_lock():
     ''' Input : electronicOperation=on, lockGivenPasscode=passcode, lockRequest=UNLOCK, door=open
         Expected Output : electronicOperation=on, doorLock=unlock, door=closed
     '''
