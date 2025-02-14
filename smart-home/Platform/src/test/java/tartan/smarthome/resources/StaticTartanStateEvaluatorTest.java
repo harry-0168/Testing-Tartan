@@ -33,6 +33,7 @@ public class StaticTartanStateEvaluatorTest {
         initialState.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, false);
         initialState.put(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE, false);
         initialState.put(IoTValues.ARRIVING_PROXIMITY_STATE, false);
+        initialState.put(IoTValues.LOCK_NIGHT_LOCK_ENABLED, false);
         initialState.put(IoTValues.NIGHT_START_TIME, 2230);
         initialState.put(IoTValues.NIGHT_END_TIME, 615);
         return initialState;
