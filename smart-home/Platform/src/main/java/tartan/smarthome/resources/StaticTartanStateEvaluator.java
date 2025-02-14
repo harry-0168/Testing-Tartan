@@ -128,7 +128,7 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             } 
         }
 
-        if (currentTime == null) {
+        if (currentTime == null || currentTime == -1) {
             log.append(formatLogEntry("Current time not set, read from system"));
             LocalTime now = LocalTime.now();
             int hour = now.getHour();

@@ -31,6 +31,7 @@ See -->
                 var nightStartTime = $('#nightStart').val();
                 var nightEndTime = $('#nightEnd').val();
                 var lockNightLockEnabled = $('#lockNightLockEnabled').val();
+                var currentTime = $('#currentTime').val();
                 
                 return JSON.stringify({
                     "door": door,
@@ -49,7 +50,8 @@ See -->
                     "lockIntruderSensorMode": lockIntruderSensorMode,
                     "nightStartTime": nightStartTime,
                     "nightEndTime": nightEndTime,
-                    "lockNightLockEnabled": lockNightLockEnabled
+                    "lockNightLockEnabled": lockNightLockEnabled,
+                    "currentTime": currentTime
                 });
             }
 
@@ -335,7 +337,9 @@ div {
         </select>
     </p>
 
-    <hr>
+    <!-- Hidden field for currentTime -->
+        <input type="hidden" id="currentTime" value="${tartanHome.currentTime!'-1'}" />
+
 
     <h3> Event log</h3>
     <textarea id="log" rows="15" cols="150">
