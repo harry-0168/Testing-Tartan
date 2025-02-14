@@ -1,8 +1,9 @@
 package tartan.smarthome.core;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The mode for a Tartan Home to be serialized as JSON. This is managed by Jackson via Dropwizard.
@@ -21,6 +22,14 @@ public class TartanHome {
     // The desired temperature
     @JsonProperty
     private String targetTemp;
+
+    // The night start time
+    @JsonProperty
+    private String nightStartTime;
+
+    // The night end time
+    @JsonProperty
+    private String nightEndTime;
 
     // the current temperature
     @JsonProperty
@@ -45,6 +54,23 @@ public class TartanHome {
     // the state of the proximity sensor (true of address occupied, false if vacant)
     @JsonProperty
     private String proximity;
+
+    // the state of the smart door lock (true if locked, false if unlocked)
+    @JsonProperty
+    private String doorLock;
+
+    // the state of the arrival proximity sensor (true if someone is arriving, false if no one is arriving)
+    @JsonProperty
+    private String arrivingProximity;
+
+    @JsonProperty
+    private String keyLessEntry;
+
+    @JsonProperty
+    private String electronicOperation;
+
+    @JsonProperty
+    private String lockNightLockEnabled;
 
     // the heater state (true if on, false if off)
     @JsonProperty
@@ -76,6 +102,20 @@ public class TartanHome {
     @JsonProperty
     private String alarmPasscode;
 
+    @JsonProperty
+    private String lockGivenPasscode;
+
+    @JsonProperty
+    private String lockRequest;
+
+    @JsonProperty
+    private String lockIntruderSensorMode;
+
+    @JsonProperty
+    private String intruderDetectionSensor;
+
+    @JsonProperty
+    private String panelMessage;
     /**
      * Empty constructor needed by Jackson deserialization
      */
@@ -127,6 +167,54 @@ public class TartanHome {
      * @param targetTemp the new target temperature
      */
     public void setTargetTemp(String targetTemp) { this.targetTemp = targetTemp; }
+
+    /**
+     * Get the night start time
+     * @return the night start time
+     */
+    public String getNightStartTime() {
+        return nightStartTime;
+    }
+
+    /**
+     * Set the night start time
+     * @param nightStartTime the new night start time
+     */
+    public void setNightStartTime(String nightStartTime) {
+        this.nightStartTime = nightStartTime;
+    }
+
+    /**
+     * Get the night end time
+     * @return the night end time
+     */
+    public String getNightEndTime() {
+        return nightEndTime;
+    }
+
+    /**
+     * Set the night end time
+     * @param nightEndTime the new night end time
+     */
+    public void setNightEndTime(String nightEndTime) {
+        this.nightEndTime = nightEndTime;
+    }
+
+    /**
+     * Get the lock night lock enabled state
+     * @return the state
+     */
+    public String getLockNightLockEnabled() {
+        return lockNightLockEnabled;
+    }
+
+    /**
+     * Set the lock night lock enabled state
+     * @param lockNightLockEnabled the new state
+     */
+    public void setLockNightLockEnabled(String lockNightLockEnabled) {
+        this.lockNightLockEnabled = lockNightLockEnabled;
+    }
 
     /**
      * Get the current temperature
@@ -224,6 +312,57 @@ public class TartanHome {
         this.proximity = proximity;
     }
 
+    public String getDoorLock() {
+        return doorLock;
+    }
+
+    public void setDoorLock(String doorLock) {
+        this.doorLock = doorLock;
+    }
+
+    public String getArrivingProximity() {
+        return arrivingProximity;
+    }
+
+    public void setArrivingProximity(String arrivingProximity) {
+        this.arrivingProximity = arrivingProximity;
+    }
+
+    public String getKeyLessEntry() {
+        return keyLessEntry;
+    }
+    public void setKeyLessEntry(String keyLessEntry) {
+        this.keyLessEntry = keyLessEntry;
+    }
+
+    public String getElectronicOperation() {
+        return electronicOperation;
+    }
+    public void setElectronicOperation(String electronicOperation) {
+        this.electronicOperation = electronicOperation;
+    }
+
+    public String getLockIntruderSensorMode() {
+        return lockIntruderSensorMode;
+    }
+    public void setLockIntruderSensorMode(String lockIntruderSensorMode) {
+        this.lockIntruderSensorMode = lockIntruderSensorMode;
+    }
+
+    public String getIntruderDetectionSensor() {
+        return intruderDetectionSensor;
+    }
+    public void setIntruderDetectionSensor(String intruder_detection_sensor) {
+        this.intruderDetectionSensor = intruder_detection_sensor;
+    }
+
+    public String getPanelMessage() {
+        return panelMessage;
+    }
+    public void setPanelMessage(String panelMessage) {
+        this.panelMessage = panelMessage;
+    }
+    
     /**
      * Get the alarm armed state
      * @return the status of the alarm
@@ -342,6 +481,29 @@ public class TartanHome {
      */
     public void setAlarmPasscode(String alarmPasscode) { this.alarmPasscode = alarmPasscode; }
 
+    /**
+     * Get the lock passcode
+     * @return the passcode
+     */
+    public String getLockGivenPasscode() { return lockGivenPasscode; }
+
+    /**
+     * Set the lock passcode
+     * @param lockGivenPasscode the new passcode
+     */
+    public void setLockGivenPasscode(String lockGivenPasscode) { this.lockGivenPasscode = lockGivenPasscode; }
+
+    /**
+     * Get the lock request
+     * @return the request
+     */
+    public String getLockRequest() { return lockRequest; }
+
+    /**
+     * Set the lock request
+     * @param lockRequest the new request
+     */
+    public void setLockRequest(String lockRequest) { this.lockRequest = lockRequest; }
     @Override
     public boolean equals(Object o) {
         if (this == o) {

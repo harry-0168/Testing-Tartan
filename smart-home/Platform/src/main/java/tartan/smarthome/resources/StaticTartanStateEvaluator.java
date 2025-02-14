@@ -2,6 +2,7 @@ package tartan.smarthome.resources;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
@@ -55,10 +56,10 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         Boolean lockNightLockEnabled = null; // // the night lock feature of the smart lock (true if enabled, false if disabled)
         Integer nightStartTime = null; // the night mode start time (24-hour format)
         Integer nightEndTime = null; // the night mode end time (24-hour format)
-        Integer currentTime = null;
+        Integer currentTime = null; // the current time (24-hour format)
         Boolean lockIntruderDefenseMode = false; // the intruder sensor mode (true if enabled, false if disabled)
         Boolean intruderDetectedSensor = false; // the intruder detected sensor (true if detected, false if not detected)
-        String panelMessage = ""; // the message displayed on the panel
+        Boolean panelMessage = false; // the message displayed on the panel
 
         System.out.println("Evaluating new state statically");
 
@@ -110,21 +111,31 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 arrivingProximityState = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE)) {
                 lockKeylessEntryEnabled = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_INTRUDER_SENSOR_MODE)) {
+                lockIntruderDefenseMode = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.INTRUDER_DETECTION_SENSOR)) {
+                intruderDetectedSensor = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.PANEL_MESSAGE)) {
+                panelMessage = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.LOCK_NIGHT_LOCK_ENABLED)) {
                 lockNightLockEnabled = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.NIGHT_START_TIME)) {
                 nightStartTime = (Integer) inState.get(key);
             } else if (key.equals(IoTValues.NIGHT_END_TIME)) {
                 nightEndTime = (Integer) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_NIGHT_LOCK_ENABLED)) {
+                lockNightLockEnabled = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.CURRENT_TIME)) {
                 currentTime = (Integer) inState.get(key);
-            } else if (key.equals(IoTValues.LOCK_INTRUDER_SENSOR_MODE)) {
-                lockIntruderDefenseMode = (Boolean) inState.get(key);
-            } else if (key.equals(IoTValues.INTRUDER_DETECTION_SENSOR)) {
-                intruderDetectedSensor = (Boolean) inState.get(key);
-            } else if (key.equals(IoTValues.PANEL_MESSAGE)) {
-                panelMessage = (String) inState.get(key);
-            }
+            } 
+        }
+
+        if (currentTime == null) {
+            log.append(formatLogEntry("Current time not set, read from system"));
+            LocalTime now = LocalTime.now();
+            int hour = now.getHour();
+            int minute = now.getMinute();
+            currentTime = hour * 100 + minute;
         }
 
         if (lightState == true) {
@@ -299,6 +310,16 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             humidifierState = false;
         }
 
+        // log night start and end time
+        if (nightStartTime != null && nightEndTime != null) {
+            log.append(formatLogEntry("Night mode start time: " + nightStartTime + " Night mode end time: " + nightEndTime));
+        }
+
+        // log current time
+        if (currentTime != null) {
+            log.append(formatLogEntry("Current time: " + currentTime));
+        }
+
         // Night Lock
         // Also set the inNightState variable to indicate if it is during night
         if (lockNightLockEnabled) {
@@ -320,9 +341,6 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         } else {
             log.append(formatLogEntry("Night Lock is disabled"));
         }
-
-
-
 
         if (lockElectronicOperationEnabled) {
             if (doorRequest.equals("LOCK")) {
@@ -366,7 +384,7 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         if (lockIntruderDefenseMode) {
             if (intruderDetectedSensor) {
                 log.append(formatLogEntry("Intruder detected, attempting to lock door"));
-                panelMessage = "possible intruder detected";
+                panelMessage = true;
                 doorState = false;
                 log.append(formatLogEntry("Door closed"));
                 smartDoorLockState = true;
@@ -374,13 +392,16 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             }
             else{
                 // Intruder defense mode is on but no intruder detected
-                panelMessage = "all clear";
+                panelMessage = false;
             }
         }
+
+        // log panel message
+        if (panelMessage) {
+            log.append(formatLogEntry("Panel Message: Possbiel Intruder detected! Please check the house!"));
+        }
         else {
-            // Intruder defense mode is off
-            intruderDetectedSensor = false;
-            panelMessage = "";
+            log.append(formatLogEntry("Panel Message: All clear"));
         }
 
         Map<String, Object> newState = new Hashtable<>();

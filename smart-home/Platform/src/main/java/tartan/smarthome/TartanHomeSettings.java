@@ -1,6 +1,8 @@
 package tartan.smarthome;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.checkerframework.checker.units.qual.N;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -40,6 +42,18 @@ public class TartanHomeSettings {
     @NotEmpty
     @JsonProperty
     private String alarmPasscode;
+
+    @NotEmpty
+    @JsonProperty
+    private String lockPasscode;
+
+    @NotEmpty
+    @JsonProperty
+    private String nightStartTime;
+
+    @NotEmpty
+    @JsonProperty
+    private String nightEndTime;
 
     public String getTargetTemp() {
         return targetTemp;
@@ -95,7 +109,19 @@ public class TartanHomeSettings {
         this.name = name;
     }
 
+    public String getNightStartTime() { return nightStartTime;  }
+    
+    public void setNightStartTime(String nightStartTime) { this.nightStartTime = nightStartTime;  }
+
+    public String getNightEndTime() { return nightEndTime;  }
+
+    public void setNightEndTime(String nightEndTime) { this.nightEndTime = nightEndTime;  }
+
     public String getAlarmPasscode() { return alarmPasscode;  }
 
     public void setAlarmPasscode(String alarmPasscode) { this.alarmPasscode = alarmPasscode;  }
+
+    public String getLockPasscode() { return lockPasscode;  }
+
+    public void setLockPasscode(String lockPasscode) { this.lockPasscode = lockPasscode;  }
 }

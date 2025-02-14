@@ -1,8 +1,16 @@
 package tartan.smarthome.core;
 
-import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Objects;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 /**
  * Represents a database table for home status
@@ -31,6 +39,14 @@ public class TartanHomeData {
     @Column(name = "target_temp")
     private String targetTemp;
 
+    // the night start time
+    @Column(name = "night_start_time")
+    private String nightStartTime;
+
+    // the night end time
+    @Column(name = "night_end_time")
+    private String nightEndTime;
+
     // the current temperature
     @Column(name = "temperature")
     private String temperature;
@@ -54,6 +70,39 @@ public class TartanHomeData {
     // the state of the proximity sensor (true of address occupied, false if vacant)
     @Column(name = "proximity_state")
     private String proximity;
+
+    // the state of the smart door lock (true if locked, false if unlocked)
+    @Column(name = "door_lock_state")
+    private String doorLock;
+
+    // the state of the arrival proximity sensor (true if someone is arriving, false if no one is arriving)
+    @Column(name = "arriving_proximity_state")
+    private String arrivingProximity;
+
+    // the state of the keyless entry system (true if enabled, false if disabled)
+    @Column(name = "key_less_entry")
+    private String keyLessEntry;    
+
+    // the state of the electronic operation (true if enabled, false if disabled)
+    @Column(name = "electronic_operation")
+    private String electronicOperation;
+
+    // the state of the night lock enabled (true if enabled, false if disabled)
+    @Column(name = "night_lock")
+    private String nightLock;
+
+    // the state of the lock intruder sensor mode (true if enabled, false if disabled)
+    @Column(name = "lock_intruder_sensor")
+    private String lockIntruderSensor;
+
+    // the state of the intruder defense sensor mode (true if detected, false if not detected)
+    @Column(name = "intruder_defense_sensor")
+    private String intruderDefenseSensor;
+
+    // the state of the panel message (true if all clear, false if not all clear)
+    @Column(name = "panel_message")
+    private String panelMessage;
+
     // the heater state (true if on, false if off)
     @Column(name = "hvac_mode")
     
@@ -82,6 +131,8 @@ public class TartanHomeData {
         this.homeName = h.getName();
         this.address = h.getAddress();
         this.targetTemp = h.getTargetTemp();
+        this.nightStartTime = h.getNightStartTime();
+        this.nightEndTime = h.getNightEndTime();
         this.temperature = h.getTemperature();
         this.humidity = h.getHumidity();
         this.door = h.getDoor();
@@ -93,7 +144,14 @@ public class TartanHomeData {
         this.alarmActive = h.getAlarmActive();
         this.alarmDelay = h.getAlarmDelay();
         this.alarmArmed = h.getAlarmArmed();
-
+        this.doorLock = h.getDoorLock();
+        this.arrivingProximity = h.getArrivingProximity();
+        this.keyLessEntry = h.getKeyLessEntry();
+        this.electronicOperation = h.getElectronicOperation();
+        this.nightLock = h.getLockNightLockEnabled();
+        this.lockIntruderSensor = h.getLockIntruderSensorMode();
+        this.intruderDefenseSensor = h.getIntruderDetectionSensor();
+        this.panelMessage = h.getPanelMessage();
         // Remember when this record is created
         this.createTimeStamp = new Date();
     }
@@ -143,6 +201,54 @@ public class TartanHomeData {
      * @param targetTemp the new target temperature
      */
     public void setTargetTemp(String targetTemp) { this.targetTemp = targetTemp; }
+
+    /**
+     * Get the night start time
+     * @return the night start time
+     */
+    public String getNightStartTime() {
+        return nightStartTime;
+    }
+
+    /**
+     * Set the night start time
+     * @param nightStartTime the new night start time
+     */
+    public void setNightStartTime(String nightStartTime) {
+        this.nightStartTime = nightStartTime;
+    }
+
+    /**
+     * Get the night end time
+     * @return the night end time
+     */
+    public String getNightEndTime() {
+        return nightEndTime;
+    }
+
+    /**
+     * Set the night end time
+     * @param nightEndTime the new night end time
+     */
+    public void setNightEndTime(String nightEndTime) {
+        this.nightEndTime = nightEndTime;
+    }
+
+    /**
+     * Get the night lock state
+     * @return the night lock state
+     */
+    public String getNightLock() {
+        return nightLock;
+    }
+
+    /**
+     * Set the night lock state
+     * @param nightLock the new state
+     */
+    public void setNightLock(String nightLock) {
+        this.nightLock = nightLock;
+    }
 
     /**
      * Get the current temperature
@@ -238,6 +344,118 @@ public class TartanHomeData {
      */
     public void setProximity(String proximity) {
         this.proximity = proximity;
+    }
+
+    /**
+     * Get the door lock state
+     * @return the door lock state
+     */
+    public String getDoorLock() {
+        return doorLock;
+    }
+
+    /**
+     * Set the door lock state
+     * @param doorLock the new state
+     */
+    public void setDoorLock(String doorLock) {
+        this.doorLock = doorLock;
+    }
+
+    /**
+     * Get the arriving proximity state
+     * @return the arriving proximity state
+     */
+    public String getArrivingProximity() {
+        return arrivingProximity;
+    }
+
+    /**
+     * Set the arriving proximity state
+     * @param arrivingProximity the new state
+     */
+    public void setArrivingProximity(String arrivingProximity) {
+        this.arrivingProximity = arrivingProximity;
+    }
+
+    /**
+     * Get the keyless entry state
+     * @return the keyless entry state
+     */
+    public String getKeyLessEntry() {
+        return keyLessEntry;
+    }
+
+    /**
+     * Set the keyless entry state
+     * @param keyLessEntry the new state
+     */
+    public void setKeyLessEntry(String keyLessEntry) {
+        this.keyLessEntry = keyLessEntry;
+    }
+
+    /**
+     * Get the electronic operation state
+     * @return the electronic operation state
+     */
+    public String getElectronicOperation() {
+        return electronicOperation;
+    }
+
+    /**
+     * Set the electronic operation state
+     * @param electronicOperation the new state
+     */
+    public void setElectronicOperation(String electronicOperation) {
+        this.electronicOperation = electronicOperation;
+    }
+
+    /**
+     * Get the lock intruder sensor state
+     * @return the lock intruder sensor state
+     */
+    public String getLockIntruderSensor() {
+        return lockIntruderSensor;
+    }
+
+    /**
+     * Set the lock intruder sensor state
+     * @param lockIntruderSensor the new state
+     */
+    public void setLockIntruderSensor(String lockIntruderSensor) {
+        this.lockIntruderSensor = lockIntruderSensor;
+    }
+
+    /**
+     * Get the intruder defense sensor state
+     * @return the intruder defense sensor state
+     */
+    public String getIntruderDefenseSensor() {
+        return intruderDefenseSensor;
+    }
+
+    /**
+     * Set the intruder defense sensor state
+     * @param intruderDefenseSensor the new state
+     */
+    public void setIntruderDefenseSensor(String intruderDefenseSensor) {
+        this.intruderDefenseSensor = intruderDefenseSensor;
+    }
+
+    /**
+     * Get the panel message state
+     * @return the panel message state
+     */
+    public String getPanelMessage() {
+        return panelMessage;
+    }
+
+    /**
+     * Set the panel message state
+     * @param panelMessage the new state
+     */
+    public void setPanelMessage(String panelMessage) {
+        this.panelMessage = panelMessage;
     }
 
     /**

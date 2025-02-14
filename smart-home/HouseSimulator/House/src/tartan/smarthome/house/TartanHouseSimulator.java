@@ -23,12 +23,20 @@ public class TartanHouseSimulator implements Runnable {
     private Boolean doorState; // the state of the door (true if open, false if closed)
     private Boolean dightState; // the state of the light (true if on, false if off)
     private Boolean proximityState; // the state of the proximity sensor (true of house occupied, false if vacant)
+    private Boolean lockState; // the state of the smart door lock (true if locked, false if unlocked)
+    private Boolean arrivingProximityState; // the state of the arriving proximity sensor (true of house occupied, false if vacant)
+    private Boolean keyLessEntry; // the state of the keyless entry system (true if enabled, false if disabled)
+    private Boolean electronicOperation; // the state of the electronic operation system (true if enabled, false if disabled)
     private Boolean alarmState; // the alarm state (true if enabled, false if disabled)
     private Boolean humidifierState; // the humidifier state (true if on, false if off)
     private Boolean heaterOnState; // the heater state (true if on, false if off)
     private Boolean chillerOnState; // the chiller state (true if on, false if off)
     private Boolean alarmActiveState; // the alarm active state (true if alarm sounding, false if alarm not sounding)
     private String  hvacMode; // the HVAC mode setting, either Heater or Chiller
+    private Boolean lockIntruderSensorMode; // the lock intruder sensor mode (true if enabled, false if disabled)
+    private Boolean intruderDetectSensor; // the intruder detect sensor (true if enabled, false if disabled)
+    private Boolean panelMessage; // the panel message
+    private Boolean lockNightLockEnabled; // the lock night lock enabled (true if enabled, false if disabled)
 
     /** connection settings */
     private String address = null;
@@ -48,9 +56,17 @@ public class TartanHouseSimulator implements Runnable {
     private final String DOOR_STATE = "DS";
     private final String LIGHT_STATE = "LS";
     private final String PROXIMITY_STATE = "PS";
+    private final String LOCK_STATE = "LKS";
+    private final String ARRIVING_PROXIMITY_STATE = "APS";
     private final String ALARM_STATE = "AS";
     private final String HVAC_MODE = "HM";
     private final String ALARM_ACTIVE = "AA";
+    public final String LOCK_KEYLESS_ENTRY_ENABLE = "KLE";
+    public final String LOCK_ELECTRONIC_OPERATION_ENABLE = "EOE";
+    public final String LOCK_INTRUDER_SENSOR_MODE = "LIS";
+    public final String INTRUDER_DETECTION_SENSOR = "IDS";
+    public final String LOCK_NIGHT_LOCK_ENABLED = "NLE";
+    public final String PANEL_MESSAGE = "PM";
     private final String HEATER_STATE = "HES";
     private final String CHILLER_STATE = "CHS";
     private final String PASSCODE = "PC";
@@ -66,6 +82,9 @@ public class TartanHouseSimulator implements Runnable {
 
     private final String DOOR_CLOSE = "0";
     private final String DOOR_OPEN = "1";
+
+    private final String UNLOCK = "0";
+    private final String LOCK = "1";
 
     private final String LIGHT_ON = "1";
     private final String LIGHT_OFF = "0";
@@ -194,6 +213,105 @@ public class TartanHouseSimulator implements Runnable {
                     count++;
                     if (count < keys.size()) {
                         newState.append(PARAM_DELIM);
+                    }
+                } else if (key.equals(LOCK_STATE)){
+                    Boolean newLockState = (Boolean) state.get(key);
+                    newState.append(LOCK_STATE);
+                    newState.append(PARAM_EQ);
+                    if (newLockState) {
+                        newState.append(LOCK);
+                    } else {
+                        newState.append(UNLOCK);
+                    }
+                    count++;
+                    if (count < keys.size()) {
+                        newState.append(PARAM_DELIM);
+                } else if (key.equals(ARRIVING_PROXIMITY_STATE)) {
+                    Boolean newProximityState = (Boolean) state.get(key);
+                    newState.append(ARRIVING_PROXIMITY_STATE);
+                    newState.append(PARAM_EQ);
+                    if (newProximityState) {
+                        newState.append("1");
+                    } else {
+                        newState.append("0");
+                    }
+                    count++;
+                    if (count < keys.size()) {
+                        newState.append(PARAM_DELIM);
+                    }
+                } else if (key.equals(LOCK_KEYLESS_ENTRY_ENABLE)) {
+                    Boolean newKeyLessEntry = (Boolean) state.get(key);
+                    newState.append(LOCK_KEYLESS_ENTRY_ENABLE);
+                    newState.append(PARAM_EQ);
+                    if (newKeyLessEntry) {
+                        newState.append("1");
+                    } else {
+                        newState.append("0");
+                    }
+                    count++;
+                    if (count < keys.size()) {
+                        newState.append(PARAM_DELIM);
+                    }
+                } else if (key.equals(LOCK_ELECTRONIC_OPERATION_ENABLE)) {
+                    Boolean newElectronicOperation = (Boolean) state.get(key);
+                    newState.append(LOCK_ELECTRONIC_OPERATION_ENABLE);
+                    newState.append(PARAM_EQ);
+                    if (newElectronicOperation) {
+                        newState.append("1");
+                    } else {
+                        newState.append("0");
+                    }
+                    count++;
+                    if (count < keys.size()) {
+                        newState.append(PARAM_DELIM);
+                    }
+                } else if (key.equals(LOCK_INTRUDER_SENSOR_MODE)) {
+                    Boolean newLockIntruderSensorMode = (Boolean) state.get(key);
+                    newState.append(LOCK_INTRUDER_SENSOR_MODE);
+                    newState.append(PARAM_EQ);
+                    if (newLockIntruderSensorMode) {
+                        newState.append("1");
+                    } else {
+                        newState.append("0");
+                    }
+                    count++;
+                    if (count < keys.size()) {
+                        newState.append(PARAM_DELIM);
+                    }
+                } else if (key.equals(LOCK_NIGHT_LOCK_ENABLED)) {
+                    Boolean newLockNightLockEnabled = (Boolean) state.get(key);
+                    newState.append(LOCK_NIGHT_LOCK_ENABLED);
+                    newState.append(PARAM_EQ);
+                    if (newLockNightLockEnabled) {
+                        newState.append("1");
+                    } else {
+                        newState.append("0");
+                    }
+                    count++;
+                    if (count < keys.size()) {
+                        newState.append(PARAM_DELIM);
+                    }
+                } else if (key.equals(INTRUDER_DETECTION_SENSOR)) {
+                    Boolean newIntruderDetectSensor = (Boolean) state.get(key);
+                    newState.append(INTRUDER_DETECTION_SENSOR);
+                    newState.append(PARAM_EQ);
+                    if (newIntruderDetectSensor) {
+                        newState.append("1");
+                    } else {
+                        newState.append("0");
+                    }
+                    count++;
+                    if (count < keys.size()) {
+                        newState.append(PARAM_DELIM);
+                    }
+                } else if (key.equals(PANEL_MESSAGE)) {
+                    Boolean newPanelMessage = (Boolean) state.get(key);
+                    newState.append(PANEL_MESSAGE);
+                    newState.append(PARAM_EQ);
+                    if (newPanelMessage) {
+                        newState.append("1");
+                    } else {
+                        newState.append("0");
                     }
                 } else if (key.equals(LIGHT_STATE)) {
                     Boolean newLightState = (Boolean) state.get(key);
@@ -367,6 +485,30 @@ public class TartanHouseSimulator implements Runnable {
                     } else {
                         state.put(PROXIMITY_STATE, false);
                     }
+                } else if (data[0].equals(LOCK_STATE)) {
+                    if (val == 1) {
+                        state.put(LOCK_STATE, true);
+                    } else {
+                        state.put(LOCK_STATE, false);
+                    }
+                } else if (data[0].equals(ARRIVING_PROXIMITY_STATE)) {
+                    if (val == 1) {
+                        state.put(ARRIVING_PROXIMITY_STATE, true);
+                    } else {
+                        state.put(ARRIVING_PROXIMITY_STATE, false);
+                    }
+                } else if (data[0].equals(LOCK_KEYLESS_ENTRY_ENABLE)) {
+                    if (val == 1) {
+                        state.put(LOCK_KEYLESS_ENTRY_ENABLE, true);
+                    } else {
+                        state.put(LOCK_KEYLESS_ENTRY_ENABLE, false);
+                    }
+                } else if (data[0].equals(LOCK_ELECTRONIC_OPERATION_ENABLE)) {
+                    if (val == 1) {
+                        state.put(LOCK_ELECTRONIC_OPERATION_ENABLE, true);
+                    } else {
+                        state.put(LOCK_ELECTRONIC_OPERATION_ENABLE, false);
+                    }
                 } else if (data[0].equals(HEATER_STATE)) {
                     if (val == 1) {
                         state.put(HEATER_ON, true);
@@ -378,6 +520,30 @@ public class TartanHouseSimulator implements Runnable {
                         state.put(CHILLER_ON, true);
                     } else {
                         state.put(CHILLER_OFF, false);
+                    }
+                } else if (data[0].equals(LOCK_INTRUDER_SENSOR_MODE)) {
+                    if (val == 1) {
+                        state.put(LOCK_INTRUDER_SENSOR_MODE, true);
+                    } else {
+                        state.put(LOCK_INTRUDER_SENSOR_MODE, false);
+                    }
+                } else if (data[0].equals(LOCK_NIGHT_LOCK_ENABLED)) {
+                    if (val == 1) {
+                        state.put(LOCK_NIGHT_LOCK_ENABLED, true);
+                    } else {
+                        state.put(LOCK_NIGHT_LOCK_ENABLED, false);
+                    }
+                } else if (data[0].equals(INTRUDER_DETECTION_SENSOR)) {
+                    if (val == 1) {
+                        state.put(INTRUDER_DETECTION_SENSOR, true);
+                    } else {
+                        state.put(INTRUDER_DETECTION_SENSOR, false);
+                    }
+                } else if (data[0].equals(PANEL_MESSAGE)) {
+                    if (val == 1) {
+                        state.put(PANEL_MESSAGE, true);
+                    } else {
+                        state.put(PANEL_MESSAGE, false);
                     }
                 } else if (data[0].equals(TEMP_READING)) {
                     state.put(TEMP_READING, val);

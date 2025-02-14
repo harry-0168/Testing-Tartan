@@ -20,9 +20,37 @@ See -->
                 var humidifier = $('#humidifier').val();
                 var armAlarm = $('#armAlarm').val();
                 var passcode = $('#alarmPasscode').val();
-                var hvacMode = $('#hvacMode').val();
-
-                return JSON.stringify({"door":door,"light":light,"targetTemp":targetTemp,"humidifier":humidifier,"alarmArmed":armAlarm,"alarmDelay":alarmDelay,"alarmPasscode":passcode});
+                
+                var arrivingHome = $('#arrivingHome').val();
+                var keylessEntry = $('#keylessEntry').val();
+                var electronicOperation = $('#electronicOperation').val();
+                var lockPasscode = $('#lockPasscode').val();
+                var lockAction = $('#lockAction').val();
+                var intruderDetectionSensor = $('#intruderDetectionSensor').val();
+                var lockIntruderSensorMode = $('#lockIntruderSensorMode').val();
+                var nightStartTime = $('#nightStart').val();
+                var nightEndTime = $('#nightEnd').val();
+                var lockNightLockEnabled = $('#lockNightLockEnabled').val();
+                
+                return JSON.stringify({
+                    "door": door,
+                    "light": light,
+                    "targetTemp": targetTemp,
+                    "humidifier": humidifier,
+                    "alarmArmed": armAlarm,
+                    "alarmDelay": alarmDelay,
+                    "alarmPasscode": passcode,
+                    "arrivingProximity": arrivingHome,
+                    "keyLessEntry": keylessEntry,
+                    "electronicOperation": electronicOperation,
+                    "lockGivenPasscode": lockPasscode,
+                    "lockRequest": lockAction,
+                    "intruderDetectionSensor": intruderDetectionSensor,
+                    "lockIntruderSensorMode": lockIntruderSensorMode,
+                    "nightStartTime": nightStartTime,
+                    "nightEndTime": nightEndTime,
+                    "lockNightLockEnabled": lockNightLockEnabled
+                });
             }
 
             // Auto scroll
@@ -183,6 +211,132 @@ div {
         </strong>
     </p>
     <hr>
+
+    <h3>Smart Door Lock</h3>
+    <#if tartanHome.doorLock??>
+        <p>
+            Lock State: 
+            <span style="color:<#if tartanHome.doorLock == 'LOCK'>red<#else>green</#if>;">
+                ${tartanHome.doorLock}
+            </span>
+        </p>
+    </#if>
+
+    <!-- Arriving Home -->
+    <p>
+        Arriving Home:
+        <select id="arrivingHome">
+            <option value="not_arriving"
+                <#if tartanHome.arrivingProximity == 'not_arriving'>selected</#if>
+            >Not Arriving</option>
+            <option value="arriving"
+                <#if tartanHome.arrivingProximity == 'arriving'>selected</#if>
+            >Arriving</option>
+        </select>
+    </p>
+
+    <!-- Keyless Entry -->
+    <p>
+        Keyless Entry Enabled:
+        <select id="keylessEntry">
+            <option value="off"
+                <#if tartanHome.keyLessEntry == 'off'>selected</#if>
+            >OFF</option>
+            <option value="on"
+                <#if tartanHome.keyLessEntry == 'on'>selected</#if>
+            >ON</option>
+        </select>
+    </p>
+
+    <!-- Electronic Operation -->
+    <p>
+        Electronic Operation Enabled:
+        <select id="electronicOperation">
+            <option value="off"
+                <#if tartanHome.electronicOperation == 'off'>selected</#if>
+            >OFF</option>
+            <option value="on"
+                <#if tartanHome.electronicOperation == 'on'>selected</#if>
+            >ON</option>
+        </select>
+    </p>
+
+    <p>
+        <label for="lockPasscode">Lock Passcode: </label>
+        <input id="lockPasscode" type="text" value="" />
+    </p>
+
+    <p>
+        <label for="lockAction">Lock Action: </label>
+        <select id="lockAction">
+            <!-- Defaults to "No Action" -->
+            <option value="noaction" selected>No Action</option>
+            <option value="LOCK">LOCK</option>
+            <option value="UNLOCK">UNLOCK</option>
+        </select>
+    </p>
+
+    <!-- Intruder Detection Sensor -->
+    <p>
+        Intruder Detection Sensor:
+        <select id="intruderDetectionSensor">
+            <option value="off"
+                <#if tartanHome.intruderDetectionSensor == "off">selected</#if>
+            >OFF</option>
+            <option value="on"
+                <#if tartanHome.intruderDetectionSensor == "on">selected</#if>
+            >ON</option>
+        </select>
+    </p>
+
+    <!-- Lock Intruder Sensor Mode -->
+    <p>
+        Lock Intruder Sensor Mode:
+        <select id="lockIntruderSensorMode">
+            <option value="off"
+                <#if tartanHome.lockIntruderSensorMode == "off">selected</#if>
+            >OFF</option>
+            <option value="on"
+                <#if tartanHome.lockIntruderSensorMode == "on">selected</#if>
+            >ON</option>
+        </select>
+    </p>
+
+    <!-- Panel Message -->
+    <p>
+        <strong>Panel Message:</strong>
+        <#if tartanHome.panelMessage == "on">
+            <span style="color: red;">Possbiel Intruder detected! Please check the house!</span>
+        <#else>
+            <span style="color: green;">All Clear</span>
+        </#if>
+    </p>
+
+    <p>
+        <strong>
+            <label for="nightStart">Night Start Time: </label>
+            <input id="nightStart" type="text" value="${tartanHome.nightStartTime}" placeholder="HH:MM" size="8" />
+            
+            <label for="nightEnd" style="margin-left: 20px;">Night End Time: </label>
+            <input id="nightEnd" type="text" value="${tartanHome.nightEndTime}" placeholder="HH:MM" size="8" />
+        </strong>
+    </p>
+
+    <!-- Lock Night Lock Enabled -->
+    <p>
+        Lock Night Lock Enabled:
+        <select id="lockNightLockEnabled">
+            <option value="off"
+                <#if tartanHome.lockNightLockEnabled == "off">selected</#if>
+            >OFF</option>
+            <option value="on"
+                <#if tartanHome.lockNightLockEnabled == "on">selected</#if>
+            >ON</option>
+        </select>
+    </p>
+
+    <hr>
+
     <h3> Event log</h3>
     <textarea id="log" rows="15" cols="150">
     <#list tartanHome.eventLog as i>

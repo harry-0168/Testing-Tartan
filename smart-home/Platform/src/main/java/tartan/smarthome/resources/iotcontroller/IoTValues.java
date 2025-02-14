@@ -36,6 +36,9 @@ public abstract class IoTValues {
     public static final String DOOR_CLOSE = "0";
     public static final String DOOR_OPEN = "1";
 
+    public static final String UNLOCK = "0";
+    public static final String LOCK = "1";
+
     public static final String LIGHT_ON = "1";
     public static final String LIGHT_OFF = "0";
 
@@ -66,21 +69,21 @@ public abstract class IoTValues {
 
     public static final String SETTINGS_FILE = "settings.txt";
     public static final String USERS_DB = "users.txt";
-	public static final String AWAY_TIMER = "AW";
+	  public static final String AWAY_TIMER = "AW";
 
-    public static final String LOCK_STATE = "LOCK_STATE";
+    public static final String LOCK_STATE = "LKS";
     public static final String LOCK_REQUEST = "LOCK_REQUEST";
-    public static final String LOCK_ELECTRONIC_OPERATION_ENABLE = "LOCK_ELECTRONIC_OPERATION_ENABLE";
-    public static final String LOCK_KEYLESS_ENTRY_ENABLE = "LOCK_KEYLESS_ENTRY_ENABLE";
+    public static final String LOCK_ELECTRONIC_OPERATION_ENABLE = "EOE";
+    public static final String LOCK_KEYLESS_ENTRY_ENABLE = "KLE";
     public static final String LOCK_PASSCODE = "LOCK_PASSCODE";
     public static final String LOCK_GIVEN_PASSCODE = "LOCK_GIVEN_PASSCODE";
 
-    public static final String LOCK_NIGHT_LOCK_ENABLED = "LOCK_NIGHT_LOCK_ENABLED";
-    public static final String NIGHT_START_TIME = "NIGHT_START_TIME";
-    public static final String NIGHT_END_TIME = "NIGHT_END_TIME";
-    public static final String CURRENT_TIME = "CURRENT_TIME";
+    public static final String LOCK_NIGHT_LOCK_ENABLED = "NLE";
+    public static final String NIGHT_START_TIME = "NST";
+    public static final String NIGHT_END_TIME = "NET";
+    public static final String CURRENT_TIME = "CT";
 
-    public static final String LOCK_INTRUDER_SENSOR_MODE = "LOCK_INTRUDER_SENSOR_MODE";
-    public static final String INTRUDER_DETECTION_SENSOR = "INTRUDER_DETECTION_SENSOR";
-    public static final String PANEL_MESSAGE = "PANEL_MESSAGE";
+    public static final String LOCK_INTRUDER_SENSOR_MODE = "LIS";
+    public static final String INTRUDER_DETECTION_SENSOR = "IDS";
+    public static final String PANEL_MESSAGE = "PM";
 }
