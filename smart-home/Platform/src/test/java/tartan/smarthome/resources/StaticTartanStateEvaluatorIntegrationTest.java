@@ -70,6 +70,63 @@ public class StaticTartanStateEvaluatorIntegrationTest {
         Map<String, Object> evaluatedState2 = new StaticTartanStateEvaluator().evaluateState(evaluatedState1, logBuffer);
         assertEquals(false, evaluatedState2.get(IoTValues.DOOR_STATE), "Door should be closed by the user");
         assertEquals(true, evaluatedState2.get(IoTValues.LOCK_STATE), "Door should be locked automatically");
+    }
 
+    // When the night lock mode is on and during night time, the user unlock the lock using a password, then open the door and leave. 
+    // The door should be automatically closed and the lock should be automatically locked.
+    @Test
+    public void integrationTest_case2() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+
+        initialState.put(IoTValues.LOCK_STATE, true);
+        initialState.put(IoTValues.LOCK_NIGHT_LOCK_ENABLED, true);
+        initialState.put(IoTValues.CURRENT_TIME, 2330);
+        initialState.put(IoTValues.GIVEN_PASSCODE, "1234");
+        initialState.put(IoTValues.LOCK_REQUEST, "UNLOCK");
+        initialState.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, true);
+        initialState.put(IoTValues.PROXIMITY_STATE, true);
+
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(false, evaluatedState.get(IoTValues.LOCK_STATE), "Door should be unlocked with the correct passcode");
+        assertEquals(false, evaluatedState.get(IoTValues.DOOR_STATE), "Door should be unlocked with the correct passcode");
+
+        evaluatedState.put(IoTValues.DOOR_STATE, true);
+        evaluatedState.put(IoTValues.CURRENT_TIME, 2331);
+        evaluatedState.put(IoTValues.PROXIMITY_STATE, false);
+        
+        // print evaluatedState
+        System.out.println(evaluatedState);
+
+        Map<String, Object> evaluatedState1 = new StaticTartanStateEvaluator().evaluateState(evaluatedState, logBuffer);
+        assertEquals(false, evaluatedState1.get(IoTValues.DOOR_STATE), "Door should be closed since house is vacant");
+        assertEquals(true, evaluatedState1.get(IoTValues.LOCK_STATE), "Door should be locked automatically");
+    }
+
+    // When the night lock mode is on and during night time, the user comes back with his phone that is connected with the sensor, 
+    // the door should unlock automatically. After the user enters the building he leaves the door open. The door should be automatically closed and locked.
+    @Test
+    public void integrationTest_case3() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logBuffer = new StringBuffer();
+
+        initialState.put(IoTValues.LOCK_STATE, true);
+        initialState.put(IoTValues.DOOR_STATE, false);
+        initialState.put(IoTValues.LOCK_NIGHT_LOCK_ENABLED, true);
+        initialState.put(IoTValues.CURRENT_TIME, 2330);
+        initialState.put(IoTValues.LOCK_KEYLESS_ENTRY_ENABLE, true);
+        initialState.put(IoTValues.ARRIVING_PROXIMITY_STATE, true);
+
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logBuffer);
+        assertEquals(false, evaluatedState.get(IoTValues.LOCK_STATE), "Door should be unlocked automatically");
+        assertEquals(true, evaluatedState.get(IoTValues.DOOR_STATE), "Door should be opened automatically");
+
+        evaluatedState.put(IoTValues.DOOR_STATE, true);
+        evaluatedState.put(IoTValues.CURRENT_TIME, 2331);
+        evaluatedState.put(IoTValues.PROXIMITY_STATE, true);
+
+        Map<String, Object> evaluatedState1 = new StaticTartanStateEvaluator().evaluateState(evaluatedState, logBuffer);
+        assertEquals(false, evaluatedState1.get(IoTValues.DOOR_STATE), "Door should be closed with night lock mode enabled");
+        assertEquals(true, evaluatedState1.get(IoTValues.LOCK_STATE), "Door should be locked automatically");
     }
 }
