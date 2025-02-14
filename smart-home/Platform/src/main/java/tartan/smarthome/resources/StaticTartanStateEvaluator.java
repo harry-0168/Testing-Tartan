@@ -351,7 +351,9 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 } else {
                     if (givenLockPassCode.compareTo(lockPassCode) == 0) {
                         smartDoorLockState = true;
-                        log.append(formatLogEntry("Door locked"));
+                        doorState = false;
+                        log.append(formatLogEntry("Door locked with electronic operation"));
+                        log.append(formatLogEntry("Door closed with electronic operation"));
                     } else {
                         log.append(formatLogEntry("Invalid passcode given to lock door"));
                     }
@@ -362,7 +364,9 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 } else {
                     if (givenLockPassCode.compareTo(lockPassCode) == 0) {
                         smartDoorLockState = false;
-                        log.append(formatLogEntry("Door unlocked"));
+                        doorState = true;
+                        log.append(formatLogEntry("Door unlocked with electronic operation"));
+                        log.append(formatLogEntry("Door opened with electronic operation"));
                     } else {
                         log.append(formatLogEntry("Invalid passcode given to unlock door"));
                     }
