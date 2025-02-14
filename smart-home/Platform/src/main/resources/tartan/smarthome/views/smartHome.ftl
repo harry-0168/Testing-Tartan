@@ -20,9 +20,23 @@ See -->
                 var humidifier = $('#humidifier').val();
                 var armAlarm = $('#armAlarm').val();
                 var passcode = $('#alarmPasscode').val();
-                var hvacMode = $('#hvacMode').val();
+                
+                var arrivingHome = $('#arrivingHome').val();
+                var keylessEntry = $('#keylessEntry').val();
+                var electronicOperation = $('#electronicOperation').val();
 
-                return JSON.stringify({"door":door,"light":light,"targetTemp":targetTemp,"humidifier":humidifier,"alarmArmed":armAlarm,"alarmDelay":alarmDelay,"alarmPasscode":passcode});
+                return JSON.stringify({
+                    "door": door,
+                    "light": light,
+                    "targetTemp": targetTemp,
+                    "humidifier": humidifier,
+                    "alarmArmed": armAlarm,
+                    "alarmDelay": alarmDelay,
+                    "alarmPasscode": passcode,
+                    "arrivingProximity": arrivingHome,
+                    "keyLessEntry": keylessEntry,
+                    "electronicOperation": electronicOperation
+                });
             }
 
             // Auto scroll
@@ -183,6 +197,58 @@ div {
         </strong>
     </p>
     <hr>
+
+    <h3>Smart Door Lock</h3>
+    <#if tartanHome.doorLock??>
+        <p>
+            Lock State: 
+            <span style="color:<#if tartanHome.doorLock == 'LOCK'>red<#else>green</#if>;">
+                ${tartanHome.doorLock}
+            </span>
+        </p>
+    </#if>
+
+    <!-- Arriving Home -->
+    <p>
+        Arriving Home:
+        <select id="arrivingHome">
+            <option value="not_arriving"
+                <#if tartanHome.arrivingProximity == 'not_arriving'>selected</#if>
+            >Not Arriving</option>
+            <option value="arriving"
+                <#if tartanHome.arrivingProximity == 'arriving'>selected</#if>
+            >Arriving</option>
+        </select>
+    </p>
+
+    <!-- Keyless Entry -->
+    <p>
+        Keyless Entry Enabled:
+        <select id="keylessEntry">
+            <option value="off"
+                <#if tartanHome.keyLessEntry == 'off'>selected</#if>
+            >OFF</option>
+            <option value="on"
+                <#if tartanHome.keyLessEntry == 'on'>selected</#if>
+            >ON</option>
+        </select>
+    </p>
+
+    <!-- Electronic Operation -->
+    <p>
+        Electronic Operation Enabled:
+        <select id="electronicOperation">
+            <option value="off"
+                <#if tartanHome.electronicOperation == 'off'>selected</#if>
+            >OFF</option>
+            <option value="on"
+                <#if tartanHome.electronicOperation == 'on'>selected</#if>
+            >ON</option>
+        </select>
+    </p>
+
+    <hr>
+
     <h3> Event log</h3>
     <textarea id="log" rows="15" cols="150">
     <#list tartanHome.eventLog as i>

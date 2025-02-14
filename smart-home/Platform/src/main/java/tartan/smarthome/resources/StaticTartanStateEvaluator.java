@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+
 import tartan.smarthome.resources.iotcontroller.IoTValues;
 
 public class StaticTartanStateEvaluator implements TartanStateEvaluator {

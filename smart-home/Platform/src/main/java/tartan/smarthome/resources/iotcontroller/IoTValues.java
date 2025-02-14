@@ -36,6 +36,9 @@ public abstract class IoTValues {
     public static final String DOOR_CLOSE = "0";
     public static final String DOOR_OPEN = "1";
 
+    public static final String UNLOCK = "0";
+    public static final String LOCK = "1";
+
     public static final String LIGHT_ON = "1";
     public static final String LIGHT_OFF = "0";
 
@@ -68,10 +71,10 @@ public abstract class IoTValues {
     public static final String USERS_DB = "users.txt";
 	public static final String AWAY_TIMER = "AW";
 
-    public static final String LOCK_STATE = "LOCK_STATE";
+    public static final String LOCK_STATE = "LKS";
     public static final String LOCK_REQUEST = "LOCK_REQUEST";
-    public static final String LOCK_ELECTRONIC_OPERATION_ENABLE = "LOCK_ELECTRONIC_OPERATION_ENABLE";
-    public static final String LOCK_KEYLESS_ENTRY_ENABLE = "LOCK_KEYLESS_ENTRY_ENABLE";
+    public static final String LOCK_ELECTRONIC_OPERATION_ENABLE = "EOE";
+    public static final String LOCK_KEYLESS_ENTRY_ENABLE = "KLE";
     public static final String LOCK_PASSCODE = "LOCK_PASSCODE";
     public static final String LOCK_GIVEN_PASSCODE = "LOCK_GIVEN_PASSCODE";
 
@@ -82,4 +85,7 @@ public abstract class IoTValues {
     public static final String LOCK_INTRUDER_SENSOR_MODE = "LOCK_INTRUDER_SENSOR_MODE";
     public static final String INTRUDER_DETECTION_SENSOR = "INTRUDER_DETECTION_SENSOR";
     public static final String PANEL_MESSAGE = "PANEL_MESSAGE";
+
+    public static final String INTRUDER_DETECTED = "possible intruder detected";
+    public static final String INTRUDER_NOT_DETECTED = "all clear";
 }

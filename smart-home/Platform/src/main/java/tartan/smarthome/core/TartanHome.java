@@ -1,8 +1,9 @@
 package tartan.smarthome.core;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The mode for a Tartan Home to be serialized as JSON. This is managed by Jackson via Dropwizard.
@@ -45,6 +46,23 @@ public class TartanHome {
     // the state of the proximity sensor (true of address occupied, false if vacant)
     @JsonProperty
     private String proximity;
+
+    // the state of the smart door lock (true if locked, false if unlocked)
+    @JsonProperty
+    private String doorLock;
+
+    // the state of the arrival proximity sensor (true if someone is arriving, false if no one is arriving)
+    @JsonProperty
+    private String arrivingProximity;
+
+    @JsonProperty
+    private String keyLessEntry;
+
+    @JsonProperty
+    private String electronicOperation;
+
+    @JsonProperty
+    private String lock
 
     // the heater state (true if on, false if off)
     @JsonProperty
@@ -224,6 +242,36 @@ public class TartanHome {
         this.proximity = proximity;
     }
 
+    public String getDoorLock() {
+        return doorLock;
+    }
+
+    public void setDoorLock(String doorLock) {
+        this.doorLock = doorLock;
+    }
+
+    public String getArrivingProximity() {
+        return arrivingProximity;
+    }
+
+    public void setArrivingProximity(String arrivingProximity) {
+        this.arrivingProximity = arrivingProximity;
+    }
+
+    public String getKeyLessEntry() {
+        return keyLessEntry;
+    }
+    public void setKeyLessEntry(String keyLessEntry) {
+        this.keyLessEntry = keyLessEntry;
+    }
+
+    public String getElectronicOperation() {
+        return electronicOperation;
+    }
+    public void setElectronicOperation(String electronicOperation) {
+        this.electronicOperation = electronicOperation;
+    }
+    
     /**
      * Get the alarm armed state
      * @return the status of the alarm

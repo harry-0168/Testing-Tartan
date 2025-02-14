@@ -1,8 +1,16 @@
 package tartan.smarthome.core;
 
-import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Objects;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 /**
  * Represents a database table for home status
@@ -54,6 +62,23 @@ public class TartanHomeData {
     // the state of the proximity sensor (true of address occupied, false if vacant)
     @Column(name = "proximity_state")
     private String proximity;
+
+    // the state of the smart door lock (true if locked, false if unlocked)
+    @Column(name = "door_lock_state")
+    private String doorLock;
+
+    // the state of the arrival proximity sensor (true if someone is arriving, false if no one is arriving)
+    @Column(name = "arriving_proximity_state")
+    private String arrivingProximity;
+
+    // the state of the keyless entry system (true if enabled, false if disabled)
+    @Column(name = "key_less_entry")
+    private String keyLessEntry;    
+
+    // the state of the electronic operation (true if enabled, false if disabled)
+    @Column(name = "electronic_operation")
+    private String electronicOperation;
+
     // the heater state (true if on, false if off)
     @Column(name = "hvac_mode")
     
@@ -93,7 +118,10 @@ public class TartanHomeData {
         this.alarmActive = h.getAlarmActive();
         this.alarmDelay = h.getAlarmDelay();
         this.alarmArmed = h.getAlarmArmed();
-
+        this.doorLock = h.getDoorLock();
+        this.arrivingProximity = h.getArrivingProximity();
+        this.keyLessEntry = h.getKeyLessEntry();
+        this.electronicOperation = h.getElectronicOperation();
         // Remember when this record is created
         this.createTimeStamp = new Date();
     }
@@ -238,6 +266,70 @@ public class TartanHomeData {
      */
     public void setProximity(String proximity) {
         this.proximity = proximity;
+    }
+
+    /**
+     * Get the door lock state
+     * @return the door lock state
+     */
+    public String getDoorLock() {
+        return doorLock;
+    }
+
+    /**
+     * Set the door lock state
+     * @param doorLock the new state
+     */
+    public void setDoorLock(String doorLock) {
+        this.doorLock = doorLock;
+    }
+
+    /**
+     * Get the arriving proximity state
+     * @return the arriving proximity state
+     */
+    public String getArrivingProximity() {
+        return arrivingProximity;
+    }
+
+    /**
+     * Set the arriving proximity state
+     * @param arrivingProximity the new state
+     */
+    public void setArrivingProximity(String arrivingProximity) {
+        this.arrivingProximity = arrivingProximity;
+    }
+
+    /**
+     * Get the keyless entry state
+     * @return the keyless entry state
+     */
+    public String getKeyLessEntry() {
+        return keyLessEntry;
+    }
+
+    /**
+     * Set the keyless entry state
+     * @param keyLessEntry the new state
+     */
+    public void setKeyLessEntry(String keyLessEntry) {
+        this.keyLessEntry = keyLessEntry;
+    }
+
+    /**
+     * Get the electronic operation state
+     * @return the electronic operation state
+     */
+    public String getElectronicOperation() {
+        return electronicOperation;
+    }
+
+    /**
+     * Set the electronic operation state
+     * @param electronicOperation the new state
+     */
+    public void setElectronicOperation(String electronicOperation) {
+        this.electronicOperation = electronicOperation;
     }
 
     /**
