@@ -23,6 +23,14 @@ public class TartanHome {
     @JsonProperty
     private String targetTemp;
 
+    // The night start time
+    @JsonProperty
+    private String nightStartTime;
+
+    // The night end time
+    @JsonProperty
+    private String nightEndTime;
+
     // the current temperature
     @JsonProperty
     private String temperature;
@@ -60,6 +68,9 @@ public class TartanHome {
 
     @JsonProperty
     private String electronicOperation;
+
+    @JsonProperty
+    private String lockNightLockEnabled;
 
     // the heater state (true if on, false if off)
     @JsonProperty
@@ -156,6 +167,54 @@ public class TartanHome {
      * @param targetTemp the new target temperature
      */
     public void setTargetTemp(String targetTemp) { this.targetTemp = targetTemp; }
+
+    /**
+     * Get the night start time
+     * @return the night start time
+     */
+    public String getNightStartTime() {
+        return nightStartTime;
+    }
+
+    /**
+     * Set the night start time
+     * @param nightStartTime the new night start time
+     */
+    public void setNightStartTime(String nightStartTime) {
+        this.nightStartTime = nightStartTime;
+    }
+
+    /**
+     * Get the night end time
+     * @return the night end time
+     */
+    public String getNightEndTime() {
+        return nightEndTime;
+    }
+
+    /**
+     * Set the night end time
+     * @param nightEndTime the new night end time
+     */
+    public void setNightEndTime(String nightEndTime) {
+        this.nightEndTime = nightEndTime;
+    }
+
+    /**
+     * Get the lock night lock enabled state
+     * @return the state
+     */
+    public String getLockNightLockEnabled() {
+        return lockNightLockEnabled;
+    }
+
+    /**
+     * Set the lock night lock enabled state
+     * @param lockNightLockEnabled the new state
+     */
+    public void setLockNightLockEnabled(String lockNightLockEnabled) {
+        this.lockNightLockEnabled = lockNightLockEnabled;
+    }
 
     /**
      * Get the current temperature

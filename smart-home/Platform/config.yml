@@ -18,6 +18,9 @@ houses:
     # the default alarm delay
     alarmDelay: 30
 
+    nightStartTime: 2200
+    nightEndTime: 600
+
     # and the super secret passcode to disable the alarm
     alarmPasscode: stop
     lockPasscode: passcode
@@ -31,6 +34,9 @@ houses:
     password: 5678
     targetTemp: 70
     alarmDelay: 30
+
+    nightStartTime: 2200
+    nightEndTime: 600
     alarmPasscode: quit
     lockPasscode: passcode
 

@@ -28,7 +28,10 @@ See -->
                 var lockAction = $('#lockAction').val();
                 var intruderDetectionSensor = $('#intruderDetectionSensor').val();
                 var lockIntruderSensorMode = $('#lockIntruderSensorMode').val();
-
+                var nightStartTime = $('#nightStart').val();
+                var nightEndTime = $('#nightEnd').val();
+                var lockNightLockEnabled = $('#lockNightLockEnabled').val();
+                
                 return JSON.stringify({
                     "door": door,
                     "light": light,
@@ -43,7 +46,10 @@ See -->
                     "lockGivenPasscode": lockPasscode,
                     "lockRequest": lockAction,
                     "intruderDetectionSensor": intruderDetectionSensor,
-                    "lockIntruderSensorMode": lockIntruderSensorMode
+                    "lockIntruderSensorMode": lockIntruderSensorMode,
+                    "nightStartTime": nightStartTime,
+                    "nightEndTime": nightEndTime,
+                    "lockNightLockEnabled": lockNightLockEnabled
                 });
             }
 
@@ -304,6 +310,29 @@ div {
         <#else>
             <span style="color: green;">All Clear</span>
         </#if>
+    </p>
+
+    <p>
+        <strong>
+            <label for="nightStart">Night Start Time: </label>
+            <input id="nightStart" type="text" value="${tartanHome.nightStartTime}" placeholder="HH:MM" size="8" />
+            
+            <label for="nightEnd" style="margin-left: 20px;">Night End Time: </label>
+            <input id="nightEnd" type="text" value="${tartanHome.nightEndTime}" placeholder="HH:MM" size="8" />
+        </strong>
+    </p>
+
+    <!-- Lock Night Lock Enabled -->
+    <p>
+        Lock Night Lock Enabled:
+        <select id="lockNightLockEnabled">
+            <option value="off"
+                <#if tartanHome.lockNightLockEnabled == "off">selected</#if>
+            >OFF</option>
+            <option value="on"
+                <#if tartanHome.lockNightLockEnabled == "on">selected</#if>
+            >ON</option>
+        </select>
     </p>
 
     <hr>

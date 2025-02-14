@@ -39,6 +39,9 @@ public class TartanHomeService {
     private String intruderDetectionSensor;
     private String panelMessage;
     private String targetTemp;
+    private String nightStartTime;
+    private String nightEndTime;
+    private String lockNightLockEnabled;
     private String user;
     private String password;
 
@@ -75,6 +78,8 @@ public class TartanHomeService {
         // User configuration
         this.targetTemp = settings.getTargetTemp();
         this.alarmDelay = settings.getAlarmDelay();
+        this.nightStartTime = settings.getNightStartTime();
+        this.nightEndTime = settings.getNightEndTime();
         this.alarmPasscode = settings.getAlarmPasscode();
         this.lockPasscode = settings.getLockPasscode();
 
@@ -90,6 +95,8 @@ public class TartanHomeService {
         Map<String, Object> userSettings = new Hashtable<String, Object>();
         userSettings.put(IoTValues.ALARM_DELAY, Integer.parseInt(this.alarmDelay));
         userSettings.put(IoTValues.TARGET_TEMP, Integer.parseInt(this.targetTemp));
+        userSettings.put(IoTValues.NIGHT_START_TIME, Integer.parseInt(this.nightStartTime));
+        userSettings.put(IoTValues.NIGHT_END_TIME, Integer.parseInt(this.nightEndTime));
         userSettings.put(IoTValues.ALARM_PASSCODE, this.alarmPasscode);
         userSettings.put(IoTValues.LOCK_PASSCODE, this.lockPasscode);
         controller.updateSettings(userSettings);
@@ -259,6 +266,17 @@ public class TartanHomeService {
         return null;
     }
 
+    /*
+     * Convert night lock enabled state
+     * @param tartanHome
+     * @return the state (ON/OFF)
+     */
+    private Boolean toIoTNightLockEnabled(TartanHome tartanHome) {
+        if (tartanHome.getLockNightLockEnabled().equals(TartanHomeValues.ON)) return true;
+        else if (tartanHome.getLockNightLockEnabled().equals(TartanHomeValues.OFF)) return false;
+        return null;
+    }
+
     /**
      * Convert Panel Message
      * @param tartanHome
@@ -386,6 +404,24 @@ public class TartanHomeService {
         return Integer.parseInt(tartanHome.getTargetTemp());
     }
 
+    /*
+     * Convert night start time
+     * @param tartanHome the home
+     * @return the start time
+     */
+    private Integer toIoTNightStartTime(TartanHome tartanHome) {
+        return Integer.parseInt(tartanHome.getNightStartTime());
+    }
+
+    /**
+     * Convert night end time
+     * @param tartanHome the home
+     * @return the end time
+     */
+    private Integer toIoTNightEndTime(TartanHome tartanHome) {
+        return Integer.parseInt(tartanHome.getNightEndTime());
+    }
+
     /**
      * Convert HVAC mode state
      * @param tartanHome the home
@@ -415,6 +451,14 @@ public class TartanHomeService {
                 this.targetTemp = h.getTargetTemp();
                 userSettings.put(IoTValues.TARGET_TEMP, Integer.parseInt(this.targetTemp)); 
             }           
+            if (h.getNightStartTime()!=null) {
+                this.nightStartTime = h.getNightStartTime();
+                userSettings.put(IoTValues.NIGHT_START_TIME, Integer.parseInt(this.nightStartTime)); 
+            }
+            if (h.getNightEndTime()!=null) {
+                this.nightEndTime = h.getNightEndTime();
+                userSettings.put(IoTValues.NIGHT_END_TIME, Integer.parseInt(this.nightEndTime)); 
+            }
             controller.updateSettings(userSettings);  
             controller.processStateUpdate(toIotState(h));  
         }
@@ -433,6 +477,8 @@ public class TartanHomeService {
         tartanHome.setAddress(this.address);
 
         tartanHome.setTargetTemp(this.targetTemp);
+        tartanHome.setNightStartTime(this.nightStartTime);
+        tartanHome.setNightEndTime(this.nightEndTime);
         tartanHome.setAlarmDelay(this.alarmDelay);
 
         tartanHome.setEventLog(controller.getLogMessages());
@@ -452,6 +498,9 @@ public class TartanHomeService {
             tartanHome.setTemperature(TartanHomeValues.UNKNOWN);
             tartanHome.setHumidity(TartanHomeValues.UNKNOWN);
             tartanHome.setTargetTemp(TartanHomeValues.UNKNOWN);
+            tartanHome.setNightStartTime(TartanHomeValues.UNKNOWN);
+            tartanHome.setNightEndTime(TartanHomeValues.UNKNOWN);
+            tartanHome.setLockNightLockEnabled(TartanHomeValues.UNKNOWN);
             tartanHome.setHumidifier(TartanHomeValues.UNKNOWN);
             tartanHome.setDoor(TartanHomeValues.UNKNOWN);
             tartanHome.setLight(TartanHomeValues.UNKNOWN);
@@ -482,8 +531,11 @@ public class TartanHomeService {
             }
             else if (key.equals(IoTValues.TARGET_TEMP)) {
                 tartanHome.setTargetTemp(String.valueOf(state.get(key)));
-            }
-            else if (key.equals(IoTValues.HUMIDIFIER_STATE)) {
+            } else if(key.equals(IoTValues.NIGHT_START_TIME)) {
+                tartanHome.setNightStartTime(String.valueOf(state.get(key)));
+            } else if(key.equals(IoTValues.NIGHT_END_TIME)) {
+                tartanHome.setNightEndTime(String.valueOf(state.get(key)));
+            } else if (key.equals(IoTValues.HUMIDIFIER_STATE)) {
                 Boolean humidifierState = (Boolean)state.get(key);
                 if (humidifierState) {
                     tartanHome.setHumidifier(String.valueOf(TartanHomeValues.ON));
@@ -538,6 +590,13 @@ public class TartanHomeService {
                     tartanHome.setElectronicOperation(TartanHomeValues.ON);
                 } else {
                     tartanHome.setElectronicOperation(TartanHomeValues.OFF);
+                }
+            } else if (key.equals(IoTValues.LOCK_NIGHT_LOCK_ENABLED)) {
+                Boolean nightLockEnabled = (Boolean)state.get(key);
+                if (nightLockEnabled) {
+                    tartanHome.setLockNightLockEnabled(TartanHomeValues.ON);
+                } else {
+                    tartanHome.setLockNightLockEnabled(TartanHomeValues.OFF);
                 }
             } else if (key.equals(IoTValues.LOCK_INTRUDER_SENSOR_MODE)) {
                 Boolean lockIntruderSensorMode = (Boolean)state.get(key);
@@ -626,6 +685,10 @@ public class TartanHomeService {
 
         if (tartanHome.getElectronicOperation()!=null) {
             state.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, toIoTElectronicOperationState(tartanHome));
+        }
+
+        if (tartanHome.getLockNightLockEnabled()!=null) {
+            state.put(IoTValues.LOCK_NIGHT_LOCK_ENABLED, toIoTNightLockEnabled(tartanHome));
         }
 
         if (tartanHome.getLockIntruderSensorMode()!=null) {

@@ -117,7 +117,21 @@ public class IoTConnectManager {
                 if (count<keys.size()) {
                     newState.append(IoTValues.PARAM_DELIM);
                 }
-            } else if (key.equals(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE)) {
+            } else if (key.equals(IoTValues.LOCK_NIGHT_LOCK_ENABLED)) {
+                Boolean newNightLock = (Boolean) state.get(key);
+                newState.append(IoTValues.LOCK_NIGHT_LOCK_ENABLED);
+                newState.append(IoTValues.PARAM_EQ);
+                if (newNightLock) {
+                    newState.append("1");
+                } else {
+                    newState.append("0");
+                }
+                count++;
+                if (count<keys.size()) {
+                    newState.append(IoTValues.PARAM_DELIM);
+                }
+            } 
+            else if (key.equals(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE)) {
                 Boolean newElectronicOperation = (Boolean) state.get(key);
                 newState.append(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE);
                 newState.append(IoTValues.PARAM_EQ);
@@ -368,6 +382,12 @@ public class IoTConnectManager {
                     state.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, true);
                 } else {
                     state.put(IoTValues.LOCK_ELECTRONIC_OPERATION_ENABLE, false);
+                }
+            } else if (data[0].equals(IoTValues.LOCK_NIGHT_LOCK_ENABLED)) {
+                if (val == 1) {
+                    state.put(IoTValues.LOCK_NIGHT_LOCK_ENABLED, true);
+                } else {
+                    state.put(IoTValues.LOCK_NIGHT_LOCK_ENABLED, false);
                 }
             } else if (data[0].equals(IoTValues.LOCK_INTRUDER_SENSOR_MODE)) {
                 if (val == 1) {
