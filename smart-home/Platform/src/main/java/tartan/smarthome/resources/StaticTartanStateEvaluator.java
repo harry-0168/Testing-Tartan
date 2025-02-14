@@ -402,8 +402,6 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         }
         else {
             log.append(formatLogEntry("Panel Message: All clear"));
-                panelMessage = "all clear";
-            }
         }
 
         Map<String, Object> newState = new Hashtable<>();
