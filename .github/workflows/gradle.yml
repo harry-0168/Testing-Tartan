@@ -93,6 +93,19 @@ jobs:
         working-directory: ./smart-home/Platform
         run: docker-compose logs
 
+      - name: Wait for platform service
+        run: |
+          for i in {1..10}; do
+            if curl -s http://localhost:8080 > /dev/null; then
+              echo "Platform is up!"
+              exit 0
+            fi
+            echo "Platform not ready yet, retrying ($i)"
+            sleep 5
+          done
+          echo "Platform did not start in time."
+          exit 1
+
       - name: Run system tests
         working-directory: ./smart-home/Platform/src/test/python
         run: pytest
