@@ -775,8 +775,10 @@ public class StaticTartanStateEvaluatorTest {
 
     }
 
+    // Test the lock's performance when it's already locked with
+    // instruction lock and already unlocked with instruction unlock
     @Test
-    public void test_lock_unlock_door_when_door_already_in_state(){
+    public void test_electronic_operation_instructions_same_as_current_state(){
         Map<String, Object> initialState = initializeState();
         StringBuffer logs = new StringBuffer();
         initialState.put(IoTValues.LOCK_PASSCODE, "1234");
