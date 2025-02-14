@@ -829,4 +829,15 @@ public class StaticTartanStateEvaluatorTest {
         assertTrue(logs.toString().contains("Door already unlocked"),
                 "Log should contain a message for confirming door already unlocked");
     }
+
+    @Test
+    public void test_panel_message() {
+        Map<String, Object> initialState = initializeState();
+        StringBuffer logs = new StringBuffer();
+        initialState.put(IoTValues.INTRUDER_DETECTION_SENSOR, true);
+        initialState.put(IoTValues.LOCK_INTRUDER_SENSOR_MODE, true);
+        Map<String, Object> evaluatedState = new StaticTartanStateEvaluator().evaluateState(initialState, logs);
+        assertTrue(logs.toString().contains("Panel Message: Possbiel Intruder detected! Please check the house!"),
+                "Log should contain a message for confirming door already unlocked");
+    }
 }

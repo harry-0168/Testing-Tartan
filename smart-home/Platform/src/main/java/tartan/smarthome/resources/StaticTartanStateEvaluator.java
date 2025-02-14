@@ -308,15 +308,15 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             humidifierState = false;
         }
 
-        // log night start and end time
-        if (nightStartTime != null && nightEndTime != null) {
-            log.append(formatLogEntry("Night mode start time: " + nightStartTime + " Night mode end time: " + nightEndTime));
-        }
-
-        // log current time
-        if (currentTime != null) {
-            log.append(formatLogEntry("Current time: " + currentTime));
-        }
+//        // log night start and end time
+//        if (nightStartTime != null && nightEndTime != null) {
+//            log.append(formatLogEntry("Night mode start time: " + nightStartTime + " Night mode end time: " + nightEndTime));
+//        }
+//
+//        // log current time
+//        if (currentTime != null) {
+//            log.append(formatLogEntry("Current time: " + currentTime));
+//        }
 
         // Night Lock
         // Also set the inNightState variable to indicate if it is during night
