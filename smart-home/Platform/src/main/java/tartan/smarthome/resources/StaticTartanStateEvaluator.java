@@ -389,12 +389,12 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
             arrivingProximityState = false;
         }
 
-        panelMessage = false;
+        panelMessage = false; // reset panel message
         if (lockIntruderDefenseMode) {
             if (intruderDetectedSensor) {
                 panelMessage = true;
                 if (!proximityState){
-                    log.append(formatLogEntry("Intruder detected, attempting to lock door"));
+                    log.append(formatLogEntry("Intruder detected, house is empty, lock and close door"));
                     doorState = false;
                     log.append(formatLogEntry("Door closed"));
                     smartDoorLockState = true;
@@ -406,6 +406,16 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                     doorState = true;
                 }
             }
+        }
+
+        if (smartDoorLockState) {
+            doorState = false;
+            log.append(formatLogEntry("Door closed as door is locked"));
+        }
+
+        if (doorState) {
+            smartDoorLockState = false;
+            log.append(formatLogEntry("Door opened so door is unlocked"));
         }
 
         // log panel message
