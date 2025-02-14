@@ -59,3 +59,36 @@ jobs:
       with:
         name: jacoco-report
         path: smart-home/Platform/build/jacocoHtml/
+
+
+  # system-test:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - uses: actions/checkout@v4
+
+  #     - name: Install docker-compose
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y docker-compose
+
+
+  #     - name: Run docker Compose
+  #       working-directory: ./smart-home/Platform
+  #       run: docker-compose up -d --build
+
+  #     - name : set up python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: '3.7'
+
+  #     - name: Install Python Dependencies
+  #       run: pip install pytest requests
+
+  #     - name: Run system tests
+  #       working-directory: ./smart-home/Platform/src/test/python
+  #       run: pytest
+
+  #     - name: Bring server down
+  #       working-directory: ./smart-home/Platform
+  #       run: docker-compose down
