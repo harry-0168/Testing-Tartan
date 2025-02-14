@@ -60,7 +60,6 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         Boolean lockIntruderDefenseMode = false; // the intruder sensor mode (true if enabled, false if disabled)
         Boolean intruderDetectedSensor = false; // the intruder detected sensor (true if detected, false if not detected)
         Boolean panelMessage = false; // the message displayed on the panel
-        // String panelMessage = ""; // the message displayed on the panel
 
         System.out.println("Evaluating new state statically");
 
@@ -118,6 +117,8 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
                 intruderDetectedSensor = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.PANEL_MESSAGE)) {
                 panelMessage = (Boolean) inState.get(key);
+            } else if (key.equals(IoTValues.LOCK_NIGHT_LOCK_ENABLED)) {
+                lockNightLockEnabled = (Boolean) inState.get(key);
             } else if (key.equals(IoTValues.NIGHT_START_TIME)) {
                 nightStartTime = (Integer) inState.get(key);
             } else if (key.equals(IoTValues.NIGHT_END_TIME)) {
@@ -318,18 +319,20 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         if (currentTime != null) {
             log.append(formatLogEntry("Current time: " + currentTime));
         }
+
         // Night Lock
+        // Also set the inNightState variable to indicate if it is during night
         if (lockNightLockEnabled) {
             if (nightStartTime > nightEndTime) { // Nighttime spans over midnight
                 if (currentTime >= nightStartTime || currentTime <= nightEndTime) {
-                    if (!smartDoorLockState) {
+                    if (!smartDoorLockState && !doorState) {
                         smartDoorLockState = true;
                         log.append(formatLogEntry("Door locked during night time"));
                     }
                 }
             } else { // Nighttime doesn't span over midnight
                 if (currentTime >= nightStartTime && currentTime <= nightEndTime) {
-                    if (!smartDoorLockState) {
+                    if (!smartDoorLockState && !doorState) {
                         smartDoorLockState = true;
                         log.append(formatLogEntry("Door locked during night time"));
                     }
