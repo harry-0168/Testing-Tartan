@@ -323,16 +323,20 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         if (lockNightLockEnabled) {
             if (nightStartTime > nightEndTime) { // Nighttime spans over midnight
                 if (currentTime >= nightStartTime || currentTime <= nightEndTime) {
-                    if (!smartDoorLockState && !doorState) {
+                    if (!smartDoorLockState) {
                         smartDoorLockState = true;
+                        doorState = false;
                         log.append(formatLogEntry("Door locked during night time"));
+                        log.append(formatLogEntry("Door closed with night lock"));
                     }
                 }
             } else { // Nighttime doesn't span over midnight
                 if (currentTime >= nightStartTime && currentTime <= nightEndTime) {
-                    if (!smartDoorLockState && !doorState) {
+                    if (!smartDoorLockState) {
                         smartDoorLockState = true;
+                        doorState = false;
                         log.append(formatLogEntry("Door locked during night time"));
+                        log.append(formatLogEntry("Door closed with night lock"));
                     }
                 }
             }
@@ -371,7 +375,9 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         if (arrivingProximityState){
             if (lockKeylessEntryEnabled) {
                 log.append(formatLogEntry("Arriving home, automatically unlocking door"));
+                log.append(formatLogEntry("Door unlocked with keyless entry"));
                 smartDoorLockState = false;
+                doorState = true;
             } else {
                 log.append(formatLogEntry("Arriving home, keyless entry disabled"));
             }
