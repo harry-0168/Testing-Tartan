@@ -29,7 +29,11 @@ Json format for the post request
     "lockGivenPasscode": lockPasscode,
     "lockRequest": lockAction,
     "intruderDetectionSensor": intruderDetectionSensor,
-    "lockIntruderSensorMode": lockIntruderSensorMode
+    "lockIntruderSensorMode": lockIntruderSensorMode,
+    "nightStartTime": nightStartTime,
+    "nightEndTime": nightEndTime,
+    "lockNightLockEnabled": lockNightLockEnabled,
+    "currentTime": currentTime
 }
 '''
 
@@ -69,6 +73,30 @@ Json format for the get request
 }
 '''
 
+def initializeState():
+    data = {
+        "door": "open",
+        "light": "off",
+        "targetTemp": "78",
+        "humidifier": "off",
+        "alarmArmed": "disarmed",
+        "alarmDelay": "30",
+        "alarmPasscode": "passcode",
+        "arrivingProximity": "not_arriving",
+        "keyLessEntry": "off",
+        "electronicOperation": "on",
+        "lockGivenPasscode": "passcode",
+        "lockRequest": "UNLOCK",
+        "intruderDetectionSensor": "off",
+        "lockIntruderSensorMode": "off",
+        "nightStartTime": "2230",
+        "nightEndTime": "615",
+        "lockNightLockEnabled": "off",
+        "currentTime": "2330"
+    }
+    response = requests.post(post_url + houseName, json=data, auth=auth, headers=headers)
+    assert response.status_code == 200  # Check HTTP status code
+
 # Validates that the server returns the expected error code in the "code" field of the JSON response.
 def test_wrongUrl():
     response=requests.get(get_url, auth=auth, headers=headers)
@@ -82,14 +110,39 @@ def test_get():
     json_response=response.json()
     assert "tartanHome" in json_response
 
+
+def test_NightLockMode():
+    ''' Input: nightLockMode=on, time=night, lockGivenPasscode=passcode, lockRequest=UNLOCK, door=open, door=closed
+        Expected Output: doorLock=lock
+    '''
+    initializeState()
+    data = {
+        "lockNightLockEnabled": "on",
+        "nightStartTime": "2230",
+        "nightEndTime": "615",
+        "currentTime": "2330",
+        "electronicOperation": "on",
+        "lockGivenPasscode": "passcode",
+        "lockRequest": "UNLOCK",
+    }
+    response = requests.post(post_url + houseName, json=data, auth=auth, headers=headers)
+    assert response.status_code == 200  # Check HTTP status code
+
+    response = requests.get(get_url + houseName, auth=auth, headers=headers)
+    assert response.status_code == 200  # Check HTTP status code
+    json_response = response.json()
+    assert json_response["tartanHome"]["doorLock"] == "unlock"
+
+
 def test_electronicOperation_case1():
     ''' Input : electronicOperation=on, lockGivenPasscode=passcode, lockRequest=UNLOCK, door=open
         Expected Output : electronicOperation=on, doorLock=unlock, door=closed
     '''
+    initializeState()
     data = {
         "electronicOperation": "on",
         "lockGivenPasscode": "passcode",
-        "lockRequest": "UNLOCK",
+        "lockRequest": "LOCK",
         "door": "open",
     }
     response=requests.post(post_url+ houseName, json=data, auth=auth, headers=headers)
@@ -98,10 +151,13 @@ def test_electronicOperation_case1():
     assert response.status_code == 200  # Check HTTP status code
     json_response=response.json()
     assert json_response["tartanHome"]["electronicOperation"]=="on"
-    assert json_response["tartanHome"]["doorLock"]=="unlock"
+    assert json_response["tartanHome"]["doorLock"]=="lock"
     assert json_response["tartanHome"]["door"]=="closed"
 
+
+
 def test_TargetTemperatureChange():
+    initializeState()
     data = {
         "targetTemp": "87",
         "door": "open",
@@ -123,6 +179,7 @@ def test_TargetTemperatureChange():
     assert json_response["tartanHome"]["targetTemp"]=="87"
 
 def test_DoorChange():
+    initializeState()
     data = {
         "targetTemp": "87",
         "door": "open",
@@ -144,6 +201,7 @@ def test_DoorChange():
     assert json_response["tartanHome"]["door"]=="open"
 
 def test_LightChange():
+    initializeState()
     data = {
         "light": "off",
         "keyLessEntry": "off",
