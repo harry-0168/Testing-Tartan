@@ -63,7 +63,7 @@ public class StaticTartanStateEvaluatorIntegrationTest {
         evaluatedState.put(IoTValues.DOOR_STATE, true);
         evaluatedState.put(IoTValues.CURRENT_TIME, 2330);
         Map<String, Object> evaluatedState1 = new StaticTartanStateEvaluator().evaluateState(evaluatedState, logBuffer);
-        assertEquals(true, evaluatedState1.get(IoTValues.DOOR_STATE), "Door should be left open");
+        assertEquals(false, evaluatedState1.get(IoTValues.DOOR_STATE), "Door should closed by night lock mode");
 
         evaluatedState1.put(IoTValues.DOOR_STATE, false);
         evaluatedState1.put(IoTValues.CURRENT_TIME, 2330);
