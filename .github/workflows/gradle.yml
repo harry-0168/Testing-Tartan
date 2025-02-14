@@ -39,26 +39,6 @@ jobs:
       run: ./gradlew build
       working-directory: ./smart-home/Platform
 
-
-    - name: Install Docker Compose
-      run: sudo apt-get update && sudo apt-get install -y docker-compose
-    - name: Run docker Compose
-      working-directory: ./smart-home/Platform
-      run: docker-compose up -d --build
-    - name : set up python
-      uses: actions/setup-python@v1
-      with:
-        python-version: '3.7'
-    - run: pip install pytest requests
-    - name: Run system tests
-      working-directory: ./smart-home/Platform/src/test/python
-      run: pytest
-    
-    - name: Bring server down
-      working-directory:
-      run: docker-compose down
-    
-
     # Step 6: Run tests with Jacoco enabled
     # - name: Run Tests and Generate Jacoco Coverage Report
     #   run: ./gradlew :Platform:test :Platform:jacocoTestReport
@@ -79,3 +59,30 @@ jobs:
       with:
         name: jacoco-report
         path: smart-home/Platform/build/jacocoHtml/
+
+
+  system-test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run docker Compose
+        working-directory: ./smart-home/Platform
+        run: docker-compose up -d --build
+
+      - name : set up python
+        uses: actions/setup-python@v4
+        with:
+        python-version: '3.7'
+
+      - name: Install Python Dependencies
+        run: pip install pytest requests
+
+      - name: Run system tests
+        working-directory: ./smart-home/Platform/src/test/python
+        run: pytest
+
+      - name: Bring server down
+        working-directory: ./smart-home/Platform
+        run: docker-compose down
