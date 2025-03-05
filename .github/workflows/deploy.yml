@@ -56,7 +56,7 @@ jobs:
           key: ${{ secrets.KEY }} 
           port: ${{ secrets.PORT }}
           script: |
-            cd ~/prod
+            cd ~/prod/smart-home
             docker-compose down && docker-compose up --build -d
 
       - name: Kill VPN connection
