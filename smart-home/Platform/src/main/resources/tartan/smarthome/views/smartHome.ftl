@@ -184,6 +184,26 @@ div {
         </#if>
         </select>
     </p>
+
+    <hr>
+
+    <!-- AB Testing Reporting Snippet -->
+    <div id="reporting_wrapper">
+        <#-- If groupExperiment is "1", show usage time in minutes and seconds. Otherwise, show cost in CAD. -->
+        <#if tartanHome.groupExperiment == "1">
+            <p>
+                ${tartanHome.minutesLightsOn/(60*1000) % 60} minutes,
+                ${tartanHome.minutesLightsOn/1000 % 60} seconds
+            </p>
+        <#else>
+            <!-- Here, the snippet uses "minutesLightsOn(60*1000) * 0.05" in your example,
+                but generally you might want something like:
+                ( minutesLightsOn / (60*1000) ) * costRate -->
+            <p>${tartanHome.minutesLightsOn/(60*1000) * 0.05} CAD</p>
+        </#if>
+    </div>
+
+
     <hr>
     <h3>Alarm System</h3>
     <p>

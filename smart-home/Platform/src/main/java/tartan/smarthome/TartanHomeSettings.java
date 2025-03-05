@@ -55,6 +55,18 @@ public class TartanHomeSettings {
     @JsonProperty
     private String nightEndTime;
 
+    @NotEmpty
+    @JsonProperty
+    private String groupExperiment;
+
+    public String getGroupExperiment() { 
+        return groupExperiment; 
+    }
+    
+    public void setGroupExperiment(String groupExperiment) { 
+        this.groupExperiment = groupExperiment;
+    }
+
     public String getTargetTemp() {
         return targetTemp;
     }

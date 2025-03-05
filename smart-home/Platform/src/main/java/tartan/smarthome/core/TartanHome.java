@@ -119,12 +119,39 @@ public class TartanHome {
 
     @JsonProperty
     private String panelMessage;
+
+    @JsonProperty
+    private Long minutesLightsOn;
+
+    @JsonProperty
+    private String groupExperiment;
+
     /**
      * Empty constructor needed by Jackson deserialization
      */
     public TartanHome() {  }
 
 
+    public Long getMinutesLightsOn() { 
+        return this.minutesLightsOn; 
+    }
+    public void setMinutesLightsOn(Long minutesLightsOn) { 
+        this.minutesLightsOn = minutesLightsOn; 
+    }
+    public void addMinutesLightsOn(Long minutesLightsOn) {
+        if (this.minutesLightsOn == null) {
+            this.minutesLightsOn = 0L;
+        }
+        this.minutesLightsOn += minutesLightsOn;
+    }
+
+    public String getGroupExperiment() {
+        return groupExperiment;
+    }
+
+    public void setGroupExperiment(String groupExperiment) {
+        this.groupExperiment = groupExperiment;
+    }
     /**
      * Get the name
      * @return the name

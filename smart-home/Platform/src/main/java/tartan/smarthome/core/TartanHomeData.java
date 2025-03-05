@@ -123,6 +123,12 @@ public class TartanHomeData {
     @Column(name = "alarm_enabled_state")
     private String alarmArmed;
 
+    @Column(name = "groupExperiment")
+    private String groupExperiment;
+
+    @Column(name = "minutes_lights_on")
+    private Long minutesLightsOn;
+
     /**
      * Create a mew data set from a TartanHome model
      * @param h the home model
@@ -152,6 +158,7 @@ public class TartanHomeData {
         this.lockIntruderSensor = h.getLockIntruderSensorMode();
         this.intruderDefenseSensor = h.getIntruderDetectionSensor();
         this.panelMessage = h.getPanelMessage();
+        this.groupExperiment = h.getGroupExperiment();
         // Remember when this record is created
         this.createTimeStamp = new Date();
     }
@@ -186,6 +193,22 @@ public class TartanHomeData {
      */
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getGroupExperiment() {
+        return groupExperiment;
+    }
+
+    public void setGroupExperiment(String groupExperiment) {
+        this.groupExperiment = groupExperiment;
+    }
+
+    public Long getMinutesLightsOn() {
+        return minutesLightsOn;
+    }
+
+    public void setMinutesLightsOn(Long minutesLightsOn) {
+        this.minutesLightsOn = minutesLightsOn;
     }
 
     /**
