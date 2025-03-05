@@ -11,6 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+
+      - name: Create SSH Key File
+        run: |
+          echo "${{ secrets.KEY }}" > private_key
+          chmod 600 private_key
+
       - name: Install OpenVPN
         run: |
           sudo apt-get update
@@ -38,7 +44,7 @@ jobs:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           PORT: ${{ secrets.PORT }}
-          KEY: ${{ secrets.KEY }}
+          KEY: private_key
         with:
           source: "./"
           target: "~/prod"
@@ -47,7 +53,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
+          key: private_key
           port: ${{ secrets.PORT }}
           script: |
             cd ~/prod
