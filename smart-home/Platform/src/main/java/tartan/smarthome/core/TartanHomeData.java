@@ -159,9 +159,12 @@ public class TartanHomeData {
         this.intruderDefenseSensor = h.getIntruderDetectionSensor();
         this.panelMessage = h.getPanelMessage();
         this.groupExperiment = h.getGroupExperiment();
+        this.minutesLightsOn = h.getMinutesLightsOn();
         // Remember when this record is created
         this.createTimeStamp = new Date();
     }
+
+    public TartanHomeData() {}
 
     /**
      * Get the name

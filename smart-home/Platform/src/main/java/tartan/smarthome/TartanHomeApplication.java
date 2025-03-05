@@ -1,6 +1,19 @@
 package tartan.smarthome;
 
 import io.dropwizard.core.Application;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import org.hibernate.Session;
+import java.io.File;
+import java.util.Map;
+
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
@@ -79,5 +92,94 @@ public class TartanHomeApplication extends Application<TartanHomeConfiguration> 
                 .setAuthenticator(auth)
                 .buildAuthFilter()));
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(TartanUser.class));
+
+        scheduleDailyReport(dao, environment);
     }
+
+    // This method sets up a daily job. For quick tests, set it to 1 minute.
+    private void scheduleDailyReport(HomeDAO dao, Environment environment) {
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+        // For real usage, set initialDelay=0, period=24, and TimeUnit.HOURS.
+        // For quick testing, use period=1 and TimeUnit.MINUTES or SECONDS.
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                generateDailyReport(dao);
+            } catch (Exception e) {
+                // Log or handle
+                e.printStackTrace();
+            }
+        }, 0, 1, TimeUnit.MINUTES);
+    }
+
+    private void generateDailyReport(HomeDAO dao) {
+        System.out.println("Running daily report job...");
+
+        try (Session session = dao.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            
+            // 1) Query all records from DB
+            List<TartanHomeData> dataList = session.createQuery("FROM TartanHomeData", TartanHomeData.class).list();
+            session.getTransaction().commit();
+            
+            if (dataList == null || dataList.isEmpty()) {
+                System.out.println("No data found, skipping report generation.");
+                return;
+            }
+            
+            // 2) Filter: for each house, keep only the latest record (based on createTimeStamp)
+            Map<String, TartanHomeData> latestRecords = new HashMap<>();
+            for (TartanHomeData record : dataList) {
+                String houseName = record.getHomeName();
+                if (houseName == null) continue;
+                if (!latestRecords.containsKey(houseName) ||
+                    record.getCreateTimeStamp().after(latestRecords.get(houseName).getCreateTimeStamp())) {
+                    latestRecords.put(houseName, record);
+                }
+            }
+            
+            // 3) Generate a report for each house based on the AB testing format.
+            for (TartanHomeData record : latestRecords.values()) {
+                String houseName = record.getHomeName();
+                String fileName = "daily-report-" + LocalDate.now() + "-" + houseName + ".csv";
+                String groupExperiment = record.getGroupExperiment();
+                // minutesLightsOn stored as a long (millis)
+                long minutesLightsOn = record.getMinutesLightsOn() != null ? record.getMinutesLightsOn() : 0L;
+                File outputFile = new File("/tmp", fileName);
+                
+                if ("1".equals(groupExperiment)) {
+                    // For group 1, display usage as minutes and seconds.
+                    long minutes = (minutesLightsOn / (60 * 1000)) % 60;
+                    long seconds = (minutesLightsOn / 1000) % 60;
+                    try (FileWriter fw = new FileWriter(outputFile)) {
+                        fw.write("House Name, Light Usage Minute, Light Usage Second\n");
+                        fw.write(houseName + "," + minutes + " minutes, " + seconds + " seconds\n");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.err.println("Failed to write daily report: " + e.getMessage());
+                    }
+                } else if ("2".equals(groupExperiment)) {
+                    // For group 2, display estimated cost.
+                    long minutes = (minutesLightsOn / (60 * 1000)) % 60;
+                    long seconds = (minutesLightsOn / 1000) % 60;
+                    double cost = (minutesLightsOn / (60.0 * 1000.0)) * 0.05;
+                    try (FileWriter fw = new FileWriter(outputFile)) {
+                        fw.write("House Name, Light Usage Minute, Light Usage Second, Estimated Cost\n");
+                        fw.write(houseName + "," + minutes + " minutes, " + seconds + " seconds, $" + cost + "\n");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.err.println("Failed to write daily report: " + e.getMessage());
+                    }
+                }
+            }
+            
+            System.out.println("Daily report generated!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error generating report: " + e.getMessage());
+        }
+    }
+
+
+    
 }

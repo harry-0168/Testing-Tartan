@@ -5,6 +5,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionException;
 import org.hibernate.SessionFactory;
 import tartan.smarthome.core.TartanHomeData;
+import java.util.List;
+import org.hibernate.query.Query;
 
 /**
  * The data access object to log the house data
@@ -32,5 +34,19 @@ public class HomeDAO extends AbstractDAO<TartanHomeData> {
             session.getTransaction().commit();
             session.close();
         } catch (SessionException sx) {/* Nothing to do */ }
+    }
+
+    public SessionFactory getSessionFactory() {
+        return this.factory;
+    }
+
+    /**
+     * Retrieve all TartanHomeData records from the database
+     * @return a list of TartanHomeData
+     */
+    public List<TartanHomeData> findAll() {
+        Session session = currentSession();
+        Query<TartanHomeData> query = session.createQuery("SELECT t FROM TartanHomeData t", TartanHomeData.class);
+        return query.getResultList();
     }
 }

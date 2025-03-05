@@ -30,6 +30,10 @@ public class TartanResource {
     // There is one service per home
     private ArrayList<TartanHomeService> services;
 
+    public List<TartanHomeService> getAllServices() {
+        return services;
+    }
+
     /**
      * Create and connect to a list of houses
      * @param houses the settings for each hose
@@ -105,6 +109,31 @@ public class TartanResource {
         }
         return null;
     }
+
+    /**
+     * Download a daily report file, e.g., /smarthome/reports/2025-03-08
+     * This returns the file "daily-report-2025-03-08.csv" from /tmp if it exists.
+     */
+    @GET
+    @Path("/reports/{date}/{houseName}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response downloadReport(@PathParam("date") String dateStr,
+                                @PathParam("houseName") String houseName,
+                                @Auth TartanUser user) {
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        String fileName = "daily-report-" + dateStr + "-" + houseName + ".csv";
+        java.io.File reportFile = new java.io.File("/tmp", fileName);
+        if (!reportFile.exists()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(reportFile)
+                    .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+                    .build();
+    }
+
+
 
     /**
      * update the house state via a HTTP POST. Managed by Jersey
