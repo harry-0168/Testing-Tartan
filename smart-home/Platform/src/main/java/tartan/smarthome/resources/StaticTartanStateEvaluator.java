@@ -190,7 +190,7 @@ public class StaticTartanStateEvaluator implements TartanStateEvaluator {
         }
 
         // the user has arrived
-        if (proximityState) {
+        if (arrivingProximityState) {
             log.append(formatLogEntry("House is occupied"));
             // if the alarm has been disabled, then turn on the light for the user
 

@@ -11,9 +11,13 @@ import tartan.smarthome.core.TartanHomeData;
 import tartan.smarthome.core.TartanHomeValues;
 import tartan.smarthome.db.HomeDAO;
 
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+
+import static java.time.temporal.ChronoUnit.MILLIS;
 
 /***
  * The service layer for the Tartan Home System. Additional inputs and control mechanisms should be accessed here.
@@ -44,6 +48,11 @@ public class TartanHomeService {
     private String lockNightLockEnabled;
     private String user;
     private String password;
+    // AB Testing parameters
+    private String groupExperiment;
+    private Boolean prevLightState;
+    private LocalTime timeLightMinutesUpdated;
+    private Long lightsOnDuration;
 
     // status parameters
     private HomeDAO homeDAO;
@@ -85,6 +94,11 @@ public class TartanHomeService {
 
         this.historyTimer = historyTimer*1000;
         this.logHistory = true;
+        // AB Testing - should not be part of DB
+        this.groupExperiment = settings.getGroupExperiment();
+        this.timeLightMinutesUpdated = LocalTime.now();
+        this.lightsOnDuration = 0L;
+        this.prevLightState = true;
 
         // Create and initialize the controller for this house
         this.controller = new IoTControlManager(user, password, new StaticTartanStateEvaluator());
@@ -492,6 +506,7 @@ public class TartanHomeService {
 
         tartanHome.setEventLog(controller.getLogMessages());
         tartanHome.setAuthenticated(String.valueOf(this.authenticated));
+        tartanHome.setGroupExperiment(this.groupExperiment);
 
         Map<String, Object> state = null;
         synchronized (controller) {
@@ -565,6 +580,36 @@ public class TartanHomeService {
                 } else {
                     tartanHome.setLight(TartanHomeValues.OFF);
                 }
+
+                boolean currentState = lightState;      // true = on, false = off
+                boolean previousState = this.prevLightState;  // same, true/false
+
+                // Light just turned ON
+                if (currentState && !previousState) {
+                    // record the time we turned on
+                    this.timeLightMinutesUpdated = LocalTime.now();
+                }
+                // Light remains ON
+                else if (currentState && previousState) {
+                    // accumulate usage
+                    LocalTime now = LocalTime.now();
+                    Long diff = this.timeLightMinutesUpdated.until(now, ChronoUnit.MILLIS);
+                    this.timeLightMinutesUpdated = now;
+                    this.lightsOnDuration += diff;
+                }
+                // Light just turned OFF
+                else if (!currentState && previousState) {
+                    // do one final accumulation for that on-cycle
+                    LocalTime now = LocalTime.now();
+                    Long diff = this.timeLightMinutesUpdated.until(now, ChronoUnit.MILLIS);
+                    this.timeLightMinutesUpdated = now;
+                    this.lightsOnDuration += diff;
+                }
+                // If it's OFF and stays OFF, do nothing
+                
+                tartanHome.setMinutesLightsOn(lightsOnDuration);
+                this.prevLightState = currentState;
+
             } else if (key.equals(IoTValues.PROXIMITY_STATE)) {
                 Boolean proxState = (Boolean)state.get(key);
                 if (proxState) {

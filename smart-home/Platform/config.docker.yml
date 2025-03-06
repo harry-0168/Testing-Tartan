@@ -24,6 +24,7 @@ houses:
     # and the super secret passcode to disable the alarm
     alarmPasscode: stop
     lockPasscode: passcode
+    groupExperiment: 1
 
     # Next house
   - name: cmu
@@ -38,6 +39,7 @@ houses:
     nightEndTime: 600
     alarmPasscode: quit
     lockPasscode: passcode
+    groupExperiment: 2
 
 # how many seconds between database snapshots
 historyTimer: 5
