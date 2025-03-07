@@ -145,7 +145,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd ~/prod/smart-home
-            chmod +x build-run.sh
+            chmod +x build-and-run.sh
             ./build-and-run.sh
           # docker-compose down && docker-compose up --build -d
 
