@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/402-group-project-h01-group17.iml" filepath="$PROJECT_DIR$/.idea/402-group-project-h01-group17.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tartan.main.iml" filepath="$PROJECT_DIR$/.idea/modules/tartan.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tartan.test.iml" filepath="$PROJECT_DIR$/.idea/modules/tartan.test.iml" />
     </modules>
   </component>
 </project>
