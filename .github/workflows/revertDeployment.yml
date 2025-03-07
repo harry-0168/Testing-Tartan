@@ -1,21 +1,20 @@
-name : revert Deployment
+name: Revert Deployment
 
 on:
   workflow_dispatch:
-    # This makes the workflow triggerable manually from GitHub UI
 
 jobs:
-  revert: 
+  revert:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v1
-
+      
       - name: Run revert script
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }} 
+          key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
             cd ~/prod/smart-home
