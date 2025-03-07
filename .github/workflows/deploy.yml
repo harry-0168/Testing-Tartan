@@ -23,7 +23,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - name: Build with Gradle
-        run: gradle build
+        run: ./smart-home/Platform/gradle/gradlew build
+      - name: Run Tests
+        run: ./smart-home/Platform/gradle/gradlew test
 
   deploy:
     needs: build-and-test
