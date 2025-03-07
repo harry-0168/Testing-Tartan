@@ -1,0 +1,22 @@
+name: Revert Deployment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  revert:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v1
+      
+      - name: Run revert script
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ~/prod/smart-home
+            chmod +x revert-version.sh
+            ./revert-version.sh
