@@ -96,6 +96,10 @@ public class TartanHomeService {
         this.logHistory = true;
         // AB Testing - should not be part of DB
         this.groupExperiment = settings.getGroupExperiment();
+        // if it is null, use hash to determine group
+        if (this.groupExperiment == null) {
+            this.groupExperiment = String.valueOf(Math.abs(this.name.hashCode()) % 2);
+        }
         this.timeLightMinutesUpdated = LocalTime.now();
         this.lightsOnDuration = 0L;
         this.prevLightState = true;

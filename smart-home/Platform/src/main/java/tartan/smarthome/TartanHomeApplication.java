@@ -93,11 +93,11 @@ public class TartanHomeApplication extends Application<TartanHomeConfiguration> 
                 .buildAuthFilter()));
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(TartanUser.class));
 
-        scheduleDailyReport(dao, environment);
+        scheduleReport(dao, environment);
     }
 
     // This method sets up a daily job. For quick tests, set it to 1 minute.
-    private void scheduleDailyReport(HomeDAO dao, Environment environment) {
+    private void scheduleReport(HomeDAO dao, Environment environment) {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
         // For real usage, set initialDelay=0, period=24, and TimeUnit.HOURS.
@@ -109,7 +109,7 @@ public class TartanHomeApplication extends Application<TartanHomeConfiguration> 
                 // Log or handle
                 e.printStackTrace();
             }
-        }, 0, 1, TimeUnit.MINUTES);
+        }, 0, 10080, TimeUnit.MINUTES); // 10080 minutes = 1 week
     }
 
     private void generateReport(HomeDAO dao) {

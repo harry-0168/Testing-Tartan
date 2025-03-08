@@ -123,7 +123,7 @@ public class TartanResource {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        String fileName = "daily-report-" + dateStr + "-" + houseName + ".csv";
+        String fileName = "report-" + dateStr + "-" + houseName + ".csv";
         java.io.File reportFile = new java.io.File("/tmp", fileName);
         if (!reportFile.exists()) {
             return Response.status(Response.Status.NOT_FOUND).build();

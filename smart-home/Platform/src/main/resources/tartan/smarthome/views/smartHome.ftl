@@ -186,9 +186,6 @@ div {
     </p>
 
     <hr>
-
-
-    <hr>
     <h3>Alarm System</h3>
     <p>
         <strong>Alarm status:</strong>
