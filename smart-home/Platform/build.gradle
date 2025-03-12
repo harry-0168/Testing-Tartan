@@ -3,6 +3,8 @@ plugins {
     id 'jacoco'
     id 'info.solidsoft.pitest' version '1.15.0'
     id 'java'
+    id 'pmd'
+    id("net.ltgt.errorprone") version "4.1.0"
 }
 
 group 'Tartan'
@@ -36,6 +38,8 @@ dependencies {
     implementation 'io.dropwizard:dropwizard-assets:4.0.7'
     implementation 'mysql:mysql-connector-java:8.0.33'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+
+    errorprone "com.google.errorprone:error_prone_core:2.28.0"
 }
 
 run {
@@ -101,4 +105,22 @@ pitest {
     threads = 4
     outputFormats = ['XML', 'HTML']
     timestampedReports = false
+}
+
+pmd {
+    ignoreFailures = true
+    consoleOutput = false
+    reportsDir = file("$buildDir/PMD")
+    toolVersion = "7.0.0"
+    rulesMinimumPriority = 5
+    ruleSets = ["category/java/errorprone.xml", "category/java/bestpractices.xml"]
+}
+tasks.withType(JavaCompile).configureEach {
+    options.errorprone.disableWarningsInGeneratedCode = true
+}
+
+tasks {
+    compileTestJava {
+        options.errorprone.enabled = false
+    }
 }
