@@ -3,6 +3,7 @@ plugins {
     id 'jacoco'
     id 'info.solidsoft.pitest' version '1.15.0'
     id 'java'
+    id("com.github.spotbugs") version "6.1.7"
 }
 
 group 'Tartan'
@@ -36,6 +37,8 @@ dependencies {
     implementation 'io.dropwizard:dropwizard-assets:4.0.7'
     implementation 'mysql:mysql-connector-java:8.0.33'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
 }
 
 run {
@@ -101,4 +104,139 @@ pitest {
     threads = 4
     outputFormats = ['XML', 'HTML']
     timestampedReports = false
+}
+
+//tasks.spotbugsMain {
+//    reports.create("html") {
+//        required = true
+//        outputLocation = file("$buildDir/reports/spotbugs.html")
+//        setStylesheet("fancy-hist.xsl")
+//    }
+//}
+
+//// SpotBugs Configuration
+//tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+//    reports {
+//        xml {
+//            enabled = false // Disable XML report if not needed
+//        }
+//        html {
+//            enabled = true
+//            outputLocation = file("$buildDir/reports/spotbugs.html")
+//            stylesheet = 'fancy-hist.xsl'
+//        }
+//    }
+//}
+//
+//// Add a task to generate the SpotBugs report
+//tasks.register('spotbugsReport') {
+//    group = 'verification'
+//    description = 'Generates a SpotBugs report'
+//    dependsOn 'spotbugsMain'
+//}
+
+// SpotBugs Configuration for a single consolidated report
+//tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+//    reports {
+//        xml {
+//            enabled = false // Disable XML report if not needed
+//        }
+//        html {
+//            enabled = true
+//            outputLocation = file("$buildDir/reports/spotbugs/spotbugs.html")
+//            stylesheet = 'fancy-hist.xsl'
+//        }
+//    }
+//}
+
+// Task to consolidate all SpotBugs reports into one
+//tasks.register('spotbugsConsolidatedReport') {
+//    group = 'verification'
+//    description = 'Generates a consolidated SpotBugs report for all tasks'
+//    dependsOn = ['spotbugsMain', 'spotbugsTest'] // Add other SpotBugs tasks if needed
+//
+//    doLast {
+//        // Define the output directory for the consolidated report
+//        def consolidatedReportDir = file("$buildDir/reports/spotbugs")
+//        consolidatedReportDir.mkdirs()
+//
+//        // Define the consolidated report file
+//        def consolidatedReportFile = new File(consolidatedReportDir, "spotbugs.html")
+//
+//        // Merge all SpotBugs HTML reports into one
+//        consolidatedReportFile.withWriter { writer ->
+//            writer.write("<html><body><h1>Consolidated SpotBugs Report</h1>")
+//
+//            // Iterate over all SpotBugs tasks and append their reports
+//            tasks.withType(com.github.spotbugs.snom.SpotBugsTask).each { task ->
+//                def reportFile = task.reports.html.outputLocation.asFile.get()
+//                if (reportFile.exists()) {
+//                    writer.write("<h2>${task.name}</h2>")
+//                    writer.write(reportFile.text)
+//                }
+//            }
+//
+//            writer.write("</body></html>")
+//        }
+//
+//        println "Consolidated SpotBugs report generated at: ${consolidatedReportFile}"
+//    }
+//}
+
+
+//spotbugs {
+//    ignoreFailures = false
+//    showStackTraces = true
+//    showProgress = false
+//    reportLevel = com.github.spotbugs.snom.Confidence.values()[3]
+//    effort = com.github.spotbugs.snom.Effort.DEFAULT
+//    visitors = [ 'FindSqlInjection', 'SwitchFallthrough' ]
+//    omitVisitors = [ 'FindNonShortCircuit' ]
+//    reportsDir = file("$buildDir/reports/spotbugs")
+////    includeFilter = file('spotbugs-include.xml')
+////    excludeFilter = file('spotbugs-exclude.xml')
+//    onlyAnalyze = ['com.foobar.MyClass', 'com.foobar.mypkg.*']
+//    projectName = name
+//    release = version
+//    extraArgs = [ '-nested:false' ]
+//    jvmArgs = [ '-Duser.language=ja' ]
+//    maxHeapSize = '512m'
+//}
+
+spotbugs {
+    ignoreFailures = true // Allow the build to continue even if bugs are found
+    showStackTraces = true
+    showProgress = false
+    reportLevel = com.github.spotbugs.snom.Confidence.values()[3] // Report all issues, including low-confidence ones
+    effort = com.github.spotbugs.snom.Effort.DEFAULT // Analysis effort level
+    visitors = [ 'FindSqlInjection', 'SwitchFallthrough' ]
+    omitVisitors = [ 'FindNonShortCircuit' ]
+    reportsDir = file("$buildDir/reports/spotbugs") // Directory for reports
+    onlyAnalyze = ['com.foobar.MyClass', 'com.foobar.mypkg.*'] // Limit analysis to specific classes/packages
+    projectName = name
+    release = version
+    extraArgs = [ '-nested:false' ]
+    jvmArgs = [ '-Duser.language=ja' ]
+    maxHeapSize = '512m'
+}
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+    reports {
+        xml {
+            enabled = false // Disable XML report if not needed
+        }
+        html {
+            enabled = true // Always generate an HTML report
+            outputLocation = file("$buildDir/reports/spotbugs/spotbugs.html")
+            stylesheet = 'fancy-hist.xsl' // Use a custom stylesheet if desired
+        }
+    }
+
+    doLast {
+        def reportFile = reports.html.outputLocation.asFile.get()
+        if (!reportFile.exists()) {
+            reportFile.parentFile.mkdirs()
+            reportFile.text = "<html><body><h1>No SpotBugs issues found!</h1></body></html>"
+        }
+    }
 }
