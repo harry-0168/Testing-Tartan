@@ -18,8 +18,8 @@ application {
     mainClass = 'tartan.smarthome.TartanHomeApplication'
 }
 
-sourceCompatibility = 21
-targetCompatibility = 21
+sourceCompatibility = 17
+targetCompatibility = 17
 
 repositories {
     mavenLocal()
@@ -116,9 +116,22 @@ pmd {
     consoleOutput = false
     reportsDir = file("$buildDir/PMD")
     toolVersion = "7.0.0"
-//    rulesMinimumPriority = 5
-//    ruleSets = ["category/java/errorprone.xml", "category/java/bestpractices.xml"]
+    rulesMinimumPriority = 5
+    ruleSets = ["category/java/errorprone.xml", "category/java/bestpractices.xml"]
 }
+//
+//pmd {
+//    // Adjust to your preferred PMD version
+//    consoleOutput = true
+//    ignoreFailures = true
+//}
+//
+//tasks.withType(Pmd) {
+//    reports {
+//        xml.required = false
+//        html.required = true
+//    }
+//}
 
 tasks.withType(JavaCompile).configureEach {
     options.errorprone.disableWarningsInGeneratedCode = false
@@ -151,17 +164,18 @@ tasks.spotbugsTest {
 // SpotBugs Configuration
 spotbugs {
     ignoreFailures = true // Allow the build to continue even if bugs are found
-    showStackTraces = true
-    showProgress = false
-//    reportLevel = com.github.spotbugs.snom.Confidence.values()[3] // Report all issues, including low-confidence ones
-//    effort = com.github.spotbugs.snom.Effort.DEFAULT // Analysis effort level
-//    visitors = [ 'FindSqlInjection', 'SwitchFallthrough' ]
-//    omitVisitors = [ 'FindNonShortCircuit' ]
-    reportsDir = file("$buildDir/spotbugs/reports/spotbugs") // Directory for reports
-//    onlyAnalyze = ['com.foobar.MyClass', 'com.foobar.mypkg.*'] // Limit analysis to specific classes/packages
-    projectName = name
-    release = version
-    extraArgs = [ '-nested:false' ]
-    jvmArgs = [ '-Duser.language=ja' ]
-    maxHeapSize = '512m'
+//    showStackTraces = true
+//    showProgress = false
+////    reportLevel = com.github.spotbugs.snom.Confidence.values()[3] // Report all issues, including low-confidence ones
+////    effort = com.github.spotbugs.snom.Effort.DEFAULT // Analysis effort level
+////    visitors = [ 'FindSqlInjection', 'SwitchFallthrough' ]
+////    omitVisitors = [ 'FindNonShortCircuit' ]
+//    reportsDir = file("$buildDir/spotbugs/reports/spotbugs") // Directory for reports
+////    onlyAnalyze = ['com.foobar.MyClass', 'com.foobar.mypkg.*'] // Limit analysis to specific classes/packages
+//    projectName = name
+//    release = version
+//    extraArgs = [ '-nested:false' ]
+//    jvmArgs = [ '-Duser.language=ja' ]
+//    maxHeapSize = '512m'
 }
+
