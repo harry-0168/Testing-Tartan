@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Java CI 
 
 on:
   push:
@@ -9,10 +9,8 @@ on:
 jobs:
   build_and_test:
     runs-on: self-hosted
-
     permissions:
       contents: read
-
     steps:
     # Step 1: Checkout the repository
     - name: Checkout Code
@@ -25,21 +23,12 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
-    # Step 3: Verify Platform directory contents
-    - name: Verify Platform directory contents
-      run: ls -R smart-home/Platform
-
-    # Step 4: Set up Gradle Wrapper
-    - name: Set up Gradle Wrapper
-      run: ./gradlew wrapper
-      working-directory: ./smart-home/Platform
-
-    # Step 5: Build the project with Gradle
+    # Step 3: Build the project with Gradle
     - name: build_and_test with Gradle
       run: ./gradlew build
       working-directory: ./smart-home/Platform
 
-    # Step 6: Upload Jacoco HTML Report
+    # Step 4: Upload Jacoco HTML Report
     - name: Upload Jacoco Report
       if: always() # Ensure this step runs even if tests fail
       uses: actions/upload-artifact@v4
@@ -61,7 +50,6 @@ jobs:
           sleep 30
           docker-compose up -d --build
               
-
       - name : set up python
         uses: actions/setup-python@v4
         with:
@@ -72,7 +60,7 @@ jobs:
 
       - name: Run system tests
         working-directory: ./smart-home/Platform/src/test/python
-        run: pytest
+        run: python3 -m pytest
 
       - name: Bring server down
         working-directory: ./smart-home/Platform
