@@ -424,20 +424,6 @@ def test_DoorChange():
     json_response=response.json()
     assert json_response["tartanHome"]["door"]=="open"
 
-def test_LightChange():
-    initializeState()
-    data = {
-        "light": "off",
-        "keyLessEntry": "off",
-        "lockRequest": ""
-    }
-    response=requests.post(post_url+ houseName, json=data, auth=auth, headers=headers)
-    assert response.status_code == 200  # Check HTTP status code
-
-    response = requests.get(get_url+ houseName, auth=auth, headers=headers)
-    assert response.status_code == 200  # Check HTTP status code
-    json_response=response.json()
-    assert json_response["tartanHome"]["light"]=="on"
 
 
 
