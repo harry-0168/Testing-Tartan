@@ -7,7 +7,7 @@ on:
     branches: ["main"]
 
 jobs:
-  build and test:
+  build_and_test:
     runs-on: self-hosted
 
     permissions:
@@ -35,7 +35,7 @@ jobs:
       working-directory: ./smart-home/Platform
 
     # Step 5: Build the project with Gradle
-    - name: Build and test with Gradle
+    - name: build_and_test with Gradle
       run: ./gradlew build
       working-directory: ./smart-home/Platform
 
@@ -50,7 +50,7 @@ jobs:
 
   system-test:
     runs-on: self-hosted
-    needs: build and test
+    needs: build_and_test
     steps:
       - uses: actions/checkout@v4
 
@@ -79,7 +79,7 @@ jobs:
         run: docker-compose down
 
   deploy:
-    needs : build and test
+    needs : build_and_test
     runs-on: self-hosted
     if: github.ref == 'refs/heads/main'
     steps:
