@@ -29,4 +29,4 @@ Please see the system description (docx) file for more detailed information
 about Tartan's design, architecture, requirements, etc.
 
 ## Deployment Guide
-[Deployment Guide](https://github.com/cmput402-w25/402-group-project-h01-group17/wiki/Continuous-Deployment).
+[Deployment Guide](https://github.com/harry-0168/Testing-Tartan/wiki/Continuous-Deployment).
