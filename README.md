@@ -28,5 +28,8 @@ directory.
 Please see the system description (docx) file for more detailed information
 about Tartan's design, architecture, requirements, etc.
 
+## Wiki
+[Wiki](https://github.com/harry-0168/Testing-Tartan/wiki)
+
 ## Deployment Guide
 [Deployment Guide](https://github.com/harry-0168/Testing-Tartan/wiki/Continuous-Deployment).
